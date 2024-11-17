@@ -118,6 +118,7 @@ export default function Home() {
             <div className="bg-[var(--card-bg)] shadow-sm border border-[var(--card-border)] rounded-xl p-6 h-[calc(100vh-12rem)]">
               <div className="flex justify-end mb-4">
                 <button
+                  aria-label="Copy content"
                   onClick={() => handleCopy(activeTab === 'mail' ? userInput.mail : userInput.reply)}
                   className="p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-md transition-colors"
                 >
