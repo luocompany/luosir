@@ -4,35 +4,22 @@ import { generateMail, generateReply } from '@/app/services/openai';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    console.log('API Route received:', {
-      mode: body.mode,
-      type: body.type,
-      contentLength: body.content?.length
-    });
+    console.log('API Route received:', body);
 
-    const { content, type, mode, originalMail, replyDraft } = body;
-    
     let result;
-    try {
-      if (mode === 'mail') {
-        result = await generateMail({ 
-          content, 
-          type,
-          language: body.language
-        });
-      } else {
-        result = await generateReply({ originalMail, replyDraft });
-      }
-    } catch (error: any) {
-      console.error('Generation error details:', {
-        message: error.message,
-        cause: error.cause,
-        stack: error.stack
+    if (body.mode === 'mail') {
+      result = await generateMail({ 
+        content: body.content, 
+        type: body.type,
+        language: body.language
       });
-      return NextResponse.json(
-        { error: error.message },
-        { status: 500 }
-      );
+    } else {
+      result = await generateReply({ 
+        content: body.content,         // 回复草稿
+        originalMail: body.originalMail, // 原始邮件
+        type: body.type,              // 回复风格
+        language: body.language       // 语言选择
+      });
     }
 
     return NextResponse.json({ result });

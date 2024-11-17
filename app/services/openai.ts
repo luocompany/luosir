@@ -64,15 +64,57 @@ export async function generateMail({ content, type, language }: GenerateMailPara
   return callOpenAI(messages);
 }
 
-export async function generateReply({ originalMail, replyDraft }: GenerateReplyParams) {
+export async function generateReply({ content, originalMail, type, language }: GenerateReplyParams) {
+  const getBilingualPrompt = () => `You are a professional email assistant. 
+IMPORTANT: You MUST reply in BOTH English and Chinese as follows:
+
+1. ENGLISH VERSION FIRST:
+[English]
+(Your English reply here)
+
+2. THEN CHINESE VERSION:
+[中文]
+(Your Chinese reply here)
+
+Style: ${type}
+- Both versions must be complete
+- Both versions must maintain the same professional level
+- Both versions must be appropriate for business communication
+- DO NOT skip either language version`;
+
+  const getMonolingualPrompt = () => `You are a professional email assistant. 
+Please reply in ${language} only.
+Style: ${type}`;
+
   const messages = [
     {
       role: "system",
-      content: "你是一位专业的邮件回复助手。请用中文回复。"
+      content: language === 'both English and Chinese' 
+        ? getBilingualPrompt()
+        : getMonolingualPrompt()
     },
     {
       role: "user",
-      content: `原始邮件:\n${originalMail}\n\n我的回复草稿:\n${replyDraft}\n\n请帮我优化回复内容，使其更专业得体。`
+      content: language === 'both English and Chinese'
+        ? `Please optimize my reply in both English and Chinese.
+           
+Original Email:
+${originalMail}
+
+My Draft Reply:
+${content}
+
+REMEMBER: 
+1. Start with [English] version
+2. Then provide [中文] version
+3. Include BOTH versions in your response`
+        : `Please optimize my reply.
+
+Original Email:
+${originalMail}
+
+My Draft Reply:
+${content}`
     }
   ];
 
@@ -86,6 +128,8 @@ interface GenerateMailParams {
 }
 
 interface GenerateReplyParams {
+  content: string;
   originalMail: string;
-  replyDraft: string;
+  type: string;
+  language: string;
 } 

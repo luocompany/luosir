@@ -12,7 +12,9 @@ export default function Home() {
     language: 'both English and Chinese',
     mail: '',
     replyTo: '',
-    reply: ''
+    reply: '',
+    replyLanguage: 'both English and Chinese',
+    replyType: 'formal'
   });
   const [generatedContent, setGeneratedContent] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -78,8 +80,11 @@ export default function Home() {
             mode: 'mail'
           }
         : {
+            topic: '',
+            language: userInput.replyLanguage,
+            type: userInput.replyType,
+            content: userInput.reply,
             originalMail: userInput.replyTo,
-            replyDraft: userInput.reply,
             mode: 'reply'
           };
       
