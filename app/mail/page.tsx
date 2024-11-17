@@ -20,6 +20,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [isStyleMenuOpen, setIsStyleMenuOpen] = useState(false);
+  const [copySuccess, setCopySuccess] = useState(false);
 
   const styles = [
     {
@@ -105,7 +106,13 @@ export default function Home() {
   };
 
   const handleCopy = async (content: string) => {
-    await navigator.clipboard.writeText(content);
+    try {
+      await navigator.clipboard.writeText(content);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
   };
 
   return (
@@ -134,10 +141,20 @@ export default function Home() {
               <div className="flex justify-end mb-4">
                 <button
                   aria-label="Copy content"
-                  onClick={() => handleCopy(activeTab === 'mail' ? userInput.mail : userInput.reply)}
-                  className="p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-md transition-colors"
+                  onClick={() => handleCopy(generatedContent)}
+                  className="relative p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-md transition-colors"
+                  disabled={!generatedContent || isLoading}
                 >
-                  <Copy className="w-4 h-4 text-[var(--foreground)]" />
+                  {copySuccess ? (
+                    <span className="absolute -top-8 -left-2 bg-black/75 text-white text-xs py-1 px-2 rounded whitespace-nowrap">
+                      Copied!
+                    </span>
+                  ) : null}
+                  <Copy className={`w-4 h-4 ${
+                    !generatedContent || isLoading 
+                      ? 'text-gray-300 dark:text-gray-600' 
+                      : 'text-[var(--foreground)]'
+                  }`} />
                 </button>
               </div>
               <div className="prose prose-sm dark:prose-invert whitespace-pre-wrap h-[calc(100%-3rem)] overflow-y-auto">
