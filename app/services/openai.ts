@@ -44,27 +44,15 @@ async function callOpenAI(messages: any[]) {
   }
 }
 
-export async function generateMail({ content, type, language }: GenerateMailParams) {
-  const messages = [
-    {
-      role: "system",
-      content: `You are a professional email writing assistant. Please respond in ${language}.
-        Style: ${type}
-        Guidelines:
-        - Maintain appropriate tone for ${type} style
-        - Ensure clarity and professionalism
-        - Follow standard email format`
-    },
-    {
-      role: "user",
-      content: `Please help optimize this email content:\n\n${content}`
-    }
-  ];
-
-  return callOpenAI(messages);
+interface GenerateParams {
+  content: string;
+  originalMail?: string;
+  type: string;
+  language: string;
+  mode: 'mail' | 'reply';
 }
 
-export async function generateReply({ content, originalMail, type, language }: GenerateReplyParams) {
+export async function generateContent({ content, originalMail, type, language, mode }: GenerateParams) {
   const getBilingualPrompt = () => `You are a professional email assistant. 
 IMPORTANT: You MUST reply in BOTH English and Chinese as follows:
 
@@ -86,50 +74,57 @@ Style: ${type}
 Please reply in ${language} only.
 Style: ${type}`;
 
-  const messages = [
-    {
-      role: "system",
-      content: language === 'both English and Chinese' 
-        ? getBilingualPrompt()
-        : getMonolingualPrompt()
-    },
-    {
-      role: "user",
-      content: language === 'both English and Chinese'
-        ? `Please optimize my reply in both English and Chinese.
-           
+  const systemPrompt = language === 'both English and Chinese' 
+    ? getBilingualPrompt()
+    : getMonolingualPrompt();
+
+  const userPrompt = mode === 'reply'
+    ? `Please optimize my reply in ${language === 'both English and Chinese' ? 'both English and Chinese' : language}.
+       
 Original Email:
 ${originalMail}
 
 My Draft Reply:
 ${content}
 
-REMEMBER: 
+${language === 'both English and Chinese' ? `REMEMBER: 
 1. Start with [English] version
 2. Then provide [中文] version
-3. Include BOTH versions in your response`
-        : `Please optimize my reply.
+3. Include BOTH versions in your response` : ''}`
+    : `Please help optimize this email content in ${language === 'both English and Chinese' ? 'both English and Chinese' : language}:
 
-Original Email:
-${originalMail}
+${content}
 
-My Draft Reply:
-${content}`
+${language === 'both English and Chinese' ? `REMEMBER: 
+1. Start with [English] version
+2. Then provide [中文] version
+3. Include BOTH versions in your response` : ''}`;
+
+  const messages = [
+    {
+      role: "system",
+      content: systemPrompt
+    },
+    {
+      role: "user",
+      content: userPrompt
     }
   ];
 
-  return callOpenAI(messages);
-}
+  console.log('API Request Messages:', JSON.stringify(messages, null, 2));
 
-interface GenerateMailParams {
-  content: string;
-  type: string;
-  language: string;
-}
+  const response = await callOpenAI(messages);
 
-interface GenerateReplyParams {
-  content: string;
-  originalMail: string;
-  type: string;
-  language: string;
+  // 验证响应是否包含双语内容
+  if (language === 'both English and Chinese' && (!response.includes('[English]') || !response.includes('[中文]'))) {
+    console.warn('Response missing required language sections:', response);
+    // 强制重新生成
+    return `[English]
+${response}
+
+[中文]
+${response}`;
+  }
+
+  return response;
 } 

@@ -71,23 +71,17 @@ export default function Home() {
       setError('');
       setIsLoading(true);
       
-      const requestData = activeTab === 'mail' 
-        ? {
-            topic: userInput.topic,
-            language: userInput.language,
-            type: mailType,
-            content: userInput.mail,
-            mode: 'mail'
-          }
-        : {
-            topic: '',
-            language: userInput.replyLanguage,
-            type: userInput.replyType,
-            content: userInput.reply,
-            originalMail: userInput.replyTo,
-            mode: 'reply'
-          };
+      const requestData = {
+        topic: activeTab === 'mail' ? userInput.topic : '',
+        language: activeTab === 'mail' ? userInput.language : userInput.replyLanguage,
+        type: activeTab === 'mail' ? mailType : userInput.replyType,
+        content: activeTab === 'mail' ? userInput.mail : userInput.reply,
+        originalMail: activeTab === 'mail' ? '' : userInput.replyTo,
+        mode: activeTab
+      };
       
+      console.log('Request Data:', requestData);
+
       const response = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

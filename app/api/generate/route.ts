@@ -1,26 +1,18 @@
 import { NextResponse } from 'next/server';
-import { generateMail, generateReply } from '@/app/services/openai';
+import { generateContent } from '@/app/services/openai';
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     console.log('API Route received:', body);
 
-    let result;
-    if (body.mode === 'mail') {
-      result = await generateMail({ 
-        content: body.content, 
-        type: body.type,
-        language: body.language
-      });
-    } else {
-      result = await generateReply({ 
-        content: body.content,         // 回复草稿
-        originalMail: body.originalMail, // 原始邮件
-        type: body.type,              // 回复风格
-        language: body.language       // 语言选择
-      });
-    }
+    const result = await generateContent({
+      content: body.content,
+      originalMail: body.originalMail,
+      type: body.type,
+      language: body.language,
+      mode: body.mode
+    });
 
     return NextResponse.json({ result });
     
