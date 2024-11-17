@@ -237,7 +237,7 @@ export default function Home() {
                   {/* 生成按钮 */}
                   <button 
                     onClick={handleGenerate}
-                    disabled={isLoading || !userInput.topic?.trim()}
+                    disabled={isLoading || !userInput.mail?.trim()}
                     className="w-full py-2.5 rounded-lg bg-[var(--blue-accent)] text-white text-sm font-medium hover:opacity-90 transition-all disabled:opacity-50 shadow-sm"
                   >
                     {isLoading ? 'Generating...' : 'Generate Optimized Mail'}
