@@ -110,6 +110,22 @@ export default function Home() {
 
   return (
     <div className="flex flex-1 bg-[var(--background)]">
+      <nav className="fixed top-0 left-0 right-0 backdrop-blur-xl bg-white/70 dark:bg-black/70 border-b border-gray-200/50 dark:border-gray-800/50 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16 items-center">
+            <div className="flex items-center">
+              <span className="text-xl font-semibold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
+                LC App
+              </span>
+            </div>
+            <div className="flex items-center space-x-8">
+              <a href="/" className="text-sm font-medium hover:text-blue-500 transition-colors">Home</a>
+              <a href="/mail" className="text-sm font-medium text-blue-500">Mail</a>
+              <a href="/tools" className="text-sm font-medium hover:text-blue-500 transition-colors">Tools</a>
+            </div>
+          </div>
+        </div>
+      </nav>
       <div className="w-full max-w-6xl mx-auto px-6 py-10 mt-14">
         <div className="flex gap-6">
           {/* 左侧预览区 */}
@@ -166,10 +182,9 @@ export default function Home() {
                     </label>
                     <textarea 
                       value={userInput.mail}
-                      onChange={(e: ChangeEvent<HTMLTextAreaElement>) => 
-                        setUserInput({ ...userInput, mail: e.target.value })}
+                      onChange={(e) => setUserInput({ ...userInput, mail: e.target.value })}
                       placeholder="请在这里输入邮件内容... / Type your email content here..."
-                      className="w-full h-[300px] p-3 rounded-lg bg-[var(--background)] border border-[var(--card-border)] focus:ring-1 focus:ring-[var(--blue-accent)] focus:outline-none transition-all resize-y text-sm placeholder:text-gray-400 font-['.SFNSText-Regular', 'SF Pro Text', 'SF Pro Icons', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif]"
+                      className="w-full h-[300px] p-4 rounded-xl bg-gray-50/50 dark:bg-gray-900/50 border border-gray-200/50 dark:border-gray-800/50 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 focus:outline-none transition-all resize-y text-sm font-['.SFNSText-Regular', 'SF Pro Text', 'SF Pro Icons', 'Helvetica Neue', 'Arial', sans-serif] placeholder:text-gray-400/80"
                     />
                   </div>
 
@@ -180,11 +195,9 @@ export default function Home() {
                     </label>
                     <div className="relative">
                       <select
-                        aria-label="Select output language"
-                        value={userInput.language || 'English'}
-                        onChange={(e: ChangeEvent<HTMLSelectElement>) => 
-                          setUserInput({ ...userInput, language: e.target.value })}
-                        className="w-full px-3 py-2 appearance-none rounded-lg bg-[var(--background)] border border-[var(--card-border)] focus:ring-1 focus:ring-[var(--blue-accent)] focus:outline-none transition-all text-sm"
+                        value={userInput.language}
+                        onChange={(e) => setUserInput({ ...userInput, language: e.target.value })}
+                        className="w-full px-4 py-2.5 rounded-xl bg-gray-50/50 dark:bg-gray-900/50 border border-gray-200/50 dark:border-gray-800/50 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 focus:outline-none transition-all text-sm font-medium appearance-none"
                       >
                         <option value="both English and Chinese">Both EN & CN</option>
                         <option value="English">English</option>
@@ -239,9 +252,19 @@ export default function Home() {
                   <button 
                     onClick={handleGenerate}
                     disabled={isLoading || !userInput.mail?.trim()}
-                    className="w-full py-2.5 rounded-lg bg-[var(--blue-accent)] text-white text-sm font-medium hover:opacity-90 transition-all disabled:opacity-50 shadow-sm"
+                    className="w-full py-3 rounded-xl bg-blue-500 hover:bg-blue-600 active:bg-blue-700 disabled:bg-gray-300 dark:disabled:bg-gray-700 text-white text-sm font-medium transition-all shadow-lg shadow-blue-500/20 disabled:shadow-none"
                   >
-                    {isLoading ? 'Generating...' : 'Generate Optimized Mail'}
+                    {isLoading ? (
+                      <span className="flex items-center justify-center space-x-2">
+                        <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                        </svg>
+                        <span>Generating...</span>
+                      </span>
+                    ) : (
+                      'Generate Optimized Mail'
+                    )}
                   </button>
                 </div>
               ) : (
