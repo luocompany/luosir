@@ -180,6 +180,7 @@ export default function Home() {
                     </label>
                     <div className="relative">
                       <select
+                        aria-label="Select output language"
                         value={userInput.language || 'English'}
                         onChange={(e: ChangeEvent<HTMLSelectElement>) => 
                           setUserInput({ ...userInput, language: e.target.value })}

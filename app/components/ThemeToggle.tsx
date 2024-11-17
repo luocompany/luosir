@@ -32,6 +32,7 @@ export default function ThemeToggle() {
   return (
     <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-full p-1.5 flex space-x-1">
       <button
+        aria-label="System theme"
         onClick={() => handleThemeChange('system')}
         className={`p-2 rounded-full transition-colors ${
           theme === 'system' 
@@ -44,6 +45,7 @@ export default function ThemeToggle() {
         </svg>
       </button>
       <button
+        aria-label="Light theme"
         onClick={() => handleThemeChange('light')}
         className={`p-2 rounded-lg ${theme === 'light' ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
       >
@@ -52,6 +54,7 @@ export default function ThemeToggle() {
         </svg>
       </button>
       <button
+        aria-label="Dark theme"
         onClick={() => handleThemeChange('dark')}
         className={`p-2 rounded-lg ${theme === 'dark' ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
       >
