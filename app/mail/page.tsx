@@ -168,8 +168,8 @@ export default function Home() {
                       value={userInput.mail}
                       onChange={(e: ChangeEvent<HTMLTextAreaElement>) => 
                         setUserInput({ ...userInput, mail: e.target.value })}
-                      placeholder="Type your email content here..."
-                      className="w-full h-[300px] p-3 rounded-lg bg-[var(--background)] border border-[var(--card-border)] focus:ring-1 focus:ring-[var(--blue-accent)] focus:outline-none transition-all resize-y text-sm placeholder:text-gray-400"
+                      placeholder="请在这里输入邮件内容... / Type your email content here..."
+                      className="w-full h-[300px] p-3 rounded-lg bg-[var(--background)] border border-[var(--card-border)] focus:ring-1 focus:ring-[var(--blue-accent)] focus:outline-none transition-all resize-y text-sm placeholder:text-gray-400 font-['.SFNSText-Regular', 'SF Pro Text', 'SF Pro Icons', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif]"
                     />
                   </div>
 
@@ -250,15 +250,15 @@ export default function Home() {
                     value={userInput.replyTo}
                     onChange={(e: ChangeEvent<HTMLTextAreaElement>) => 
                       setUserInput({ ...userInput, replyTo: e.target.value })}
-                    className="w-full h-[200px] p-3 rounded-lg bg-[var(--background)] border border-[var(--card-border)] focus:ring-1 focus:ring-[var(--blue-accent)] focus:outline-none transition-all resize-y text-sm placeholder:text-gray-400"
-                    placeholder="Paste the email content you need to reply to..."
+                    className="w-full h-[200px] p-3 rounded-lg bg-[var(--background)] border border-[var(--card-border)] focus:ring-1 focus:ring-[var(--blue-accent)] focus:outline-none transition-all resize-y text-sm placeholder:text-gray-400 font-['.SFNSText-Regular', 'SF Pro Text', 'SF Pro Icons', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif]"
+                    placeholder="请粘贴需要回复的邮件内容... / Paste the email content you need to reply to..."
                   />
                   <textarea 
                     value={userInput.reply}
                     onChange={(e: ChangeEvent<HTMLTextAreaElement>) => 
                       setUserInput({ ...userInput, reply: e.target.value })}
-                    className="w-full h-[200px] p-3 rounded-lg bg-[var(--background)] border border-[var(--card-border)] focus:ring-1 focus:ring-[var(--blue-accent)] focus:outline-none transition-all resize-y text-sm placeholder:text-gray-400"
-                    placeholder="Enter your reply draft..."
+                    className="w-full h-[200px] p-3 rounded-lg bg-[var(--background)] border border-[var(--card-border)] focus:ring-1 focus:ring-[var(--blue-accent)] focus:outline-none transition-all resize-y text-sm placeholder:text-gray-400 font-['.SFNSText-Regular', 'SF Pro Text', 'SF Pro Icons', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif]"
+                    placeholder="请输入您的回复草稿... / Enter your reply draft..."
                   />
                   <button 
                     onClick={handleGenerate}
