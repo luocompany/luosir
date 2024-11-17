@@ -57,21 +57,30 @@ export async function generateContent({ content, originalMail, type, language, m
 IMPORTANT: You MUST reply in BOTH English and Chinese as follows:
 
 1. ENGLISH VERSION FIRST:
+[Subject]
+(Generate an appropriate subject line for this email)
+
 [English]
 (Your English reply here)
 
 2. THEN CHINESE VERSION:
+[主题]
+(为这封邮件生成合适的主题)
+
 [中文]
 (Your Chinese reply here)
 
 Style: ${type}
-- Both versions must be complete
+- Both versions must be complete and include subject lines
 - Both versions must maintain the same professional level
 - Both versions must be appropriate for business communication
-- DO NOT skip either language version`;
+- DO NOT skip either language version or subject lines`;
 
   const getMonolingualPrompt = () => `You are a professional email assistant. 
 Please reply in ${language} only.
+${language === 'English' ? 
+  'Start with [Subject] line before the email content.' : 
+  '请在邮件内容前添加[主题]行。'}
 Style: ${type}`;
 
   const systemPrompt = language === 'both English and Chinese' 
@@ -79,7 +88,7 @@ Style: ${type}`;
     : getMonolingualPrompt();
 
   const userPrompt = mode === 'reply'
-    ? `Please optimize my reply in ${language === 'both English and Chinese' ? 'both English and Chinese' : language}.
+    ? `Please optimize my reply and generate appropriate subject line(s).
        
 Original Email:
 ${originalMail}
@@ -88,17 +97,24 @@ My Draft Reply:
 ${content}
 
 ${language === 'both English and Chinese' ? `REMEMBER: 
-1. Start with [English] version
-2. Then provide [中文] version
-3. Include BOTH versions in your response` : ''}`
-    : `Please help optimize this email content in ${language === 'both English and Chinese' ? 'both English and Chinese' : language}:
+1. Start with [Subject] and [English] version
+2. Then provide [主题] and [中文] version
+3. Include BOTH versions with their subject lines` : 
+  language === 'English' ? 
+  'Start with [Subject] line before the content.' :
+  '请在内容前添加[主题]行。'}
+`
+    : `Please help optimize this email content and generate appropriate subject line(s):
 
 ${content}
 
 ${language === 'both English and Chinese' ? `REMEMBER: 
-1. Start with [English] version
-2. Then provide [中文] version
-3. Include BOTH versions in your response` : ''}`;
+1. Start with [Subject] and [English] version
+2. Then provide [主题] and [中文] version
+3. Include BOTH versions with their subject lines` :
+  language === 'English' ? 
+  'Start with [Subject] line before the content.' :
+  '请在内容前添加[主题]行。'}`;
 
   const messages = [
     {
@@ -115,15 +131,34 @@ ${language === 'both English and Chinese' ? `REMEMBER:
 
   const response = await callOpenAI(messages);
 
-  // 验证响应是否包含双语内容
-  if (language === 'both English and Chinese' && (!response.includes('[English]') || !response.includes('[中文]'))) {
-    console.warn('Response missing required language sections:', response);
-    // 强制重新生成
-    return `[English]
+  // 验证响应是否包含必要的部分
+  if (language === 'both English and Chinese') {
+    if (!response.includes('[Subject]') || !response.includes('[主题]') || 
+        !response.includes('[English]') || !response.includes('[中文]')) {
+      console.warn('Response missing required sections:', response);
+      // 强制添加缺失的标签
+      return `[Subject]
+Re: ${content.substring(0, 50)}...
+
+[English]
 ${response}
+
+[主题]
+回复：${content.substring(0, 50)}...
 
 [中文]
 ${response}`;
+    }
+  } else {
+    const subjectTag = language === 'English' ? '[Subject]' : '[主题]';
+    if (!response.includes(subjectTag)) {
+      console.warn('Response missing subject line:', response);
+      // 强制添加主题行
+      return `${subjectTag}
+${language === 'English' ? 'Re: ' : '回复：'}${content.substring(0, 50)}...
+
+${response}`;
+    }
   }
 
   return response;
