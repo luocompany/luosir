@@ -157,8 +157,63 @@ export default function Home() {
                   }`} />
                 </button>
               </div>
-              <div className="prose prose-sm dark:prose-invert whitespace-pre-wrap h-[calc(100%-3rem)] overflow-y-auto">
-                {!isLoading && generatedContent}
+              <div 
+                className={`
+                  h-[calc(100%-3rem)] 
+                  overflow-y-auto 
+                  font-['.SFNSText-Regular','SF Pro Text','Helvetica Neue','Arial',sans-serif]
+                  text-[15px]
+                  leading-7
+                  tracking-[-0.003em]
+                  text-gray-800 
+                  dark:text-gray-200
+                  selection:bg-blue-500/20
+                  whitespace-pre-wrap
+                  px-1
+                `}
+                style={{
+                  WebkitFontSmoothing: 'antialiased',
+                  MozOsxFontSmoothing: 'grayscale',
+                }}
+              >
+                {!isLoading && generatedContent && (
+                  <div className="space-y-4">
+                    {generatedContent.split('\n\n').map((paragraph, index) => (
+                      <div key={index} className={`
+                        ${paragraph.startsWith('[Subject]') || paragraph.startsWith('[主题]') 
+                          ? 'text-base font-medium text-gray-900 dark:text-white tracking-tight' 
+                          : paragraph.startsWith('[English]') || paragraph.startsWith('[中文]')
+                            ? 'text-sm font-medium text-blue-500 dark:text-blue-400 border-b border-gray-100 dark:border-gray-800'
+                            : paragraph.trim().length === 0
+                              ? 'hidden'
+                              : 'text-[15px] leading-relaxed'
+                        }
+                        ${(paragraph.startsWith('[English]') || paragraph.startsWith('[中文]')) 
+                          ? 'mt-4 first:mt-0' 
+                          : ''
+                        }
+                        ${paragraph.includes('Dear') || paragraph.includes('尊敬的')
+                          ? 'text-[15px] font-normal mt-2'
+                          : ''
+                        }
+                      `}>
+                        {paragraph.startsWith('[') && paragraph.endsWith(']') 
+                          ? paragraph.slice(1, -1) // 移除方括号
+                          : paragraph
+                        }
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {isLoading && (
+                  <div className="flex items-center justify-center h-full text-gray-400">
+                    <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                    <span>Generating content...</span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
