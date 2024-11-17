@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LC App - AI 驱动的工具集
 
-## Getting Started
+基于 Next.js 和 AI 技术构建的生产力工具集合。目前包含邮件助手功能,更多工具持续开发中。
 
-First, run the development server:
+## 主要功能
+
+- 📧 邮件助手
+  - 智能优化邮件内容
+  - 支持中英双语
+  - 多种写作风格可选
+  - 邮件回复优化
+
+## 技术栈
+
+- Next.js 14
+- TypeScript
+- Tailwind CSS
+- xAI API
+
+## 开发环境
+
+需要:
+- Node.js 18+
+- npm/yarn/pnpm
+
+## 开始使用
+
+1. 克隆项目
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/yourusername/lc-app.git
+cd lc-app
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. 安装依赖
+```bash
+npm install
+# 或
+yarn
+# 或
+pnpm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. 配置环境变量
+```bash
+# .env.local
+XAI_API_KEY=your_api_key
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. 启动开发服务器
+```bash
+npm run dev
+# 或
+yarn dev
+# 或
+pnpm dev
+```
 
-## Learn More
+访问 [http://localhost:3000](http://localhost:3000)
 
-To learn more about Next.js, take a look at the following resources:
+## 部署
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+推荐使用 Vercel 部署:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/lc-app)
 
-## Deploy on Vercel
+## 开源协议
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+MIT
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 联系方式
+
+Email: hi@luosir.top
