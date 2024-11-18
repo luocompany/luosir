@@ -134,92 +134,9 @@ export default function Home() {
         </div>
       </nav>
       <div className="w-full max-w-6xl mx-auto px-6 py-10 mt-14">
-        <div className="flex gap-6">
-          {/* 左侧预览区 */}
-          <div className="w-1/2">
-            <div className="bg-[var(--card-bg)] shadow-sm border border-[var(--card-border)] rounded-xl p-6 h-[calc(100vh-12rem)]">
-              <div className="flex justify-end mb-4">
-                <button
-                  aria-label="Copy content"
-                  onClick={() => handleCopy(generatedContent)}
-                  className="relative p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-md transition-colors"
-                  disabled={!generatedContent || isLoading}
-                >
-                  {copySuccess ? (
-                    <span className="absolute -top-8 -left-2 bg-black/75 text-white text-xs py-1 px-2 rounded whitespace-nowrap">
-                      Copied!
-                    </span>
-                  ) : null}
-                  <Copy className={`w-4 h-4 ${
-                    !generatedContent || isLoading 
-                      ? 'text-gray-300 dark:text-gray-600' 
-                      : 'text-[var(--foreground)]'
-                  }`} />
-                </button>
-              </div>
-              <div 
-                className={`
-                  h-[calc(100%-3rem)] 
-                  overflow-y-auto 
-                  font-['.SFNSText-Regular','SF Pro Text','Helvetica Neue','Arial',sans-serif]
-                  text-[15px]
-                  leading-7
-                  tracking-[-0.003em]
-                  text-gray-800 
-                  dark:text-gray-200
-                  selection:bg-blue-500/20
-                  whitespace-pre-wrap
-                  px-1
-                `}
-                style={{
-                  WebkitFontSmoothing: 'antialiased',
-                  MozOsxFontSmoothing: 'grayscale',
-                }}
-              >
-                {!isLoading && generatedContent && (
-                  <div className="space-y-4">
-                    {generatedContent.split('\n\n').map((paragraph, index) => (
-                      <div key={index} className={`
-                        ${paragraph.startsWith('[Subject]') || paragraph.startsWith('[主题]') 
-                          ? 'text-base font-medium text-gray-900 dark:text-white tracking-tight' 
-                          : paragraph.startsWith('[English]') || paragraph.startsWith('[中文]')
-                            ? 'text-sm font-medium text-blue-500 dark:text-blue-400 border-b border-gray-100 dark:border-gray-800'
-                            : paragraph.trim().length === 0
-                              ? 'hidden'
-                              : 'text-[15px] leading-relaxed'
-                        }
-                        ${(paragraph.startsWith('[English]') || paragraph.startsWith('[中文]')) 
-                          ? 'mt-4 first:mt-0' 
-                          : ''
-                        }
-                        ${paragraph.includes('Dear') || paragraph.includes('尊敬的')
-                          ? 'text-[15px] font-normal mt-2'
-                          : ''
-                        }
-                      `}>
-                        {paragraph.startsWith('[') && paragraph.endsWith(']') 
-                          ? paragraph.slice(1, -1) // 移除方括号
-                          : paragraph
-                        }
-                      </div>
-                    ))}
-                  </div>
-                )}
-                {isLoading && (
-                  <div className="flex items-center justify-center h-full text-gray-400">
-                    <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                    </svg>
-                    <span>Generating content...</span>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* 右侧控制区 */}
-          <div className="w-1/2">
+        <div className="flex flex-col md:flex-row gap-6">
+          {/* 控制区 */}
+          <div className="w-full md:w-1/2 order-1">
             <div className="flex justify-center gap-3 mb-6">
               <button 
                 onClick={() => setActiveTab('mail')}
@@ -256,7 +173,7 @@ export default function Home() {
                       value={userInput.mail}
                       onChange={(e) => setUserInput({ ...userInput, mail: e.target.value })}
                       placeholder="请在这里输入邮件内容... / Type your email content here..."
-                      className="w-full h-[300px] p-4 rounded-xl bg-gray-50/50 dark:bg-gray-900/50 border border-gray-200/50 dark:border-gray-800/50 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 focus:outline-none transition-all resize-y text-sm font-['.SFNSText-Regular', 'SF Pro Text', 'SF Pro Icons', 'Helvetica Neue', 'Arial', sans-serif] placeholder:text-gray-400/80"
+                      className="w-full h-[200px] md:h-[300px] p-4 rounded-xl bg-gray-50/50 dark:bg-gray-900/50 border border-gray-200/50 dark:border-gray-800/50 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 focus:outline-none transition-all resize-y text-sm font-['.SFNSText-Regular', 'SF Pro Text', 'SF Pro Icons', 'Helvetica Neue', 'Arial', sans-serif] placeholder:text-gray-400/80"
                     />
                   </div>
 
@@ -364,6 +281,89 @@ export default function Home() {
                   </button>
                 </div>
               )}
+            </div>
+          </div>
+
+          {/* 预览区 */}
+          <div className="w-full md:w-1/2 order-2 md:order-1">
+            <div className="bg-[var(--card-bg)] shadow-sm border border-[var(--card-border)] rounded-xl p-6 min-h-[200px] max-h-[80vh] overflow-y-auto">
+              <div className="flex justify-end mb-4">
+                <button
+                  aria-label="Copy content"
+                  onClick={() => handleCopy(generatedContent)}
+                  className="relative p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-md transition-colors"
+                  disabled={!generatedContent || isLoading}
+                >
+                  {copySuccess ? (
+                    <span className="absolute -top-8 -left-2 bg-black/75 text-white text-xs py-1 px-2 rounded whitespace-nowrap">
+                      Copied!
+                    </span>
+                  ) : null}
+                  <Copy className={`w-4 h-4 ${
+                    !generatedContent || isLoading 
+                      ? 'text-gray-300 dark:text-gray-600' 
+                      : 'text-[var(--foreground)]'
+                  }`} />
+                </button>
+              </div>
+              <div 
+                className={`
+                  h-[calc(100%-3rem)] 
+                  overflow-y-auto 
+                  font-['.SFNSText-Regular','SF Pro Text','Helvetica Neue','Arial',sans-serif]
+                  text-[15px]
+                  leading-7
+                  tracking-[-0.003em]
+                  text-gray-800 
+                  dark:text-gray-200
+                  selection:bg-blue-500/20
+                  whitespace-pre-wrap
+                  px-1
+                `}
+                style={{
+                  WebkitFontSmoothing: 'antialiased',
+                  MozOsxFontSmoothing: 'grayscale',
+                }}
+              >
+                {!isLoading && generatedContent && (
+                  <div className="space-y-4">
+                    {generatedContent.split('\n\n').map((paragraph, index) => (
+                      <div key={index} className={`
+                        ${paragraph.startsWith('[Subject]') || paragraph.startsWith('[主题]') 
+                          ? 'text-base font-medium text-gray-900 dark:text-white tracking-tight' 
+                          : paragraph.startsWith('[English]') || paragraph.startsWith('[中文]')
+                            ? 'text-sm font-medium text-blue-500 dark:text-blue-400 border-b border-gray-100 dark:border-gray-800'
+                            : paragraph.trim().length === 0
+                              ? 'hidden'
+                              : 'text-[15px] leading-relaxed'
+                        }
+                        ${(paragraph.startsWith('[English]') || paragraph.startsWith('[中文]')) 
+                          ? 'mt-4 first:mt-0' 
+                          : ''
+                        }
+                        ${paragraph.includes('Dear') || paragraph.includes('尊敬的')
+                          ? 'text-[15px] font-normal mt-2'
+                          : ''
+                        }
+                      `}>
+                        {paragraph.startsWith('[') && paragraph.endsWith(']') 
+                          ? paragraph.slice(1, -1) // 移除方括号
+                          : paragraph
+                        }
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {isLoading && (
+                  <div className="flex items-center justify-center h-full text-gray-400">
+                    <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                    <span>Generating content...</span>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
