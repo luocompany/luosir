@@ -252,7 +252,7 @@ export default function Home() {
                   <button 
                     onClick={handleGenerate}
                     disabled={isLoading || !userInput.mail?.trim()}
-                    className="w-full py-3 rounded-xl bg-blue-500 hover:bg-blue-600 active:bg-blue-700 disabled:bg-gray-300 dark:disabled:bg-gray-700 text-white text-sm font-medium transition-all shadow-lg shadow-blue-500/20 disabled:shadow-none"
+                    className="w-full py-3 rounded-xl bg-blue-500 hover:bg-blue-600 active:bg-blue-700 disabled:bg-blue-300 dark:disabled:bg-gray-700 text-white text-sm font-medium transition-all shadow-lg shadow-blue-500/20 disabled:shadow-none"
                   >
                     {isLoading ? (
                       <span className="flex items-center justify-center space-x-2">
