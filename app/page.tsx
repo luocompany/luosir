@@ -41,7 +41,7 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-medium mb-3">敬请期待</h3>
+                <h2 className="text-xl font-medium mb-3">敬请期待</h2>
                 <p className="text-[var(--foreground)]/60">
                   更多AI工具正在开发中...
                 </p>
