@@ -19,7 +19,7 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-medium mb-3">Email Assistant</h3>
+                <h2 className="text-xl font-medium mb-3">Email Assistant</h2>
                 <p className="text-[var(--foreground)]/60 mb-6">
                   AI驱动的邮件写作助手，让您的沟通更专业高效
                 </p>
