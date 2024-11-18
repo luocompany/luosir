@@ -1,5 +1,6 @@
 "use client";
 
+import Navbar from '../components/Navbar';
 import Image from "next/image";
 import { useState, type ChangeEvent, useEffect } from "react";
 import { Copy, ChevronDown } from "lucide-react";
@@ -128,22 +129,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-1 bg-[var(--background)]">
-      <nav className="fixed top-0 left-0 right-0 backdrop-blur-xl bg-white/70 dark:bg-black/70 border-b border-gray-200/50 dark:border-gray-800/50 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <div className="flex items-center">
-              <span className="text-xl font-semibold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
-                LC App
-              </span>
-            </div>
-            <div className="flex items-center space-x-8">
-              <a href="/" className="text-sm font-medium hover:text-blue-500 transition-colors">Home</a>
-              <a href="/mail" className="text-sm font-medium text-blue-500">Mail</a>
-              <a href="/tools" className="text-sm font-medium hover:text-blue-500 transition-colors">Tools</a>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
       <div className="w-full max-w-6xl mx-auto px-6 py-10 mt-14">
         <div className="flex flex-col md:flex-row gap-6">
           {/* 控制区 */}
@@ -252,7 +238,7 @@ export default function Home() {
                   <button 
                     onClick={handleGenerate}
                     disabled={isLoading || !userInput.mail?.trim()}
-                    className="w-full py-3 rounded-xl bg-blue-500 hover:bg-blue-600 active:bg-blue-700 disabled:bg-blue-300 dark:disabled:bg-gray-700 text-white text-sm font-medium transition-all shadow-lg shadow-blue-500/20 disabled:shadow-none"
+                    className="w-full py-3 rounded-xl bg-[var(--blue-accent)] text-white text-sm font-medium hover:opacity-90 transition-all disabled:opacity-50 shadow-sm"
                   >
                     {isLoading ? (
                       <span className="flex items-center justify-center space-x-2">

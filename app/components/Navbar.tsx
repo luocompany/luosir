@@ -11,7 +11,7 @@ export default function Navbar() {
       <div className="glass-effect bg-[var(--nav-bg)] border-b border-[var(--card-border)] shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex h-16 items-center justify-between">
-            <Link href="/" className="text-xl font-medium">
+            <Link href="/" className="text-xl font-medium text-[var(--foreground)]">
               LC App
             </Link>
             
