@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import-normalize;
+
 :root {
   --background: #ffffff;
   --foreground: #1d1d1f;
@@ -24,6 +26,7 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
 }
 
 @layer base {
@@ -43,4 +46,16 @@ body {
 
 .button-secondary {
   @apply bg-gray-50 text-gray-900 rounded-xl hover:bg-gray-100 transition-all shadow-sm;
+}
+
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 12px;
+  }
 }
