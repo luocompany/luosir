@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState, type ChangeEvent } from "react";
+import { useState, type ChangeEvent, useEffect } from "react";
 import { Copy, ChevronDown } from "lucide-react";
 
 export default function Home() {
@@ -114,6 +114,17 @@ export default function Home() {
       console.error('Failed to copy:', err);
     }
   };
+
+  useEffect(() => {
+    if (!isLoading && generatedContent) {
+      const previewBox = document.querySelector('.preview-box') as HTMLElement;
+      if (previewBox) {
+        previewBox.style.height = 'auto'; // 先重置高度
+        const contentHeight = previewBox.scrollHeight;
+        previewBox.style.height = `${contentHeight}px`; // 设置为内容的高度
+      }
+    }
+  }, [generatedContent, isLoading]);
 
   return (
     <div className="flex flex-1 bg-[var(--background)]">
