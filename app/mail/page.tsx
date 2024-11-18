@@ -286,7 +286,7 @@ export default function Home() {
 
           {/* 预览区 */}
           <div className="w-full md:w-1/2 order-2 md:order-1">
-            <div className="bg-[var(--card-bg)] shadow-sm border border-[var(--card-border)] rounded-xl p-6 min-h-[200px] max-h-[80vh] overflow-y-auto" style={{ height: '710px' }}>
+            <div className="bg-[var(--card-bg)] shadow-sm border border-[var(--card-border)] rounded-xl p-6 min-h-[200px] max-h-[80vh] overflow-y-auto preview-box">
               <div className="flex justify-end mb-4">
                 <button
                   aria-label="Copy content"
@@ -373,6 +373,18 @@ export default function Home() {
           </div>
         )}
       </div>
+      <style jsx>{`
+        .preview-box {
+          height: 710px;
+        }
+
+        @media (max-width: 768px) {
+          .preview-box {
+            height: auto;
+            min-height: 200px;
+          }
+        }
+      `}</style>
     </div>
   );
 }
