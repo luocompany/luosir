@@ -26,14 +26,14 @@ function WorldClock() {
   }, []);
 
   return (
-    <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-8">
-      <h3 className="text-xl font-medium mb-3">World Clock</h3>
+    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-8">
+      <h3 className="text-xl font-medium mb-3 text-white">World Clock</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {cities.map(city => (
-          <div key={city.name} className="bg-white p-4 rounded-lg shadow-md text-center">
-            <h4 className="text-lg font-medium">{city.name}</h4>
-            <p className="text-3xl font-bold">{times[city.name]}</p>
-            <p className="text-[var(--foreground)]/60">{city.label}</p>
+          <div key={city.name} className="bg-gray-900 p-4 rounded-lg shadow-md text-center">
+            <h4 className="text-lg font-medium text-white">{city.name}</h4>
+            <p className="text-3xl font-bold text-white">{times[city.name]}</p>
+            <p className="text-gray-400">{city.label}</p>
           </div>
         ))}
       </div>
