@@ -14,8 +14,13 @@ function WorldClock() {
     const updateTimes = () => {
       const newTimes = {};
       cities.forEach(city => {
-        const date = new Date().toLocaleString('en-US', { timeZone: city.timezone });
-        newTimes[city.name] = new Date(date).toLocaleTimeString();
+        const date = new Date().toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+          timeZone: city.timezone
+        });
+        newTimes[city.name] = date;
       });
       setTimes(newTimes);
     };
