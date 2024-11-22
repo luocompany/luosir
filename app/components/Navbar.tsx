@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -11,8 +12,9 @@ export default function Navbar() {
       <div className="glass-effect bg-[var(--nav-bg)] border-b border-[var(--card-border)] shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex h-16 items-center justify-between">
-            <Link href="/" className="text-xl font-medium text-[var(--foreground)]">
-              LC App
+            <Link href="/" className="flex items-center">
+              <Image src="/logo.png" alt="LC Logo" width={40} height={40} />
+              <span className="text-xl font-medium text-[var(--foreground)] ml-2">LC App</span>
             </Link>
             
             <div className="flex space-x-8">
