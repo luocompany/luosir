@@ -88,145 +88,84 @@
   transform: translateY(-1px);
 }
 
+.range-input-wrapper {
+  position: relative;
+  width: 100%;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  padding-top: 24px;
+}
+
 .range-input {
   -webkit-appearance: none;
   appearance: none;
+  width: 100%;
+  height: 4px;
   background: transparent;
   cursor: pointer;
-  height: 44px;
-  padding: 0;
   margin: 0;
+  position: relative;
+  z-index: 2;
 }
 
 .range-input::-webkit-slider-runnable-track {
-  height: 6px;
-  background: linear-gradient(
-    to right,
-    rgb(209 213 219 / 0.8),
-    rgb(209 213 219 / 0.8)
-  );
-  border-radius: 3px;
-  transition: all 0.2s ease;
-}
-
-.range-input::-moz-range-track {
-  height: 6px;
-  background: linear-gradient(
-    to right,
-    rgb(209 213 219 / 0.8),
-    rgb(209 213 219 / 0.8)
-  );
-  border-radius: 3px;
-  transition: all 0.2s ease;
+  width: 100%;
+  height: 4px;
+  background: rgba(209, 213, 219, 0.5);
+  border-radius: 2px;
 }
 
 .range-input::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 28px;
-  height: 28px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background: #ffffff;
-  border: none;
-  box-shadow: 0 0 1px rgba(0,0,0,0.1),
-              0 2px 4px rgba(0,0,0,0.1),
-              0 4px 8px rgba(0,0,0,0.1),
-              0 8px 16px rgba(0,0,0,0.1);
-  margin-top: -11px;
+  border: 1px solid rgba(209, 213, 219, 0.8);
+  margin-top: -8px;
   cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.range-input::-moz-range-thumb {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: #ffffff;
-  border: none;
-  box-shadow: 0 0 1px rgba(0,0,0,0.1),
-              0 2px 4px rgba(0,0,0,0.1),
-              0 4px 8px rgba(0,0,0,0.1),
-              0 8px 16px rgba(0,0,0,0.1);
-  cursor: pointer;
-  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05),
+              0 4px 6px rgba(0, 0, 0, 0.05);
+  position: relative;
+  z-index: 2;
+  transition: transform 0.2s ease;
 }
 
 .range-input::-webkit-slider-thumb:hover {
   transform: scale(1.1);
-  box-shadow: 0 0 1px rgba(0,0,0,0.1),
-              0 4px 8px rgba(0,0,0,0.1),
-              0 8px 16px rgba(0,0,0,0.1),
-              0 16px 32px rgba(0,0,0,0.1);
 }
 
-.range-input::-moz-range-thumb:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 1px rgba(0,0,0,0.1),
-              0 4px 8px rgba(0,0,0,0.1),
-              0 8px 16px rgba(0,0,0,0.1),
-              0 16px 32px rgba(0,0,0,0.1);
-}
-
-.range-input:active::-webkit-slider-thumb {
-  transform: scale(1.15);
-  box-shadow: 0 0 1px rgba(0,0,0,0.1),
-              0 8px 16px rgba(0,0,0,0.1),
-              0 16px 32px rgba(0,0,0,0.1),
-              0 32px 64px rgba(0,0,0,0.1);
-}
-
-.range-input:active::-moz-range-thumb {
-  transform: scale(1.15);
-  box-shadow: 0 0 1px rgba(0,0,0,0.1),
-              0 8px 16px rgba(0,0,0,0.1),
-              0 16px 32px rgba(0,0,0,0.1),
-              0 32px 64px rgba(0,0,0,0.1);
+.range-value-bubble {
+  position: absolute;
+  top: 0;
+  left: calc(((var(--value) - -365) / (365 - -365)) * 100%);
+  transform: translateX(-50%);
+  background: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #374151;
+  pointer-events: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(209, 213, 219, 0.8);
+  transition: all 0.2s ease;
 }
 
 @media (prefers-color-scheme: dark) {
-  .range-input::-webkit-slider-runnable-track {
-    background: linear-gradient(
-      to right,
-      rgb(55 65 81 / 0.8),
-      rgb(55 65 81 / 0.8)
-    );
-  }
-
-  .range-input::-moz-range-track {
-    background: linear-gradient(
-      to right,
-      rgb(55 65 81 / 0.8),
-      rgb(55 65 81 / 0.8)
-    );
-  }
-
   .range-input::-webkit-slider-thumb {
-    background: #2a2a2a;
-    box-shadow: 0 0 1px rgba(255,255,255,0.1),
-                0 2px 4px rgba(0,0,0,0.5),
-                0 4px 8px rgba(0,0,0,0.5),
-                0 8px 16px rgba(0,0,0,0.5);
+    background: #111827;
+    border-color: rgba(209, 213, 219, 0.2);
   }
 
-  .range-input::-moz-range-thumb {
-    background: #2a2a2a;
-    box-shadow: 0 0 1px rgba(255,255,255,0.1),
-                0 2px 4px rgba(0,0,0,0.5),
-                0 4px 8px rgba(0,0,0,0.5),
-                0 8px 16px rgba(0,0,0,0.5);
+  .range-value-bubble {
+    background: #1f2937;
+    color: #e5e7eb;
+    border-color: rgba(209, 213, 219, 0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
-}
-
-.range-input::-moz-focus-outer {
-  border: 0;
-}
-
-.range-input::-webkit-slider-thumb {
-  z-index: 2;
-}
-
-.range-input::-moz-range-thumb {
-  z-index: 2;
 }
 
 input[type="number"] {
@@ -242,4 +181,78 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .range-input::-moz-focus-outer {
   border: 0;
+}
+
+/* 添加滑块上的天数显示 */
+.range-input-wrapper {
+  position: relative;
+}
+
+/* 为滑块添加天数显示 */
+.range-input::-webkit-slider-thumb::before {
+  content: attr(data-value);
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #374151;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.range-input:hover::-webkit-slider-thumb::before {
+  opacity: 1;
+}
+
+/* 使用绝对定位的标签来显示天数 */
+.range-value-tooltip {
+  position: absolute;
+  top: 0;
+  left: var(--value-position);
+  transform: translateX(-50%) translateY(-24px);
+  background: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #374151;
+  pointer-events: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+@media (prefers-color-scheme: dark) {
+  .range-value-tooltip {
+    background: #1f2937;
+    color: #e5e7eb;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* 添加一个覆盖层来显示数字 */
+.range-thumb-value {
+  position: absolute;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #374151;
+  font-size: 12px;
+  font-weight: 500;
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .range-thumb-value {
+    color: #e5e7eb;
+  }
 } 

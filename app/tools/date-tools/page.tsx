@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import Footer from '../../components/Footer';
 import { ArrowLeft } from 'lucide-react';
@@ -70,6 +70,43 @@ export default function DateTools() {
     });
   };
 
+  const rangeRef = useRef<HTMLInputElement>(null);
+  const [thumbPosition, setThumbPosition] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const range = rangeRef.current;
+    if (!range) return;
+
+    const updateThumbPosition = () => {
+      const rangeRect = range.getBoundingClientRect();
+      const value = parseInt(days || '0');
+      const min = -365;
+      const max = 365;
+      const percent = (value - min) / (max - min);
+      
+      // 计算滑块中心位置
+      const x = percent * rangeRect.width;
+      const y = rangeRect.height / 2;
+      
+      setThumbPosition({ x, y });
+    };
+
+    // 创建 ResizeObserver 来监听尺寸变化
+    const resizeObserver = new ResizeObserver(updateThumbPosition);
+    resizeObserver.observe(range);
+
+    // 监听值变化
+    range.addEventListener('input', updateThumbPosition);
+    
+    // 初始更新
+    updateThumbPosition();
+
+    return () => {
+      resizeObserver.disconnect();
+      range.removeEventListener('input', updateThumbPosition);
+    };
+  }, [days]);
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50/90 via-white/60 to-gray-100/90 dark:from-gray-900 dark:via-gray-900/80 dark:to-gray-800">
       <main className="flex-1 px-4 py-6 sm:px-6 sm:py-10">
@@ -122,8 +159,8 @@ export default function DateTools() {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-100/80 dark:bg-gray-700/50 backdrop-blur-xl">
-                    <span className="text-gray-500 dark:text-gray-400 text-lg font-medium">-</span>
+                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                    <span className="text-gray-600 dark:text-gray-300 text-lg font-medium">-</span>
                   </div>
 
                   <div className="relative flex-1">
@@ -158,7 +195,7 @@ export default function DateTools() {
                 {diffDays !== null && (
                   <div className="mt-6 p-6 rounded-2xl bg-gradient-to-r from-blue-50/90 to-blue-50/50 dark:from-blue-900/30 dark:to-blue-900/10 backdrop-blur-xl border border-blue-100/80 dark:border-blue-800/30">
                     <div className="flex items-center justify-center gap-3">
-                      <span className="text-gray-600 dark:text-gray-300 text-lg">计算结��：相差</span>
+                      <span className="text-gray-600 dark:text-gray-300 text-lg">计算结</span>
                       <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 dark:from-blue-400 dark:to-blue-300 bg-clip-text text-transparent">
                         {diffDays}
                       </span>
@@ -200,6 +237,10 @@ export default function DateTools() {
                     </div>
                   </div>
 
+                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                    <span className="text-gray-600 dark:text-gray-300 text-lg font-medium">+</span>
+                  </div>
+
                   <div className="relative w-32">
                     <div className="relative">
                       <input
@@ -225,7 +266,28 @@ export default function DateTools() {
                 </div>
 
                 <div className="space-y-4 bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl p-4 backdrop-blur-sm border border-gray-200/30 dark:border-gray-700/30">
-                  <div className="flex items-center justify-between px-2">
+                  <div className="relative px-2">
+                    <div 
+                      className="range-input-wrapper"
+                      style={{ '--value': days } as React.CSSProperties}
+                    >
+                      <input
+                        id="daysRange"
+                        type="range"
+                        min="-365"
+                        max="365"
+                        step="1"
+                        value={days}
+                        onChange={(e) => setDays(e.target.value)}
+                        className="range-input"
+                      />
+                      <div className="range-value-display">
+                        <div className="range-value-bubble">{days}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between px-2 mt-4">
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => handleDaysChange(-30)}
@@ -274,22 +336,6 @@ export default function DateTools() {
                         +1月
                       </button>
                     </div>
-                  </div>
-
-                  <div className="relative px-2">
-                    <input
-                      id="daysRange"
-                      type="range"
-                      min="-365"
-                      max="365"
-                      step="1"
-                      value={days}
-                      onChange={(e) => setDays(e.target.value)}
-                      className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer 
-                        accent-blue-500 dark:accent-blue-400
-                        focus:outline-none focus:ring-2 focus:ring-blue-500/30
-                        range-input"
-                    />
                   </div>
                 </div>
               </div>
