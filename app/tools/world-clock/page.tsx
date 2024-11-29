@@ -2,8 +2,19 @@
 
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import WorldClock from '../../components/WorldClock';
+import dynamic from 'next/dynamic';
+import { Suspense } from 'react';
 import Footer from '../../components/Footer';
+
+// 动态导入 WorldClock 组件
+const WorldClock = dynamic(() => import('../../components/WorldClock'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex justify-center items-center min-h-[400px]">
+      <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900 dark:border-gray-100"></div>
+    </div>
+  )
+});
 
 export default function WorldClockPage() {
   return (
@@ -22,7 +33,13 @@ export default function WorldClockPage() {
         </div>
 
         <div className="bg-white/80 dark:bg-gray-800/90 backdrop-blur-sm rounded-3xl shadow-xl">
-          <WorldClock />
+          <Suspense fallback={
+            <div className="flex justify-center items-center min-h-[400px]">
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900 dark:border-gray-100"></div>
+            </div>
+          }>
+            <WorldClock />
+          </Suspense>
         </div>
       </main>
       <Footer />
