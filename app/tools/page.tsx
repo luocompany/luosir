@@ -16,48 +16,63 @@ export default function Tools() {
               <h2 className="text-2xl font-bold mb-6">实用工具</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 <Link href="/tools/date-tools" 
-                  className="p-4 rounded-lg border border-gray-200 hover:border-gray-300 
-                    transition-colors duration-200 flex items-center space-x-3">
+                  className="p-4 rounded-lg border border-gray-200 dark:border-gray-700/50 
+                    hover:border-gray-300 dark:hover:border-gray-600
+                    transition-colors duration-200 flex items-center space-x-3
+                    bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm
+                    hover:bg-gray-50/80 dark:hover:bg-gray-700/50">
                   <span className="text-xl">📅</span>
                   <div>
-                    <h3 className="font-medium">日期计算器</h3>
-                    <p className="text-sm text-gray-500">日期差值计算与推算</p>
+                    <h3 className="font-medium text-gray-900 dark:text-gray-100">日期计算器</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">日期差值计算与推算</p>
                   </div>
                 </Link>
                 <Link href="/tools/number-to-english" 
-                  className="p-4 rounded-lg border border-gray-200 hover:border-gray-300 
-                    transition-colors duration-200 flex items-center space-x-3">
+                  className="p-4 rounded-lg border border-gray-200 dark:border-gray-700/50 
+                    hover:border-gray-300 dark:hover:border-gray-600
+                    transition-colors duration-200 flex items-center space-x-3
+                    bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm
+                    hover:bg-gray-50/80 dark:hover:bg-gray-700/50">
                   <span className="text-xl">💰</span>
                   <div>
-                    <h3 className="font-medium">数字转英文</h3>
-                    <p className="text-sm text-gray-500">将数字转换为英文表达</p>
+                    <h3 className="font-medium text-gray-900 dark:text-gray-100">数字转英文</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">将数字转换为英文表达</p>
                   </div>
                 </Link>
                 <Link href="/tools/number-to-chinese" 
-                  className="p-4 rounded-lg border border-gray-200 hover:border-gray-300 
-                    transition-colors duration-200 flex items-center space-x-3">
+                  className="p-4 rounded-lg border border-gray-200 dark:border-gray-700/50 
+                    hover:border-gray-300 dark:hover:border-gray-600
+                    transition-colors duration-200 flex items-center space-x-3
+                    bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm
+                    hover:bg-gray-50/80 dark:hover:bg-gray-700/50">
                   <span className="text-xl">💴</span>
                   <div>
-                    <h3 className="font-medium">数字转中文</h3>
-                    <p className="text-sm text-gray-500">将数字转换为中文表达</p>
+                    <h3 className="font-medium text-gray-900 dark:text-gray-100">数字转中文</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">将数字转换为中文表达</p>
                   </div>
                 </Link>
                 <Link href="/tools/world-clock" 
-                  className="p-4 rounded-lg border border-gray-200 hover:border-gray-300 
-                    transition-colors duration-200 flex items-center space-x-3">
+                  className="p-4 rounded-lg border border-gray-200 dark:border-gray-700/50 
+                    hover:border-gray-300 dark:hover:border-gray-600
+                    transition-colors duration-200 flex items-center space-x-3
+                    bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm
+                    hover:bg-gray-50/80 dark:hover:bg-gray-700/50">
                   <span className="text-xl">🕒</span>
                   <div>
-                    <h3 className="font-medium">世界时钟</h3>
-                    <p className="text-sm text-gray-500">查看世界各地的时间</p>
+                    <h3 className="font-medium text-gray-900 dark:text-gray-100">世界时钟</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">查看世界各地的时间</p>
                   </div>
                 </Link>
                 <Link href="/go" 
-                  className="p-4 rounded-lg border border-gray-200 hover:border-gray-300 
-                    transition-colors duration-200 flex items-center space-x-3">
+                  className="p-4 rounded-lg border border-gray-200 dark:border-gray-700/50 
+                    hover:border-gray-300 dark:hover:border-gray-600
+                    transition-colors duration-200 flex items-center space-x-3
+                    bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm
+                    hover:bg-gray-50/80 dark:hover:bg-gray-700/50">
                   <span className="text-xl">🔗</span>
                   <div>
-                    <h3 className="font-medium">LC 网址导航</h3>
-                    <p className="text-sm text-gray-500">超实用网站导航</p>
+                    <h3 className="font-medium text-gray-900 dark:text-gray-100">LC 网址导航</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">超实用网站导航</p>
                   </div>
                 </Link>
               </div>
