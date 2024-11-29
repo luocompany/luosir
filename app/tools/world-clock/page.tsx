@@ -24,7 +24,9 @@ export default function WorldClockPage() {
         <div className="flex items-center mb-4 sm:mb-8">
           <Link 
             href="/tools" 
-            className="inline-flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 transition-colors"
+            className="inline-flex items-center text-gray-700 hover:text-gray-900 hover:bg-gray-200/80 
+                       dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/80 
+                       px-3 py-2 rounded-lg transition-colors"
           >
             <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5 mr-1.5" />
             <span className="text-sm sm:text-base font-medium">返回</span>

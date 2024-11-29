@@ -170,11 +170,12 @@ export default function Home() {
 
                   {/* 语言选择 */}
                   <div className="space-y-2">
-                    <label className="text-sm text-gray-600 dark:text-gray-400">
+                    <label htmlFor="language-select" className="text-sm text-gray-600 dark:text-gray-400">
                       Output language
                     </label>
                     <div className="relative">
                       <select
+                        id="language-select"
                         value={userInput.language}
                         onChange={(e) => setUserInput({ ...userInput, language: e.target.value })}
                         className="w-full px-4 py-2.5 rounded-xl bg-gray-50/50 dark:bg-gray-900/50 border border-gray-200/50 dark:border-gray-800/50 focus:ring-1 focus:ring-[var(--blue-accent)] focus:outline-none transition-all text-sm font-medium appearance-none"
@@ -189,11 +190,12 @@ export default function Home() {
 
                   {/* 风格选择 */}
                   <div className="space-y-2">
-                    <label className="text-sm text-gray-600 dark:text-gray-400">
+                    <label htmlFor="style-select" className="text-sm text-gray-600 dark:text-gray-400">
                       Reply Tone
                     </label>
                     <div className="relative">
                       <select
+                        id="style-select"
                         value={mailType}
                         onChange={(e) => setMailType(e.target.value)}
                         className="w-full px-4 py-2.5 rounded-xl bg-gray-50/50 dark:bg-gray-900/50 border border-gray-200/50 dark:border-gray-800/50 focus:ring-1 focus:ring-[var(--blue-accent)] focus:outline-none transition-all text-sm font-medium appearance-none"
