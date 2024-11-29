@@ -60,53 +60,67 @@ export default function NumberToChinese() {
         </div>
         <div className="bg-[var(--card-bg)] rounded-2xl p-8 shadow-lg border border-[var(--card-border)] backdrop-blur-xl">
           <h1 className="text-2xl font-bold mb-6">人民币大写在线转换</h1>
-          <div className="mb-4">
-            <label className="block mb-2 text-[var(--foreground)]/70">小写金额：</label>
-            <div className="flex-1 relative">
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--foreground)]/40 text-lg">
-                #
+          <form className="space-y-6">
+            <div className="flex items-center justify-end mb-6">
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="realtime"
+                  checked={realtime}
+                  onChange={(e) => setRealtime(e.target.checked)}
+                  className="w-4 h-4 rounded-full border-[var(--border)] text-[var(--blue-accent)] focus:ring-[var(--blue-accent)]"
+                />
+                <label htmlFor="realtime" className="text-sm text-[var(--foreground)]/70">
+                  实时转换
+                </label>
               </div>
-              <input
-                type="text"
-                className="w-full pl-10 pr-4 py-4 text-lg font-mono tracking-wider border-2 border-[var(--blue-accent)] 
-                  bg-[var(--input-bg)] rounded-xl focus:ring-2 focus:ring-[var(--blue-accent)] focus:outline-none 
-                  transition-all placeholder:text-[var(--foreground)]/30 text-[var(--foreground)]"
-                placeholder="0.00"
-                value={lowerAmount}
-                onChange={(e) => setLowerAmount(e.target.value)}
-                inputMode="decimal"
-                style={{
-                  WebkitAppearance: 'none',
-                  MozAppearance: 'textfield'
-                }}
-              />
-              {lowerAmount && (
+            </div>
+
+            <div className="flex gap-4">
+              <div className="flex-1 relative">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--foreground)]/40 text-lg">
+                  #
+                </div>
+                <input
+                  type="text"
+                  className="w-full pl-10 pr-4 py-4 text-lg font-mono tracking-wider border-2 border-[var(--blue-accent)] 
+                    bg-[var(--input-bg)] rounded-xl focus:ring-2 focus:ring-[var(--blue-accent)] focus:outline-none 
+                    transition-all placeholder:text-[var(--foreground)]/30 text-[var(--foreground)]"
+                  placeholder="0.00"
+                  value={lowerAmount}
+                  onChange={(e) => setLowerAmount(e.target.value)}
+                  inputMode="decimal"
+                  style={{
+                    WebkitAppearance: 'none',
+                    MozAppearance: 'textfield'
+                  }}
+                />
+                {lowerAmount && (
+                  <button
+                    type="button"
+                    onClick={() => setLowerAmount('')}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--foreground)]/40 
+                      hover:text-[var(--foreground)]/60 transition-colors"
+                  >
+                    <XCircleIcon className="h-5 w-5" />
+                  </button>
+                )}
+              </div>
+              {!realtime && (
                 <button
                   type="button"
-                  onClick={() => setLowerAmount('')}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--foreground)]/40 
-                    hover:text-[var(--foreground)]/60 transition-colors"
+                  className="px-8 py-3 bg-[var(--blue-accent)] text-white rounded-xl hover:opacity-90
+                    transition-all duration-200 focus:outline-none focus:ring-2 
+                    focus:ring-[var(--blue-accent)] focus:ring-offset-2"
+                  onClick={() => convertToChinese(lowerAmount)}
                 >
-                  <XCircleIcon className="h-5 w-5" />
+                  转换
                 </button>
               )}
             </div>
-          </div>
-          <div className="flex items-center justify-end mb-6">
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id="realtime"
-                checked={realtime}
-                onChange={(e) => setRealtime(e.target.checked)}
-                className="w-4 h-4 rounded-full border-[var(--border)] text-[var(--blue-accent)] focus:ring-[var(--blue-accent)]"
-              />
-              <label htmlFor="realtime" className="text-sm text-[var(--foreground)]/70">
-                实时转换
-              </label>
-            </div>
-          </div>
-          <div className="mb-4 relative">
+          </form>
+
+          <div className="mt-8">
             <label className="block mb-2 text-[var(--foreground)]/70">转换为大写金额：</label>
             <div className="relative p-6 bg-[var(--input-bg)] rounded-xl min-h-[60px] backdrop-blur-sm border border-[var(--card-border)]">
               <button
@@ -121,32 +135,33 @@ export default function NumberToChinese() {
               </p>
             </div>
           </div>
-          {!realtime && (
-            <button
-              className="w-full px-8 py-3 bg-[var(--blue-accent)] text-white rounded-xl hover:opacity-90
-                transition-all duration-200 focus:outline-none focus:ring-2 
-                focus:ring-[var(--blue-accent)] focus:ring-offset-2"
-              onClick={() => convertToChinese(lowerAmount)}
-            >
-              转换为大写金额
-            </button>
-          )}
           <Link href="/tools/number-to-english" className="block mt-4 text-center text-[var(--blue-accent)] hover:opacity-80 transition-opacity">
             数字金额翻译为英文
           </Link>
-          <div className="mt-8">
-            <h2 className="text-lg font-medium mb-4">人民币金额用到的中文大写汉字如下：</h2>
-            <p className="text-[var(--foreground)]/70">零、壹、贰、叁、肆、伍、陆、柒、捌、玖、拾、佰、仟、万、亿。</p>
-            <h2 className="text-lg font-medium mt-6 mb-4">人民币大写规范详细介绍</h2>
-            <ol className="list-decimal pl-6 space-y-2 text-[var(--foreground)]/70">
-              <li>中文大写金额数字到“元”为止的，“元”之后，应写“整”（或“正”）字；在“角”和“分”之后，不写“整”（或“正”）字</li>
-              <li>中文大写金额数字前应标明“人民币”字样，大写金额数字应紧接人民币字样填写，不得留有空白。</li>
-              <li>阿拉伯数字中间有“0”时，中文大写应按汉语读法，金额数字构成的要素按要求进行书写。</li>
-              <li>阿拉伯数字前面有“0”时，中文大写金额前应写“零”字。</li>
-              <li>阿拉伯数字中间连续有几个“0”时，中文大写金额中间只写一个“零”字。</li>
-              <li>阿拉伯数字小数点后有“0”而整数部分不为“0”时，中文大写金额“元”后面应写“零”字。</li>
-              <li>阿拉伯数字小数点后有“0”而整数部分为“0”时，中文大写金额“元”后面不写“零”字。</li>
-            </ol>
+          <div className="mt-8 opacity-75">
+            <h2 className="text-base font-medium mb-3 text-[var(--foreground)]/80">人民币金额用到的中文大写汉字如下：</h2>
+            <p className="text-sm text-[var(--foreground)]/60">零、壹、贰、叁、肆、伍、陆、柒、捌、玖、拾、佰、仟、万、亿。</p>
+            
+            <h2 className="text-base font-medium mt-6 mb-3 text-[var(--foreground)]/80">人民币大写规范详细介绍</h2>
+            <div className="space-y-3 text-sm text-[var(--foreground)]/60">
+              <p>一、中文大写金额数字到"元"为止的，在"元"之后、应写"整"(或"正")字；在"角"和"分"之后，不写"整"(或"正")字。</p>
+              
+              <p>二、中文大写金额数字前应标明"人民币"字样，大写金额数字应紧接"人民币"字样填写，不得留有空白。大写金额数字前未印"人民币"字样的，应加填"人民币"三字，在票据和结算凭证大写金额栏内不得预印固定的"仟、佰、拾、万、仟、佰、拾、元、角、分"字样。</p>
+              
+              <div>
+                <p>三、阿拉伯数字小写金额数字中有"0"时，中文大写应按照汉语语言规律、金额数字构成和防止涂改的要求进行书写。举例如下：</p>
+                <ul className="list-decimal pl-5 mt-2 space-y-1.5">
+                  <li>阿拉伯数字中间有"0"时，中文大写要写"零"字，如￥1409.50应写成人民币壹仟肆佰零玖元伍角；</li>
+                  <li>阿拉伯数字中间连续有几个"0"时、中文大写金额中间可以只写一个"零"字，如￥6007.14应写成人民币陆仟零柒元壹角肆分。</li>
+                  <li>阿拉伯金额数字万位和元位是"0"，或者数字中间连续有几个"0"，万位、元位也是"0"但千位、角位不是"0"时，中文大写金额中可以只写一个零字，也可以不写"零"字，如￥1680.32应写成人民币壹仟陆佰捌拾元零叁角贰分，或者写成人民币壹仟陆佰捌拾元叁角贰分。又如￥107000.53应写成人民币壹拾万柒仟元零伍角叁分，或者写成人民币壹拾万零柒仟元伍角叁分。</li>
+                  <li>阿拉伯金额数字角位是"0"而分位不是"0"时，中文大写金额"元"后面应写"零"字，如￥16409.02应写成人民币壹万陆仟肆佰零玖元零贰分，又如￥325.04应写成人民币叁佰贰拾伍元零肆分。</li>
+                </ul>
+              </div>
+              
+              <p>四、阿拉伯小写金额数字前面均应填写人民币符号"￥"，阿拉伯小写金额数字要认真填写，不得连写分辨不清。</p>
+              
+              <p>五、票据的出票日期必须使用中文大写，为防止变造票据的出票日期，在填写月、日时、月为壹、贰和壹拾的，日为壹至玖和壹拾、贰拾和叁拾的，应在其前加"零"，日为拾壹至拾玖的应在其前加"壹"，如1月15日应写成零壹月壹拾伍日，再如10月20日应写成零壹拾月零贰拾日。</p>
+            </div>
           </div>
         </div>
       </main>
@@ -165,7 +180,7 @@ function numberToChinese(amount: string): string {
   
   // 处理整数部分
   if (integerPart) {
-    result += integerPart.startsWith('0') ? '：零' : '：';
+    result += integerPart.startsWith('0') ? '零' : '';
     
     // 按4位分组处理
     const groups = [];
