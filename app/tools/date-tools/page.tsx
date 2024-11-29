@@ -77,11 +77,15 @@ export default function DateTools() {
               <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">计算日期差值</h2>
               <div className="space-y-3 sm:space-y-4">
                 <div className="relative">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+                  <label 
+                    htmlFor="date1" 
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2"
+                  >
                     第一个日期
                   </label>
                   <div className="relative">
                     <input
+                      id="date1"
                       type="date"
                       value={date1}
                       onChange={(e) => setDate1(e.target.value)}
@@ -99,11 +103,15 @@ export default function DateTools() {
                 </div>
                 
                 <div className="relative">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+                  <label 
+                    htmlFor="date2" 
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2"
+                  >
                     第二个日期
                   </label>
                   <div className="relative">
                     <input
+                      id="date2"
                       type="date"
                       value={date2}
                       onChange={(e) => setDate2(e.target.value)}
@@ -135,11 +143,15 @@ export default function DateTools() {
               <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">日期推算</h2>
               <div className="space-y-3 sm:space-y-4">
                 <div className="relative">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+                  <label 
+                    htmlFor="baseDate" 
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2"
+                  >
                     起始日期
                   </label>
                   <div className="relative">
                     <input
+                      id="baseDate"
                       type="date"
                       value={baseDate}
                       onChange={(e) => setBaseDate(e.target.value)}
@@ -157,11 +169,15 @@ export default function DateTools() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+                  <label 
+                    htmlFor="daysRange" 
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2"
+                  >
                     天数: {days}天
                   </label>
                   <div className="flex items-center gap-3 sm:gap-4">
                     <input
+                      id="daysRange"
                       type="range"
                       min="-365"
                       max="365"
@@ -170,9 +186,11 @@ export default function DateTools() {
                       className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-500 hover:accent-blue-600 transition-all"
                     />
                     <input
+                      id="daysInput"
                       type="number"
                       value={days}
                       onChange={(e) => setDays(e.target.value)}
+                      aria-label="天数输入框"
                       className="w-20 sm:w-24 p-2 sm:p-3 rounded-lg sm:rounded-xl border border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all text-center hover:border-blue-500/50 text-sm sm:text-base"
                     />
                   </div>
