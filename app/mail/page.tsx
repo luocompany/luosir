@@ -193,47 +193,18 @@ export default function Home() {
                       Reply Tone
                     </label>
                     <div className="relative">
-                      <button 
-                        onClick={() => setIsStyleMenuOpen(!isStyleMenuOpen)}
-                        className="w-full px-4 py-2.5 rounded-xl bg-gray-50/50 dark:bg-gray-900/50 border border-gray-200/50 dark:border-gray-800/50 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 focus:ring-1 focus:ring-[var(--blue-accent)] focus:outline-none transition-all text-sm"
+                      <select
+                        value={mailType}
+                        onChange={(e) => setMailType(e.target.value)}
+                        className="w-full px-4 py-2.5 rounded-xl bg-gray-50/50 dark:bg-gray-900/50 border border-gray-200/50 dark:border-gray-800/50 focus:ring-1 focus:ring-[var(--blue-accent)] focus:outline-none transition-all text-sm font-medium appearance-none"
                       >
-                        <span className="flex items-center justify-between">
-                          <span className="flex items-center gap-2">
-                            <span className="text-base">{styles.find(s => s.value === mailType)?.icon}</span>
-                            <span className="font-medium">{styles.find(s => s.value === mailType)?.name}</span>
-                          </span>
-                          <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isStyleMenuOpen ? 'rotate-180' : ''}`} />
-                        </span>
-                      </button>
-                      
-                      {isStyleMenuOpen && (
-                        <div className="absolute z-10 w-full mt-1 py-1 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl shadow-lg backdrop-blur-xl backdrop-saturate-150 bg-opacity-90">
-                          {styles.map((style) => (
-                            <button
-                              key={style.value}
-                              onClick={() => {
-                                setMailType(style.value);
-                                setIsStyleMenuOpen(false);
-                              }}
-                              className={`w-full px-4 py-2.5 flex items-center gap-2 hover:bg-[var(--blue-accent)] hover:bg-opacity-10 transition-colors ${
-                                mailType === style.value 
-                                  ? 'text-[var(--blue-accent)]' 
-                                  : 'text-[var(--foreground)]'
-                              }`}
-                            >
-                              <span className="text-base">{style.icon}</span>
-                              <span className="text-sm font-medium">{style.name}</span>
-                              {mailType === style.value && (
-                                <span className="ml-auto text-[var(--blue-accent)]">
-                                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                    <path d="M13.3332 4L5.99984 11.3333L2.6665 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                  </svg>
-                                </span>
-                              )}
-                            </button>
-                          ))}
-                        </div>
-                      )}
+                        {styles.map((style) => (
+                          <option key={style.value} value={style.value}>
+                            {style.icon} {style.name}
+                          </option>
+                        ))}
+                      </select>
+                      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
                     </div>
                   </div>
 
