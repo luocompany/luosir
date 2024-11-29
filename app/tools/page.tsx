@@ -27,7 +27,7 @@ export default function Tools() {
                 <Link href="/tools/number-to-english" 
                   className="p-4 rounded-lg border border-gray-200 hover:border-gray-300 
                     transition-colors duration-200 flex items-center space-x-3">
-                  <span className="text-xl">🔗</span>
+                  <span className="text-xl">💰</span>
                   <div>
                     <h3 className="font-medium">数字转英文</h3>
                     <p className="text-sm text-gray-500">将数字转换为英文表达</p>
@@ -36,7 +36,7 @@ export default function Tools() {
                 <Link href="/tools/number-to-chinese" 
                   className="p-4 rounded-lg border border-gray-200 hover:border-gray-300 
                     transition-colors duration-200 flex items-center space-x-3">
-                  <span className="text-xl">🔢</span>
+                  <span className="text-xl">💴</span>
                   <div>
                     <h3 className="font-medium">数字转中文</h3>
                     <p className="text-sm text-gray-500">将数字转换为中文表达</p>
