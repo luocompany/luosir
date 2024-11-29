@@ -42,22 +42,13 @@ export default function Tools() {
                     <p className="text-sm text-gray-500">查看世界各地的时间</p>
                   </div>
                 </Link>
-                <Link href="/tools/date-diff" 
+                <Link href="/tools/date-tools" 
                   className="p-4 rounded-lg border border-gray-200 hover:border-gray-300 
                     transition-colors duration-200 flex items-center space-x-3">
                   <span className="text-xl">📅</span>
                   <div>
-                    <h3 className="font-medium">日期差值计算</h3>
-                    <p className="text-sm text-gray-500">计算两个日期之间的天数</p>
-                  </div>
-                </Link>
-                <Link href="/tools/date-calculator" 
-                  className="p-4 rounded-lg border border-gray-200 hover:border-gray-300 
-                    transition-colors duration-200 flex items-center space-x-3">
-                  <span className="text-xl">📆</span>
-                  <div>
-                    <h3 className="font-medium">日期推算</h3>
-                    <p className="text-sm text-gray-500">计算指定天数后的日期</p>
+                    <h3 className="font-medium">日期计算器</h3>
+                    <p className="text-sm text-gray-500">日期差值计算与推算</p>
                   </div>
                 </Link>
               </div>
