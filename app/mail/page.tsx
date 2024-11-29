@@ -1,6 +1,7 @@
 "use client";
 
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import Image from "next/image";
 import { useState, type ChangeEvent, useEffect } from "react";
 import { Copy, ChevronDown } from "lucide-react";
@@ -128,9 +129,9 @@ export default function Home() {
   }, [generatedContent, isLoading]);
 
   return (
-    <div className="flex flex-1 bg-[var(--background)]">
+    <div className="flex flex-1 flex-col bg-[var(--background)]">
       <Navbar />
-      <div className="w-full max-w-6xl mx-auto px-6 py-10 mt-14">
+      <div className="w-full max-w-6xl mx-auto px-6 py-10 mt-14 flex-grow">
         <div className="flex flex-col md:flex-row gap-6">
           {/* 控制区 */}
           <div className="w-full md:w-1/2 order-1">
@@ -370,6 +371,7 @@ export default function Home() {
           </div>
         )}
       </div>
+      <Footer />
       <style jsx>{`
         .preview-box {
           height: 710px;
