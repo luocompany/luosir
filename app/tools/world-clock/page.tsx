@@ -24,8 +24,9 @@ export default function WorldClockPage() {
         <div className="flex items-center mb-6">
           <Link 
             href="/tools" 
-            className="inline-flex items-center text-gray-600 hover:text-gray-900 
-                     dark:text-gray-400 dark:hover:text-gray-100 transition-colors"
+            className="inline-flex items-center text-gray-700 hover:text-gray-900 
+                     dark:text-gray-300 dark:hover:text-gray-100 transition-colors"
+            aria-label="返回工具列表"
           >
             <ArrowLeft className="h-4 w-4 mr-1.5" />
             <span className="text-sm font-medium">返回</span>
