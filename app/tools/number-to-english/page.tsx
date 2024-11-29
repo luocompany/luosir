@@ -29,16 +29,16 @@ const numberUtils = {
       if (n < 1000000) {
         const thousands = Math.floor(n / 1000);
         const remainder = n % 1000;
-        return convert(thousands) + ' thousand' + (remainder ? ' ' + convert(remainder) : '');
+        return convert(thousands) + ' thousand' + (remainder ? ', ' + convert(remainder) : '');
       }
       if (n < 1000000000) {
         const millions = Math.floor(n / 1000000);
         const remainder = n % 1000000;
-        return convert(millions) + ' million' + (remainder ? ' ' + convert(remainder) : '');
+        return convert(millions) + ' million' + (remainder ? ', ' + convert(remainder) : '');
       }
       const billions = Math.floor(n / 1000000000);
       const remainder = n % 1000000000;
-      return convert(billions) + ' billion' + (remainder ? ' ' + convert(remainder) : '');
+      return convert(billions) + ' billion' + (remainder ? ', ' + convert(remainder) : '');
     };
 
     return convert(num);
@@ -99,15 +99,15 @@ const ResultDisplay = ({ result, onCopy, copied }: {
     
     <p className="text-[var(--foreground)] leading-relaxed">
       {!result ? '等待输入...' : (
-        typeof result === 'string' ? result : (
+        typeof result === 'string' ? <strong>{result}</strong> : (
           <span>
-            {result.integer}
+            <strong>{result.integer}</strong>
             {result.hasDecimal && (
               <>
                 {' '}
                 <span className="text-red-500">AND</span>
                 {' '}
-                {result.decimal}
+                <strong>{result.decimal}</strong>
               </>
             )}
           </span>
