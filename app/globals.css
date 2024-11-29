@@ -59,3 +59,14 @@ body {
     font-size: 12px;
   }
 }
+
+/* 日期选择器暗黑模式适配 */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.5);
+}
+
+@media (prefers-color-scheme: dark) {
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
+}
