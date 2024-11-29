@@ -1,0 +1,166 @@
+.custom-date-input {
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color-scheme: light dark;
+  font-size: 16px;
+  backdrop-filter: blur(8px);
+}
+
+.custom-date-input::-webkit-calendar-picker-indicator {
+  background: transparent;
+  bottom: 0;
+  color: transparent;
+  cursor: pointer;
+  height: auto;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: auto;
+  opacity: 0;
+}
+
+.custom-date-input::-webkit-datetime-edit-text {
+  display: none;
+}
+
+.custom-date-input::-webkit-datetime-edit-year-field,
+.custom-date-input::-webkit-datetime-edit-month-field,
+.custom-date-input::-webkit-datetime-edit-day-field {
+  padding: 0 2px;
+  color: transparent;
+}
+
+.custom-date-input:not([value=""])::-webkit-datetime-edit-year-field,
+.custom-date-input:not([value=""])::-webkit-datetime-edit-month-field,
+.custom-date-input:not([value=""])::-webkit-datetime-edit-day-field {
+  color: inherit;
+}
+
+.custom-date-input:not([value=""])::-webkit-datetime-edit-text {
+  display: inline-block;
+  padding: 0 2px;
+  color: inherit;
+  content: "-";
+}
+
+.date-input-wrapper {
+  position: relative;
+  width: 100%;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.date-placeholder {
+  position: absolute;
+  left: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9CA3AF;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.2s ease;
+  z-index: 1;
+}
+
+.custom-date-input:not([value=""]) + .date-placeholder {
+  opacity: 0;
+}
+
+.custom-date-input:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.05);
+}
+
+.custom-date-input:focus {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.15);
+}
+
+.dark .custom-date-input:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.dark .custom-date-input:focus {
+  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.15);
+}
+
+.date-input-wrapper:hover {
+  transform: translateY(-1px);
+}
+
+.slider-input {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  width: 100%;
+  background: transparent;
+  cursor: pointer;
+}
+
+.slider-input::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 8px;
+  background: linear-gradient(
+    to right,
+    rgb(59 130 246 / 0.2) 0%,
+    rgb(59 130 246 / 0.2) 50%,
+    rgb(59 130 246 / 0.2) 100%
+  );
+  border-radius: 999px;
+  border: 2px solid rgb(59 130 246 / 0.3);
+}
+
+.slider-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid rgb(59 130 246);
+  margin-top: -8px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.slider-input::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.25);
+}
+
+.slider-input:active::-webkit-slider-thumb {
+  transform: scale(1.15);
+  background: rgb(59 130 246);
+  border-color: rgb(59 130 246);
+}
+
+.dark .slider-input::-webkit-slider-runnable-track {
+  background: linear-gradient(
+    to right,
+    rgb(59 130 246 / 0.3) 0%,
+    rgb(59 130 246 / 0.3) 50%,
+    rgb(59 130 246 / 0.3) 100%
+  );
+  border-color: rgb(59 130 246 / 0.4);
+}
+
+.dark .slider-input::-webkit-slider-thumb {
+  background: rgb(31 41 55);
+  border-color: rgb(59 130 246);
+}
+
+.dark .slider-input:active::-webkit-slider-thumb {
+  background: rgb(59 130 246);
+}
+
+input[type="number"] {
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+} 
