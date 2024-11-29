@@ -21,15 +21,13 @@ export default function WorldClockPage() {
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 via-gray-50 to-purple-50 
                     dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <main className="flex-1 container mx-auto px-4 py-8 max-w-6xl">
-        <div className="flex items-center mb-6">
+        <div className="flex items-center mb-4 sm:mb-8">
           <Link 
             href="/tools" 
-            className="inline-flex items-center text-gray-700 hover:text-gray-900 
-                     dark:text-gray-300 dark:hover:text-gray-100 transition-colors"
-            aria-label="返回工具列表"
+            className="inline-flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 transition-colors"
           >
-            <ArrowLeft className="h-4 w-4 mr-1.5" />
-            <span className="text-sm font-medium">返回</span>
+            <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5 mr-1.5" />
+            <span className="text-sm sm:text-base font-medium">返回</span>
           </Link>
         </div>
 
