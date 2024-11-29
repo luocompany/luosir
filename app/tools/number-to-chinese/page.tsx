@@ -212,8 +212,6 @@ function numberToChinese(amount: string): string {
   
   // 处理整数部分
   if (integerPart) {
-    result += integerPart.startsWith('0') ? '零' : '';
-    
     // 按4位分组处理
     const groups = [];
     let temp = integerPart;
@@ -231,7 +229,6 @@ function numberToChinese(amount: string): string {
         const digit = parseInt(digits[i]);
         
         if (digit === 0) {
-          // 只在当前组内后面还有非零数字时才添加零
           if (groupResult && !groupResult.endsWith('零') && 
               digits.slice(i + 1).some(d => d !== '0')) {
             groupResult += '零';
@@ -241,14 +238,12 @@ function numberToChinese(amount: string): string {
         }
       }
       
-      // 移除末尾的零
       return groupResult.replace(/零+$/, '');
     };
     
     // 组合所有分组
     let finalResult = '';
-    let hasValue = false;  // 是否有值
-    let needZero = false;  // 是否需要补零
+    let hasValue = false;
     
     for (let i = 0; i < groups.length; i++) {
       const group = groups[i];
@@ -257,31 +252,26 @@ function numberToChinese(amount: string): string {
       
       if (groupValue) {
         // 当前组有值
-        if (needZero && !groupValue.startsWith('零')) {
+        if (hasValue && !groupValue.startsWith('零') && 
+            !finalResult.endsWith('亿') && !finalResult.endsWith('万')) {
           finalResult += '零';
         }
         finalResult += groupValue + bigUnit;
         hasValue = true;
-        needZero = true;
       } else {
         // 当前组全为零
         if (hasValue && bigUnit === '亿') {
           finalResult += bigUnit;
-          needZero = true;
         } else if (hasValue && bigUnit === '万' && 
-                   !finalResult.endsWith('亿') && 
-                   !finalResult.endsWith('万')) {
+                   groups.slice(i + 1).some(g => g !== '0000')) {
           finalResult += bigUnit;
-          needZero = true;
-        } else {
-          needZero = false;
         }
       }
     }
     
     result += finalResult + '元';
   } else {
-    result += '：零元';
+    result += '零元';
   }
   
   // 处理小数部分

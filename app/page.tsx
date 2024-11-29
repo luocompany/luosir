@@ -7,12 +7,12 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-1 pt-16">
+      <main className="flex-1 pt-12">
         <section className="bg-[var(--background)] text-[var(--foreground)]">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <h1 className="text-3xl font-semibold mb-8">AI 工具集</h1>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <h1 className="text-2xl font-semibold mb-6">AI 工具集</h1>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Card
                 title="Email Assistant"
                 description="AI驱动的邮件写作助手，让您的沟通更专业高效"
