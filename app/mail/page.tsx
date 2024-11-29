@@ -26,45 +26,38 @@ export default function Home() {
 
   const styles = [
     {
-      icon: '🎩',
+      icon: '📝',
       name: 'Formal',
-      description: 'For official or business correspondence.',
       value: 'formal'
     },
     {
-      icon: '📚',
+      icon: '💼',
       name: 'Professional',
-      description: 'Showcasing expertise or technical discussions.',
       value: 'professional'
     },
     {
-      icon: '😊',
+      icon: '👋',
       name: 'Friendly',
-      description: 'Warm and amicable for known contacts.',
       value: 'friendly'
     },
     {
-      icon: '✓',
+      icon: '⚡️',
       name: 'Concise',
-      description: 'Direct and to the point for quick replies.',
       value: 'concise'
     },
     {
       icon: '📋',
       name: 'Detailed',
-      description: 'Providing thorough information or explanations.',
       value: 'detailed'
     },
     {
-      icon: '😎',
+      icon: '😊',
       name: 'Informal',
-      description: 'Relaxed and casual for personal communication.',
       value: 'informal'
     },
     {
-      icon: '💪',
+      icon: '✨',
       name: 'Inspirational',
-      description: 'Encouraging and positive for motivation.',
       value: 'inspirational'
     }
   ];
@@ -171,7 +164,7 @@ export default function Home() {
                       value={userInput.mail}
                       onChange={(e) => setUserInput({ ...userInput, mail: e.target.value })}
                       placeholder="请在这里输入邮件内容... / Type your email content here..."
-                      className="w-full h-[200px] md:h-[300px] p-4 rounded-xl bg-gray-50/50 dark:bg-gray-900/50 border border-gray-200/50 dark:border-gray-800/50 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 focus:outline-none transition-all resize-y text-sm font-['.SFNSText-Regular', 'SF Pro Text', 'SF Pro Icons', 'Helvetica Neue', 'Arial', sans-serif] placeholder:text-gray-400/80"
+                      className="w-full h-[200px] md:h-[300px] p-4 rounded-xl bg-gray-50/50 dark:bg-gray-900/50 border border-gray-200/50 dark:border-gray-800/50 focus:ring-1 focus:ring-[var(--blue-accent)] focus:outline-none transition-all resize-y text-sm font-['.SFNSText-Regular', 'SF Pro Text', 'SF Pro Icons', 'Helvetica Neue', 'Arial', sans-serif] placeholder:text-gray-400/80"
                     />
                   </div>
 
@@ -184,7 +177,7 @@ export default function Home() {
                       <select
                         value={userInput.language}
                         onChange={(e) => setUserInput({ ...userInput, language: e.target.value })}
-                        className="w-full px-4 py-2.5 rounded-xl bg-gray-50/50 dark:bg-gray-900/50 border border-gray-200/50 dark:border-gray-800/50 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 focus:outline-none transition-all text-sm font-medium appearance-none"
+                        className="w-full px-4 py-2.5 rounded-xl bg-gray-50/50 dark:bg-gray-900/50 border border-gray-200/50 dark:border-gray-800/50 focus:ring-1 focus:ring-[var(--blue-accent)] focus:outline-none transition-all text-sm font-medium appearance-none"
                       >
                         <option value="both English and Chinese">Both EN & CN</option>
                         <option value="English">English</option>
@@ -197,20 +190,24 @@ export default function Home() {
                   {/* 风格选择 */}
                   <div className="space-y-2">
                     <label className="text-sm text-gray-600 dark:text-gray-400">
-                      Choose a Reply Tone
+                      Reply Tone
                     </label>
                     <div className="relative">
                       <button 
                         onClick={() => setIsStyleMenuOpen(!isStyleMenuOpen)}
-                        className="w-full px-3 py-2 text-left rounded-lg bg-[var(--background)] border border-[var(--card-border)] focus:ring-1 focus:ring-[var(--blue-accent)] focus:outline-none transition-all text-sm"
+                        className="w-full px-4 py-2.5 rounded-xl bg-gray-50/50 dark:bg-gray-900/50 border border-gray-200/50 dark:border-gray-800/50 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 focus:ring-1 focus:ring-[var(--blue-accent)] focus:outline-none transition-all text-sm"
                       >
                         <span className="flex items-center justify-between">
-                          <span>{styles.find(s => s.value === mailType)?.name}</span>
-                          <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isStyleMenuOpen ? 'rotate-180' : ''}`} />
+                          <span className="flex items-center gap-2">
+                            <span className="text-base">{styles.find(s => s.value === mailType)?.icon}</span>
+                            <span className="font-medium">{styles.find(s => s.value === mailType)?.name}</span>
+                          </span>
+                          <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isStyleMenuOpen ? 'rotate-180' : ''}`} />
                         </span>
                       </button>
+                      
                       {isStyleMenuOpen && (
-                        <div className="absolute z-10 w-full mt-1 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-lg shadow-lg divide-y divide-[var(--card-border)]">
+                        <div className="absolute z-10 w-full mt-1 py-1 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl shadow-lg backdrop-blur-xl backdrop-saturate-150 bg-opacity-90">
                           {styles.map((style) => (
                             <button
                               key={style.value}
@@ -218,15 +215,20 @@ export default function Home() {
                                 setMailType(style.value);
                                 setIsStyleMenuOpen(false);
                               }}
-                              className="w-full px-4 py-3 flex items-start gap-3 hover:bg-black/5 dark:hover:bg-white/5 text-left"
+                              className={`w-full px-4 py-2.5 flex items-center gap-2 hover:bg-[var(--blue-accent)] hover:bg-opacity-10 transition-colors ${
+                                mailType === style.value 
+                                  ? 'text-[var(--blue-accent)]' 
+                                  : 'text-[var(--foreground)]'
+                              }`}
                             >
-                              <span className="text-xl">{style.icon}</span>
-                              <div className="flex-1">
-                                <div className="text-sm font-medium">{style.name}</div>
-                                <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{style.description}</div>
-                              </div>
+                              <span className="text-base">{style.icon}</span>
+                              <span className="text-sm font-medium">{style.name}</span>
                               {mailType === style.value && (
-                                <span className="text-[var(--blue-accent)]">✓</span>
+                                <span className="ml-auto text-[var(--blue-accent)]">
+                                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                    <path d="M13.3332 4L5.99984 11.3333L2.6665 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                  </svg>
+                                </span>
                               )}
                             </button>
                           ))}
