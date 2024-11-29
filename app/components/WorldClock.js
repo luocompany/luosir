@@ -27,6 +27,16 @@ const defaultCities = [
   { name: '柏林', timezone: 'Europe/Berlin', label: 'GMT+2' },
 ];
 
+const buttonClasses = "px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-200 dark:text-gray-200 dark:hover:bg-gray-700 transition-colors";
+
+const timeDisplayClasses = "text-gray-800 dark:text-gray-200";
+
+const cityNameClasses = "text-gray-700 dark:text-gray-300";
+
+const cellClasses = "p-4 text-gray-700 dark:text-gray-300";
+
+const linkClasses = "text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100";
+
 function WorldClock() {
   const [times, setTimes] = useState({});
   const [cities, setCities] = useState(() => {
