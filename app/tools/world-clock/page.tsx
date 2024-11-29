@@ -8,7 +8,7 @@ import { ArrowLeft } from 'lucide-react';
 export default function WorldClockPage() {
   return (
     <div className="min-h-screen flex flex-col">
-      <main className="flex-1 pt-16">
+      <main className="flex-1">
         <div className="bg-[var(--background)] text-[var(--foreground)]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="flex items-center mb-4">
