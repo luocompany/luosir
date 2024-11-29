@@ -105,7 +105,10 @@ export default function DateTools() {
                           setDate1(newDate);
                           e.target.value = formatDate(newDate);
                         }}
-                        className="custom-date-input w-full p-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all hover:border-blue-500/30 appearance-none pl-12"
+                        className="custom-date-input w-full p-4 rounded-2xl border border-gray-200 dark:border-gray-700 
+                          bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm text-gray-900 dark:text-white 
+                          focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all 
+                          hover:border-blue-500/50 appearance-none pl-12 text-base"
                       />
                       <span className="date-placeholder">结束日期</span>
                       <svg 
@@ -134,7 +137,10 @@ export default function DateTools() {
                           setDate2(newDate);
                           e.target.value = formatDate(newDate);
                         }}
-                        className="custom-date-input w-full p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-gray-200 dark:border-gray-700 bg-gradient-to-r from-white/90 to-white/70 dark:from-gray-900/90 dark:to-gray-900/70 backdrop-blur-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/50 transition-all hover:border-blue-500/50 appearance-none pl-10 sm:pl-12 text-sm sm:text-base"
+                        className="custom-date-input w-full p-4 rounded-2xl border border-gray-200 dark:border-gray-700 
+                          bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm text-gray-900 dark:text-white 
+                          focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all 
+                          hover:border-blue-500/50 appearance-none pl-12 text-base"
                       />
                       <span className="date-placeholder">开始日期</span>
                       <svg 
@@ -152,7 +158,7 @@ export default function DateTools() {
                 {diffDays !== null && (
                   <div className="mt-6 p-6 rounded-2xl bg-gradient-to-r from-blue-50/90 to-blue-50/50 dark:from-blue-900/30 dark:to-blue-900/10 backdrop-blur-xl border border-blue-100/80 dark:border-blue-800/30">
                     <div className="flex items-center justify-center gap-3">
-                      <span className="text-gray-600 dark:text-gray-300 text-lg">计算结果：相差</span>
+                      <span className="text-gray-600 dark:text-gray-300 text-lg">计算结��：相差</span>
                       <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 dark:from-blue-400 dark:to-blue-300 bg-clip-text text-transparent">
                         {diffDays}
                       </span>
@@ -177,7 +183,10 @@ export default function DateTools() {
                         type="date"
                         value={baseDate}
                         onChange={(e) => setBaseDate(e.target.value)}
-                        className="custom-date-input w-full p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-gray-200 dark:border-gray-700 bg-gradient-to-r from-white/90 to-white/70 dark:from-gray-900/90 dark:to-gray-900/70 backdrop-blur-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/50 transition-all hover:border-blue-500/50 appearance-none pl-10 sm:pl-12 text-sm sm:text-base"
+                        className="custom-date-input w-full p-4 rounded-2xl border border-gray-200 dark:border-gray-700 
+                          bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm text-gray-900 dark:text-white 
+                          focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all 
+                          hover:border-blue-500/50 appearance-none pl-12 text-base"
                       />
                       <span className="date-placeholder">开始日期</span>
                       <svg 
@@ -198,10 +207,10 @@ export default function DateTools() {
                         type="number"
                         value={days}
                         onChange={(e) => setDays(e.target.value)}
-                        className="w-full p-3 sm:p-4 rounded-xl border border-gray-200 dark:border-gray-700 
+                        className="w-full p-4 rounded-2xl border border-gray-200 dark:border-gray-700 
                           bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm text-gray-900 dark:text-white 
-                          focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all text-center 
-                          hover:border-blue-500/50 text-sm sm:text-base"
+                          focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all 
+                          hover:border-blue-500/50 text-center text-base"
                       />
                       {!days && (
                         <span className="absolute left-0 right-0 top-1/2 -translate-y-1/2 text-gray-400 text-center pointer-events-none">
@@ -276,7 +285,10 @@ export default function DateTools() {
                       step="1"
                       value={days}
                       onChange={(e) => setDays(e.target.value)}
-                      className="slider-input w-full"
+                      className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer 
+                        accent-blue-500 dark:accent-blue-400
+                        focus:outline-none focus:ring-2 focus:ring-blue-500/30
+                        range-input"
                     />
                   </div>
                 </div>
