@@ -126,6 +126,9 @@ export default function NumberToEnglish() {
   const convertToEnglish = (input: string): ConversionResult => {
     if (!input) return '';
     
+    // 检查输入是否包含除数字、逗号和小数点以外的字符
+    if (/[^0-9.,]/.test(input)) return '请输入有效数字';
+    
     const parts = input.split('.');
     const integerPart = parseInt(parts[0].replace(/,/g, ''));
     

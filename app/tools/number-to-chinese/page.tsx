@@ -11,8 +11,23 @@ export default function NumberToChinese() {
   const [upperAmount, setUpperAmount] = useState('');
   const [copied, setCopied] = useState(false);
   const [realtime, setRealtime] = useState(true);
+  const [error, setError] = useState('');
 
   const convertToChinese = (amount: string) => {
+    if (!amount) {
+      setError('请输入有效数字');
+      setUpperAmount('');
+      return;
+    }
+
+    const parsedAmount = parseFloat(amount.replace(/,/g, ''));
+    if (isNaN(parsedAmount) || /[a-zA-Z]/.test(amount)) {
+      setError('请输入有效数字');
+      setUpperAmount('');
+      return;
+    }
+
+    setError('');
     const chineseAmount = numberToChinese(amount);
     setUpperAmount(chineseAmount);
   };
@@ -53,15 +68,25 @@ export default function NumberToChinese() {
           </p>
           <div className="mb-4">
             <label className="block mb-2 text-[var(--foreground)]/70">小写金额：</label>
-            <input
-              type="text"
-              className="w-full p-4 text-lg font-mono tracking-wider border-2 border-[var(--blue-accent)] 
-                bg-[var(--input-bg)] rounded-xl focus:ring-2 focus:ring-[var(--blue-accent)] focus:outline-none 
-                transition-all placeholder:text-[var(--foreground)]/30 text-[var(--foreground)]"
-              placeholder="1688.99"
-              value={lowerAmount}
-              onChange={(e) => setLowerAmount(e.target.value)}
-            />
+            <div className="flex-1 relative">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--foreground)]/40 text-lg">
+                #
+              </div>
+              <input
+                type="text"
+                className="w-full pl-10 pr-4 py-4 text-lg font-mono tracking-wider border-2 border-[var(--blue-accent)] 
+                  bg-[var(--input-bg)] rounded-xl focus:ring-2 focus:ring-[var(--blue-accent)] focus:outline-none 
+                  transition-all placeholder:text-[var(--foreground)]/30 text-[var(--foreground)]"
+                placeholder="1688.99"
+                value={lowerAmount}
+                onChange={(e) => setLowerAmount(e.target.value)}
+                inputMode="decimal"
+                style={{
+                  WebkitAppearance: 'none',
+                  MozAppearance: 'textfield'
+                }}
+              />
+            </div>
           </div>
           <div className="flex items-center justify-end mb-6">
             <div className="flex items-center space-x-2">
@@ -88,7 +113,7 @@ export default function NumberToChinese() {
                 {copied ? <CheckIcon className="h-5 w-5 text-green-500" /> : <CopyIcon className="h-5 w-5" />}
               </button>
               <p className="text-[var(--foreground)] leading-relaxed">
-                {upperAmount || '等待输入...'}
+                {error || upperAmount || '等待输入...'}
               </p>
             </div>
           </div>
@@ -128,7 +153,7 @@ export default function NumberToChinese() {
 
 function numberToChinese(amount: string): string {
   const units = ['', '拾', '佰', '仟', '万', '亿'];
-  const numChars = ['零', '壹', '贰', '叁', '肆', '伍', '陆', '柒', '捌', '玖'];
+  const numChars = ['零', '壹', '贰', '叁', '肆', '伍', '陆', '柒', '', '玖'];
   const [integerPart, decimalPart] = amount.split('.');
 
   let result = '人民币';
