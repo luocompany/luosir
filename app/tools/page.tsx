@@ -1,7 +1,6 @@
 "use client";
 
 import Navbar from '../components/Navbar';
-import WorldClock from '../components/WorldClock';
 import Link from 'next/link';
 import Footer from '../components/Footer';
 
@@ -34,12 +33,16 @@ export default function Tools() {
                     <p className="text-sm text-gray-500">将数字转换为中文表达</p>
                   </div>
                 </Link>
+                <Link href="/tools/world-clock" 
+                  className="p-4 rounded-lg border border-gray-200 hover:border-gray-300 
+                    transition-colors duration-200 flex items-center space-x-3">
+                  <span className="text-xl">🕒</span>
+                  <div>
+                    <h3 className="font-medium">世界时钟</h3>
+                    <p className="text-sm text-gray-500">查看世界各地的时间</p>
+                  </div>
+                </Link>
               </div>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* World Clock */}
-              <WorldClock />
             </div>
           </div>
         </div>
