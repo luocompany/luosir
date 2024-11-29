@@ -22,6 +22,14 @@ export default function Home() {
               />
 
               <Card
+                title="实用工具集"
+                description="数字转换、世界时钟等多个便捷工具"
+                href="/tools"
+                iconPath="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
+                buttonText="立即使用"
+              />
+
+              <Card
                 title="敬请期待"
                 description="更多AI工具正在开发中..."
                 iconPath="M12 6v6m0 0v6m0-6h6m-6 0H6"

@@ -1,0 +1,14 @@
+{
+  "Asia/Shanghai": "中国标准时间 (UTC+8)",
+  "Asia/Tokyo": "日本标准时间 (UTC+9)",
+  "Asia/Singapore": "新加坡标准时间 (UTC+8)",
+  "Asia/Dubai": "迪拜标准时间 (UTC+4)",
+  "Europe/London": "英国标准时间 (UTC+0/+1)",
+  "Europe/Paris": "中欧标准时间 (UTC+1/+2)",
+  "Europe/Moscow": "莫斯科标准时间 (UTC+3)",
+  "America/New_York": "美国东部时间 (UTC-5/-4)",
+  "America/Los_Angeles": "美国太平洋时间 (UTC-8/-7)",
+  "America/Chicago": "美国中部时间 (UTC-6/-5)",
+  "Australia/Sydney": "悉尼标准时间 (UTC+10/+11)",
+  "Pacific/Auckland": "新西兰标准时间 (UTC+12/+13)"
+} 
