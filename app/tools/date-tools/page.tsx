@@ -93,9 +93,9 @@ export default function DateTools() {
                 计算日期差值
               </h2>
               <div className="space-y-6">
-                <div className="flex items-center gap-4">
-                  <div className="relative flex-1">
-                    <div className="date-input-wrapper group">
+                <div className="flex flex-col sm:flex-row items-center gap-4">
+                  <div className="relative flex-1 w-full">
+                    <div className="date-input-wrapper">
                       <input
                         id="date1"
                         type="date"
@@ -122,11 +122,11 @@ export default function DateTools() {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                  <div className="hidden sm:flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
                     <span className="text-gray-600 dark:text-gray-300 text-lg font-medium select-none">-</span>
                   </div>
 
-                  <div className="relative flex-1">
+                  <div className="relative flex-1 w-full">
                     <div className="date-input-wrapper">
                       <input
                         id="date2"
@@ -173,7 +173,7 @@ export default function DateTools() {
                 日期推算
               </h2>
               <div className="space-y-3 sm:space-y-4">
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
                   <div className="relative flex-1">
                     <div className="date-input-wrapper">
                       <input
@@ -198,7 +198,7 @@ export default function DateTools() {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                  <div className="hidden sm:flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
                     <span className="text-gray-600 dark:text-gray-300 text-lg font-medium select-none">+</span>
                   </div>
 
@@ -212,16 +212,29 @@ export default function DateTools() {
                         className="w-full p-3 rounded-2xl border border-gray-200 dark:border-gray-700 
                           bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm text-gray-900 dark:text-white 
                           focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all 
-                          hover:border-blue-500/50 text-center text-base h-12"
+                          hover:border-blue-500/50 text-center text-base h-12 pl-12 pr-8"
+                        min="-365"
+                        max="365"
                       />
+                      <svg 
+                        className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke="currentColor"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                          d="M9 7h8M9 12h8M9 17h8M5 7v0m0 5v0m0 5v0" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5}
+                          d="M4.5 7.5l1-1v2M4.5 12.5l1 1M4.5 11.5l1-1M4 17.5h2" />
+                      </svg>
                       {!days && (
                         <span className="absolute left-0 right-0 top-1/2 -translate-y-1/2 text-gray-400 text-center pointer-events-none">
                           间隔天数
                         </span>
                       )}
-                      {days && (
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">天</span>
-                      )}
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                        天
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -239,11 +252,11 @@ export default function DateTools() {
                     />
                   </div>
                   
-                  <div className="grid grid-cols-7 gap-2 text-center mt-4">
+                  <div className="grid grid-cols-7 gap-2 sm:gap-2 text-center mt-4">
                     {/* 负值组 - 使用红色系 */}
                     <button
                       onClick={() => handleDaysChange(-30)}
-                      className="px-2 py-1.5 text-sm rounded-lg
+                      className="px-1 sm:px-2 py-1 sm:py-1.5 text-xs sm:text-sm rounded-lg
                         bg-white/80 dark:bg-gray-800/80
                         border border-red-200 dark:border-red-900/50
                         hover:bg-red-50 dark:hover:bg-red-900/20
@@ -256,7 +269,7 @@ export default function DateTools() {
                     </button>
                     <button
                       onClick={() => handleDaysChange(-7)}
-                      className="px-2 py-1.5 text-sm rounded-lg
+                      className="px-1 sm:px-2 py-1 sm:py-1.5 text-xs sm:text-sm rounded-lg
                         bg-white/80 dark:bg-gray-800/80
                         border border-red-200 dark:border-red-900/50
                         hover:bg-red-50 dark:hover:bg-red-900/20
@@ -269,7 +282,7 @@ export default function DateTools() {
                     </button>
                     <button
                       onClick={() => handleDaysChange(-1)}
-                      className="px-2 py-1.5 text-sm rounded-lg
+                      className="px-1 sm:px-2 py-1 sm:py-1.5 text-xs sm:text-sm rounded-lg
                         bg-white/80 dark:bg-gray-800/80
                         border border-red-200 dark:border-red-900/50
                         hover:bg-red-50 dark:hover:bg-red-900/20
@@ -284,7 +297,7 @@ export default function DateTools() {
                     {/* 零值 - 使用中性色 */}
                     <button
                       onClick={() => setDays('0')}
-                      className="px-3 py-1.5 text-sm rounded-lg
+                      className="px-1 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm rounded-lg
                         bg-gray-100 dark:bg-gray-800
                         border border-gray-200 dark:border-gray-700
                         hover:bg-gray-200 dark:hover:bg-gray-700
@@ -300,7 +313,7 @@ export default function DateTools() {
                     {/* 正值组 - 使用绿色系 */}
                     <button
                       onClick={() => handleDaysChange(1)}
-                      className="px-2 py-1.5 text-sm rounded-lg
+                      className="px-1 sm:px-2 py-1 sm:py-1.5 text-xs sm:text-sm rounded-lg
                         bg-white/80 dark:bg-gray-800/80
                         border border-green-200 dark:border-green-900/50
                         hover:bg-green-50 dark:hover:bg-green-900/20
@@ -313,7 +326,7 @@ export default function DateTools() {
                     </button>
                     <button
                       onClick={() => handleDaysChange(7)}
-                      className="px-2 py-1.5 text-sm rounded-lg
+                      className="px-1 sm:px-2 py-1 sm:py-1.5 text-xs sm:text-sm rounded-lg
                         bg-white/80 dark:bg-gray-800/80
                         border border-green-200 dark:border-green-900/50
                         hover:bg-green-50 dark:hover:bg-green-900/20
@@ -326,7 +339,7 @@ export default function DateTools() {
                     </button>
                     <button
                       onClick={() => handleDaysChange(30)}
-                      className="px-2 py-1.5 text-sm rounded-lg
+                      className="px-1 sm:px-2 py-1 sm:py-1.5 text-xs sm:text-sm rounded-lg
                         bg-white/80 dark:bg-gray-800/80
                         border border-green-200 dark:border-green-900/50
                         hover:bg-green-50 dark:hover:bg-green-900/20
