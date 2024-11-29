@@ -199,7 +199,7 @@ export default function DateTools() {
                   </div>
 
                   <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
-                    <span className="text-gray-600 dark:text-gray-300 text-lg font-medium select-none">-</span>
+                    <span className="text-gray-600 dark:text-gray-300 text-lg font-medium select-none">+</span>
                   </div>
 
                   <div className="relative flex-1">
@@ -226,8 +226,8 @@ export default function DateTools() {
                   </div>
                 </div>
 
-                <div className="space-y-4 bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl p-4 backdrop-blur-sm border border-gray-200/30 dark:border-gray-700/30">
-                  <div className="relative px-2">
+                <div className="space-y-4 bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl p-6 backdrop-blur-sm border border-gray-200/30 dark:border-gray-700/30">
+                  <div className="relative px-4">
                     <input
                       type="range"
                       min="-365"
@@ -238,56 +238,105 @@ export default function DateTools() {
                       className="range-input"
                     />
                   </div>
-
-                  <div className="flex items-center justify-between px-2 mt-4">
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => handleDaysChange(-30)}
-                        className="px-2 py-1 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400"
-                      >
-                        -1月
-                      </button>
-                      <button
-                        onClick={() => handleDaysChange(-7)}
-                        className="px-2 py-1 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400"
-                      >
-                        -1周
-                      </button>
-                      <button
-                        onClick={() => handleDaysChange(-1)}
-                        className="px-2 py-1 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400"
-                      >
-                        -1天
-                      </button>
-                    </div>
-
+                  
+                  <div className="grid grid-cols-7 gap-2 text-center mt-4">
+                    {/* 负值组 - 使用红色系 */}
+                    <button
+                      onClick={() => handleDaysChange(-30)}
+                      className="px-2 py-1.5 text-sm rounded-lg
+                        bg-white/80 dark:bg-gray-800/80
+                        border border-red-200 dark:border-red-900/50
+                        hover:bg-red-50 dark:hover:bg-red-900/20
+                        active:bg-red-100 dark:active:bg-red-900/30
+                        text-red-600 dark:text-red-400
+                        transition-all duration-200
+                        shadow-sm hover:shadow"
+                    >
+                      -1M
+                    </button>
+                    <button
+                      onClick={() => handleDaysChange(-7)}
+                      className="px-2 py-1.5 text-sm rounded-lg
+                        bg-white/80 dark:bg-gray-800/80
+                        border border-red-200 dark:border-red-900/50
+                        hover:bg-red-50 dark:hover:bg-red-900/20
+                        active:bg-red-100 dark:active:bg-red-900/30
+                        text-red-600 dark:text-red-400
+                        transition-all duration-200
+                        shadow-sm hover:shadow"
+                    >
+                      -1W
+                    </button>
+                    <button
+                      onClick={() => handleDaysChange(-1)}
+                      className="px-2 py-1.5 text-sm rounded-lg
+                        bg-white/80 dark:bg-gray-800/80
+                        border border-red-200 dark:border-red-900/50
+                        hover:bg-red-50 dark:hover:bg-red-900/20
+                        active:bg-red-100 dark:active:bg-red-900/30
+                        text-red-600 dark:text-red-400
+                        transition-all duration-200
+                        shadow-sm hover:shadow"
+                    >
+                      -1D
+                    </button>
+                    
+                    {/* 零值 - 使用中性色 */}
                     <button
                       onClick={() => setDays('0')}
-                      className="px-3 py-1 text-sm rounded-lg bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400 font-medium"
+                      className="px-3 py-1.5 text-sm rounded-lg
+                        bg-gray-100 dark:bg-gray-800
+                        border border-gray-200 dark:border-gray-700
+                        hover:bg-gray-200 dark:hover:bg-gray-700
+                        active:bg-gray-300 dark:active:bg-gray-600
+                        text-gray-700 dark:text-gray-300
+                        font-medium
+                        transition-all duration-200
+                        shadow-sm hover:shadow-md"
                     >
-                      当天
+                      0
                     </button>
-
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => handleDaysChange(1)}
-                        className="px-2 py-1 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400"
-                      >
-                        +1天
-                      </button>
-                      <button
-                        onClick={() => handleDaysChange(7)}
-                        className="px-2 py-1 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400"
-                      >
-                        +1周
-                      </button>
-                      <button
-                        onClick={() => handleDaysChange(30)}
-                        className="px-2 py-1 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400"
-                      >
-                        +1月
-                      </button>
-                    </div>
+                    
+                    {/* 正值组 - 使用绿色系 */}
+                    <button
+                      onClick={() => handleDaysChange(1)}
+                      className="px-2 py-1.5 text-sm rounded-lg
+                        bg-white/80 dark:bg-gray-800/80
+                        border border-green-200 dark:border-green-900/50
+                        hover:bg-green-50 dark:hover:bg-green-900/20
+                        active:bg-green-100 dark:active:bg-green-900/30
+                        text-green-600 dark:text-green-400
+                        transition-all duration-200
+                        shadow-sm hover:shadow"
+                    >
+                      +1D
+                    </button>
+                    <button
+                      onClick={() => handleDaysChange(7)}
+                      className="px-2 py-1.5 text-sm rounded-lg
+                        bg-white/80 dark:bg-gray-800/80
+                        border border-green-200 dark:border-green-900/50
+                        hover:bg-green-50 dark:hover:bg-green-900/20
+                        active:bg-green-100 dark:active:bg-green-900/30
+                        text-green-600 dark:text-green-400
+                        transition-all duration-200
+                        shadow-sm hover:shadow"
+                    >
+                      +1W
+                    </button>
+                    <button
+                      onClick={() => handleDaysChange(30)}
+                      className="px-2 py-1.5 text-sm rounded-lg
+                        bg-white/80 dark:bg-gray-800/80
+                        border border-green-200 dark:border-green-900/50
+                        hover:bg-green-50 dark:hover:bg-green-900/20
+                        active:bg-green-100 dark:active:bg-green-900/30
+                        text-green-600 dark:text-green-400
+                        transition-all duration-200
+                        shadow-sm hover:shadow"
+                    >
+                      +1M
+                    </button>
                   </div>
                 </div>
               </div>
@@ -295,7 +344,14 @@ export default function DateTools() {
               {resultDate && (
                 <div className="mt-4 sm:mt-6 p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-blue-50/50 dark:bg-blue-900/20 backdrop-blur-sm border border-blue-100 dark:border-blue-800/50">
                   <p className="text-center text-lg sm:text-xl font-medium text-gray-900 dark:text-white">
-                    {days}天{parseInt(days) >= 0 ? '后' : '前'}是: 
+                    {Math.abs(parseInt(days))}天
+                    <span className={parseInt(days) >= 0 ? 
+                      "text-green-500 dark:text-green-400" : 
+                      "text-red-500 dark:text-red-400"
+                    }>
+                      {parseInt(days) >= 0 ? '后' : '前'}
+                    </span>
+                    是: 
                     <span className="text-blue-600 dark:text-blue-400 font-semibold ml-2">{formatDate(resultDate)}</span>
                   </p>
                 </div>

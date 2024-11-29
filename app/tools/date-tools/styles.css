@@ -98,13 +98,18 @@
 
 .range-input {
   -webkit-appearance: none;
-  appearance: none;
   width: 100%;
-  height: 4px;
-  background: rgba(209, 213, 219, 0.5);
-  border-radius: 2px;
+  height: 6px;
+  background: linear-gradient(to right, 
+    rgb(239 68 68 / 0.2) 0%, 
+    rgb(239 68 68 / 0.1) 40%, 
+    rgb(59 130 246 / 0.1) 50%, 
+    rgb(34 197 94 / 0.1) 60%, 
+    rgb(34 197 94 / 0.2) 100%
+  );
+  border-radius: 999px;
   outline: none;
-  cursor: pointer;
+  padding: 0;
   margin: 10px 0;
 }
 
@@ -113,28 +118,64 @@
   appearance: none;
   width: 20px;
   height: 20px;
+  background: white;
+  border: 2px solid rgb(59 130 246 / 0.5);
   border-radius: 50%;
-  background: #ffffff;
-  border: 1px solid rgba(209, 213, 219, 0.8);
   cursor: pointer;
-  margin-top: -8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
+}
+
+.range-input::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: white;
+  border: 2px solid rgb(59 130 246 / 0.5);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
 }
 
 .range-input::-webkit-slider-thumb:hover {
+  background: rgb(59 130 246 / 0.1);
   transform: scale(1.1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgb(0 0 0 / 0.1);
+}
+
+.range-input::-moz-range-thumb:hover {
+  background: rgb(59 130 246 / 0.1);
+  transform: scale(1.1);
+  box-shadow: 0 4px 6px rgb(0 0 0 / 0.1);
 }
 
 @media (prefers-color-scheme: dark) {
   .range-input {
-    background: rgba(75, 85, 99, 0.5);
+    background: linear-gradient(to right, 
+      rgb(239 68 68 / 0.3) 0%, 
+      rgb(239 68 68 / 0.2) 40%, 
+      rgb(59 130 246 / 0.2) 50%, 
+      rgb(34 197 94 / 0.2) 60%, 
+      rgb(34 197 94 / 0.3) 100%
+    );
   }
 
   .range-input::-webkit-slider-thumb {
-    background: #1f2937;
-    border-color: rgba(209, 213, 219, 0.2);
+    background: rgb(31 41 55);
+    border-color: rgb(59 130 246 / 0.7);
+  }
+
+  .range-input::-moz-range-thumb {
+    background: rgb(31 41 55);
+    border-color: rgb(59 130 246 / 0.7);
+  }
+
+  .range-input::-webkit-slider-thumb:hover {
+    background: rgb(59 130 246 / 0.3);
+  }
+
+  .range-input::-moz-range-thumb:hover {
+    background: rgb(59 130 246 / 0.3);
   }
 }
 
