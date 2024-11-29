@@ -51,6 +51,15 @@ export default function Tools() {
                     <p className="text-sm text-gray-500">日期差值计算与推算</p>
                   </div>
                 </Link>
+                <Link href="/go" 
+                  className="p-4 rounded-lg border border-gray-200 hover:border-gray-300 
+                    transition-colors duration-200 flex items-center space-x-3">
+                  <span className="text-xl">🔗</span>
+                  <div>
+                    <h3 className="font-medium">LC 网址导航</h3>
+                    <p className="text-sm text-gray-500">超实用网站导航</p>
+                  </div>
+                </Link>
               </div>
             </div>
           </div>
