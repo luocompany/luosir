@@ -48,14 +48,13 @@ export default function NumberToChinese() {
   return (
     <div className="flex flex-col bg-[var(--background)] text-[var(--foreground)]">
       <main className="flex-1 container mx-auto px-4 py-12 max-w-3xl">
-        <div className="flex items-center mb-4">
+        <div className="flex items-center mb-4 sm:mb-8">
           <Link 
             href="/tools" 
-            className="inline-flex items-center text-[var(--foreground)]/70 hover:text-[var(--foreground)] transition-colors"
-            style={{ fontSize: '16px', fontWeight: '500' }}
+            className="inline-flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 transition-colors"
           >
-            <ArrowLeft className="h-5 w-5 mr-1" />
-            返回
+            <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5 mr-1.5" />
+            <span className="text-sm sm:text-base font-medium">返回</span>
           </Link>
         </div>
         <div className="backdrop-blur-xl bg-[var(--card-bg)] rounded-2xl p-8 shadow-lg border border-[var(--card-border)]">
@@ -190,7 +189,7 @@ export default function NumberToChinese() {
                   
                   <p>四、拉伯小写金额数字前面均应填写人民币符号"￥"，阿拉伯小写金额数字要认真填写，不得连写分辨不清。</p>
                   
-                  <p>五、票据的出票日期必须使用中文大写，为防止变造票据的出票日期，在填写月、日时、月为壹、贰和壹拾的，日为壹至玖和壹拾、贰拾和叁拾的，应在其前加"零"日为拾壹至拾玖的应在其前加"壹"如1月15日应写成零壹月壹拾伍日，再如10月20日应写成零壹拾月零贰拾日。</p>
+                  <p>���、票据的出票日期必须使用中文大写，为防止变造票据的出票日期，在填写月、日时、月为壹、贰和壹拾的，日为壹至玖和壹拾、贰拾和叁拾的，应在其前加"零"日为拾壹至拾玖的应在其前加"壹"如1月15日应写成零壹月壹拾伍日，再如10月20日应写成零壹拾月零贰拾日。</p>
                 </div>
               </div>
             </div>

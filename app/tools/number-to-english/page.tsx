@@ -180,14 +180,13 @@ export default function NumberToEnglish() {
   return (
     <div className="flex flex-col bg-[var(--background)] text-[var(--foreground)]">
       <main className="flex-1 container mx-auto px-4 py-12 max-w-3xl">
-        <div className="flex items-center mb-4">
+        <div className="flex items-center mb-4 sm:mb-8">
           <Link 
             href="/tools" 
-            className="inline-flex items-center text-[var(--foreground)]/70 hover:text-[var(--foreground)] transition-colors"
-            style={{ fontSize: '16px', fontWeight: '500' }}
+            className="inline-flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 transition-colors"
           >
-            <ArrowLeft className="h-5 w-5 mr-1" />
-            返回
+            <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5 mr-1.5" />
+            <span className="text-sm sm:text-base font-medium">返回</span>
           </Link>
         </div>
         <div className="backdrop-blur-xl bg-[var(--card-bg)] rounded-2xl p-8 shadow-lg border border-[var(--card-border)]">

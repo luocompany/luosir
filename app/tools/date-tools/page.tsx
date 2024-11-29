@@ -71,8 +71,6 @@ export default function DateTools() {
             </Link>
           </div>
           
-          <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-10 text-gray-900 dark:text-white">日期计算器</h1>
-          
           {/* 日期差值计算部分 */}
           <div className="space-y-4 sm:space-y-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl p-4 sm:p-8 rounded-2xl sm:rounded-3xl shadow-lg mb-4 sm:mb-8 border border-gray-200/50 dark:border-gray-700/50">
             <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">计算日期差值</h2>
