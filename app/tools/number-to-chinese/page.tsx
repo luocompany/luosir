@@ -58,7 +58,7 @@ export default function NumberToChinese() {
           </Link>
         </div>
         <div className="backdrop-blur-xl bg-[var(--card-bg)] rounded-2xl p-8 shadow-lg border border-[var(--card-border)]">
-          <h1 className="text-2xl font-bold text-[var(--foreground)] mb-6">人民币大写在线转换</h1>
+          <h1 className="text-2xl font-bold text-[var(--foreground)] mb-6">人民币大写金额转换</h1>
           <form className="space-y-6">
             <div className="flex items-center justify-end mb-6">
               <div className="flex items-center space-x-2">
@@ -129,14 +129,18 @@ export default function NumberToChinese() {
               >
                 {copied ? <CheckIcon className="h-5 w-5 text-green-500" /> : <CopyIcon className="h-5 w-5" />}
               </button>
-              <p className="text-[var(--foreground)] leading-relaxed">
-                {error ? (
-                  <span className="text-red-500">{error}</span>
+              <p className="text-[var(--foreground)] leading-relaxed text-xs">
+                {!lowerAmount ? (
+                  <span className="text-[var(--foreground)]/60">等待输入...</span>
                 ) : (
-                  upperAmount ? (
-                    <strong>{upperAmount}</strong>
+                  error ? (
+                    <strong>{error}</strong>
                   ) : (
-                    '等待输入...'
+                    upperAmount ? (
+                      <strong>{upperAmount}</strong>
+                    ) : (
+                      <span className="text-[var(--foreground)]/60">等待输入...</span>
+                    )
                   )
                 )}
               </p>
@@ -175,7 +179,7 @@ export default function NumberToChinese() {
                 <div className="space-y-3">
                   <p>一、中文大写金额数字到"元"为止的，在"元"之后、应写"整"(或"正")字；在"角"和"分"之后，不写"整"(或"正")字。</p>
                   
-                  <p>二、中文大写金额数字前应标明"人民币"字样，大写金额数字应紧接"人民币"字样填写，不得留有空白。大写金额数字前未印"人民币"字样的，应加填"人民币"三字，在票据和结算凭证大写金额栏内不得预印固定的"仟、佰、拾、万、仟、佰、拾、元、角、分"字样。</p>
+                  <p>二、中文大写金额��字前应标明"人民币"字样，大写金额数字应紧接"人民币"字样填写，不得留有空白。大写金额数字前未印"人民币"字样的，应加填"人民币"三字，在票据和结算凭证大写金额栏内不得预印固定的"仟、佰、拾、万、仟、佰、拾、元、角、分"字样。</p>
                   
                   <div>
                     <p>三、阿拉伯数字小写金额数字中有"0"时，中文大写应按照汉语语言规律、金额数字构成和防止涂改的要求进行书写。举例如下：</p>
@@ -189,7 +193,7 @@ export default function NumberToChinese() {
                   
                   <p>四、拉伯小写金额数字前面均应填写人民币符号"￥"，阿拉伯小写金额数字要认真填写，不得连写分辨不清。</p>
                   
-                  <p>���、票据的出票日期必须使用中文大写，为防止变造票据的出票日期，在填写月、日时、月为壹、贰和壹拾的，日为壹至玖和壹拾、贰拾和叁拾的，应在其前加"零"日为拾壹至拾玖的应在其前加"壹"如1月15日应写成零壹月壹拾伍日，再如10月20日应写成零壹拾月零贰拾日。</p>
+                  <p>、票据的出票日期必须使用中文大写，为防止变造票据的出票日期，在填写月、日时、月为壹、贰和壹拾的，日为壹至玖和壹拾、贰拾和叁拾的，应在其前加"零"日为拾壹至拾玖的应在其前加"壹"如1月15日应写成零壹月壹拾伍日，再如10月20日应写成零壹拾月零贰拾日。</p>
                 </div>
               </div>
             </div>

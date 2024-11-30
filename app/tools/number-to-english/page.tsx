@@ -12,6 +12,11 @@ type ConversionResult = {
   hasDecimal: boolean;
 } | string;
 
+type USDResult = {
+  dollars: string;
+  cents: string;
+} | '';
+
 // 工具函数
 const numberUtils = {
   units: ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'],
@@ -97,31 +102,110 @@ const ResultDisplay = ({ result, onCopy, copied }: {
       {copied ? <CheckIcon className="h-5 w-5 text-green-500" /> : <CopyIcon className="h-5 w-5" />}
     </button>
     
-    <p className="text-[var(--foreground)] leading-relaxed">
-      {!result ? '等待输入...' : (
-        typeof result === 'string' ? <strong>{result}</strong> : (
-          <span>
-            <strong>{result.integer}</strong>
-            {result.hasDecimal && (
-              <>
-                {' '}
-                <span className="text-red-500">AND</span>
-                {' '}
-                <strong>{result.decimal}</strong>
-              </>
-            )}
-          </span>
-        )
+    <p className="text-[var(--foreground)] leading-relaxed text-xs">
+      {!result || result === '' ? (
+        <span className="text-[var(--foreground)]/60">等待输入...</span>
+      ) : (
+        <strong>
+          {typeof result === 'string' ? (
+            result
+          ) : (
+            <>
+              {result.integer}
+              {result.hasDecimal && (
+                <>
+                  {' '}
+                  <span className="text-red-500">AND</span>
+                  {' '}
+                  {result.decimal}
+                </>
+              )}
+            </>
+          )}
+        </strong>
       )}
     </p>
   </div>
 );
+
+// DollarFormatDisplay 组件的更新版本
+const DollarFormatDisplay = ({ number, onCopy, copied }: {
+  number: string;
+  onCopy: () => void;
+  copied: boolean;
+}) => {
+  const formatUSDAmount = (num: string): USDResult => {
+    if (!num || isNaN(Number(num.replace(/,/g, '')))) return '';
+    
+    const parts = num.split('.');
+    const integerPart = Number(parts[0].replace(/,/g, ''));
+    const decimalPart = parts[1] ? parts[1].slice(0, 2).padEnd(2, '0') : '00';
+    
+    const integerWords = numberUtils.convertInteger(integerPart).toUpperCase();
+    const centWords = numberUtils.convertInteger(parseInt(decimalPart)).toUpperCase();
+    
+    const dollarText = integerPart === 1 ? 'DOLLAR' : 'DOLLARS';
+    const centText = parseInt(decimalPart) === 1 ? 'CENT' : 'CENTS';
+    
+    return {
+      dollars: `USD ${integerWords} ${dollarText}`,
+      cents: parseInt(decimalPart) > 0 ? `${centWords} ${centText}` : ''
+    };
+  };
+
+  const dollarResult = formatUSDAmount(number);
+
+  const handleCopyClick = () => {
+    if (dollarResult === '') return;
+    
+    const resultText = `${dollarResult.dollars}${dollarResult.cents ? ` AND ${dollarResult.cents}` : ''}`;
+    
+    navigator.clipboard.writeText(resultText).then(() => {
+      onCopy();
+    });
+  };
+
+  return (
+    <div className="relative p-6 bg-[var(--input-bg)] rounded-xl min-h-[60px] backdrop-blur-sm border border-[var(--card-border)]">
+      <button
+        onClick={handleCopyClick}
+        className="absolute top-3 right-3 p-2 text-[var(--foreground)]/40 hover:text-[var(--foreground)]/60 transition-colors"
+        title="复制结果"
+      >
+        {copied ? <CheckIcon className="h-5 w-5 text-green-500" /> : <CopyIcon className="h-5 w-5" />}
+      </button>
+      
+      <p className="text-[var(--foreground)] leading-relaxed text-xs">
+        {!number ? (
+          <span className="text-[var(--foreground)]/60">等待输入...</span>
+        ) : (
+          <strong>
+            {typeof dollarResult === 'string' ? dollarResult : (
+              <>
+                {dollarResult.dollars}
+                {dollarResult.cents && (
+                  <>
+                    {' '}
+                    <span className="text-red-500 font-bold">AND</span>
+                    {' '}
+                    {dollarResult.cents}
+                  </>
+                )}
+              </>
+            )}
+          </strong>
+        )}
+      </p>
+    </div>
+  );
+};
 
 export default function NumberToEnglish() {
   const [number, setNumber] = useState('');
   const [result, setResult] = useState<ConversionResult>('');
   const [realtime, setRealtime] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [copiedDollar, setCopiedDollar] = useState(false);
 
   const convertToEnglish = (input: string): ConversionResult => {
     if (!input) return '';
@@ -210,8 +294,16 @@ export default function NumberToEnglish() {
             <div className="flex gap-4">
               <NumberInput 
                 value={number}
-                onChange={setNumber}
-                onClear={() => setNumber('')}
+                onChange={(value) => {
+                  setNumber(value);
+                  if (!value) {
+                    setResult(''); // 当输入为空时重置结果
+                  }
+                }}
+                onClear={() => {
+                  setNumber('');
+                  setResult(''); // 当清除输入时重置结果
+                }}
               />
               {!realtime && (
                 <button
@@ -226,13 +318,27 @@ export default function NumberToEnglish() {
             </div>
           </form>
 
-          <div className="mt-8">
-            <h2 className="text-lg font-medium text-[var(--foreground)] mb-4">转换结果</h2>
-            <ResultDisplay 
-              result={result}
-              onCopy={handleCopy}
-              copied={copied}
-            />
+          <div className="mt-8 space-y-4">
+            <div>
+              <h2 className="text-lg font-medium text-[var(--foreground)] mb-4">转换结果</h2>
+              <ResultDisplay 
+                result={result}
+                onCopy={handleCopy}
+                copied={copied}
+              />
+            </div>
+            
+            <div>
+              <h2 className="text-lg font-medium text-[var(--foreground)] mb-4">美元格式</h2>
+              <DollarFormatDisplay 
+                number={number}
+                onCopy={() => {
+                  setCopiedDollar(true);
+                  setTimeout(() => setCopiedDollar(false), 2000);
+                }}
+                copied={copiedDollar}
+              />
+            </div>
           </div>
 
           <div className="mt-8 space-y-2 text-sm text-[var(--foreground)]/60">
