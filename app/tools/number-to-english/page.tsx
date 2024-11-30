@@ -15,7 +15,7 @@ type ConversionResult = {
 type USDResult = {
   dollars: string;
   cents: string;
-} | '';
+} | string;
 
 // 工具函数
 const numberUtils = {
@@ -142,9 +142,10 @@ const DollarFormatDisplay = ({ result, onCopy, copied }: {
   copied: boolean;
 }) => {
   const handleCopyClick = () => {
-    if (result === '') return;
+    if (!result) return;
     
-    const resultText = `${result.dollars}${result.cents ? ` AND ${result.cents}` : ''}`;
+    const resultText = typeof result === 'string' ? result : 
+      `${result.dollars}${result.cents ? ` AND ${result.cents}` : ''}`;
     
     navigator.clipboard.writeText(resultText).then(() => {
       onCopy();
@@ -226,10 +227,17 @@ export default function NumberToEnglish() {
   };
 
   const formatUSDAmount = (num: string): USDResult => {
-    if (!num || isNaN(Number(num.replace(/,/g, '')))) return '';
+    if (!num) return '';
+    
+    // 检查输入是否包含除数字、逗号和小数点以外的字符
+    if (/[^0-9.,]/.test(num)) return '请输入有效数字';
     
     const parts = num.split('.');
     const integerPart = Number(parts[0].replace(/,/g, ''));
+    
+    if (isNaN(integerPart)) return '请输入有效数字';
+    if (integerPart > 999999999999) return '数字太大';
+    
     const decimalPart = parts[1] ? parts[1].slice(0, 2).padEnd(2, '0') : '00';
     
     const integerWords = numberUtils.convertInteger(integerPart).toUpperCase();
@@ -267,6 +275,14 @@ export default function NumberToEnglish() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
+  };
+
+  const handleInputChange = (value: string) => {
+    setNumber(value);
+    if (!value) {
+      setResult(''); // 重置主结果
+      setDollarResult(''); // 重置美元结果
+    }
   };
 
   return (
@@ -311,15 +327,11 @@ export default function NumberToEnglish() {
             <div className="flex gap-4">
               <NumberInput 
                 value={number}
-                onChange={(value) => {
-                  setNumber(value);
-                  if (!value) {
-                    setResult(''); // 当输入为空时重置结果
-                  }
-                }}
+                onChange={handleInputChange}
                 onClear={() => {
                   setNumber('');
-                  setResult(''); // 当清除输入时重置结果
+                  setResult(''); // 重置主结果
+                  setDollarResult(''); // 重置美元结果
                 }}
               />
               {!realtime && (

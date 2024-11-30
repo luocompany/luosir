@@ -86,7 +86,7 @@ export default function NumberToChinese() {
             <div className="flex gap-4">
               <div className="flex-1 relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-300 text-lg">
-                  #
+                  ￥
                 </div>
                 <input
                   type="text"
