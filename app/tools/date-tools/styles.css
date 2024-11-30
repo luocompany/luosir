@@ -1,60 +1,27 @@
 .custom-date-input {
   position: relative;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  color-scheme: light dark;
   font-size: 16px;
-  backdrop-filter: blur(8px);
+  text-align: center;
+  color: #1f2937;
 }
 
-.custom-date-input::-webkit-calendar-picker-indicator {
-  background: transparent;
-  bottom: 0;
-  color: transparent;
-  cursor: pointer;
-  height: auto;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: auto;
-  opacity: 0;
-}
-
-.custom-date-input::-webkit-datetime-edit-text {
-  display: none;
-}
-
-.custom-date-input::-webkit-datetime-edit-year-field,
-.custom-date-input::-webkit-datetime-edit-month-field,
-.custom-date-input::-webkit-datetime-edit-day-field {
-  padding: 0 2px;
-  color: transparent;
-}
-
-.custom-date-input:not([value=""])::-webkit-datetime-edit-year-field,
-.custom-date-input:not([value=""])::-webkit-datetime-edit-month-field,
-.custom-date-input:not([value=""])::-webkit-datetime-edit-day-field {
-  color: inherit;
-}
-
-.custom-date-input:not([value=""])::-webkit-datetime-edit-text {
-  display: inline-block;
-  padding: 0 2px;
-  color: inherit;
-  content: "-";
+.dark .custom-date-input {
+  color: #f3f4f6;
 }
 
 .date-input-wrapper {
   position: relative;
   width: 100%;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .date-placeholder {
   position: absolute;
-  left: 40px;
+  left: 0;
+  right: 0;
   top: 50%;
   transform: translateY(-50%);
+  text-align: center;
   color: #9CA3AF;
   pointer-events: none;
   opacity: 1;
@@ -62,30 +29,42 @@
   z-index: 1;
 }
 
-.custom-date-input:not([value=""]) + .date-placeholder {
+.dark .date-placeholder {
+  color: #6B7280;
+}
+
+.custom-date-input::-webkit-datetime-edit {
+  color: transparent;
+}
+
+.custom-date-input:not([value=""])::-webkit-datetime-edit {
+  color: currentColor;
+}
+
+.custom-date-input:not([value=""]) ~ .date-placeholder {
   opacity: 0;
 }
 
-.custom-date-input:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.05);
+.custom-date-input::-webkit-calendar-picker-indicator {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
 }
 
-.custom-date-input:focus {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.15);
-}
-
-.dark .custom-date-input:hover {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-}
-
-.dark .custom-date-input:focus {
-  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.15);
-}
-
-.date-input-wrapper:hover {
-  transform: translateY(-1px);
+@-moz-document url-prefix() {
+  .custom-date-input {
+    color: transparent;
+  }
+  
+  .custom-date-input:not([value=""]) {
+    color: #1f2937;
+  }
+  
+  .dark .custom-date-input:not([value=""]) {
+    color: #f3f4f6;
+  }
 }
 
 .range-input-wrapper {
@@ -152,30 +131,49 @@
 @media (prefers-color-scheme: dark) {
   .range-input {
     background: linear-gradient(to right, 
-      rgb(239 68 68 / 0.3) 0%, 
-      rgb(239 68 68 / 0.2) 40%, 
-      rgb(59 130 246 / 0.2) 50%, 
-      rgb(34 197 94 / 0.2) 60%, 
-      rgb(34 197 94 / 0.3) 100%
+      rgb(239 68 68 / 0.4) 0%, 
+      rgb(239 68 68 / 0.3) 40%, 
+      rgb(59 130 246 / 0.3) 50%, 
+      rgb(34 197 94 / 0.3) 60%, 
+      rgb(34 197 94 / 0.4) 100%
     );
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   }
 
   .range-input::-webkit-slider-thumb {
     background: rgb(31 41 55);
-    border-color: rgb(59 130 246 / 0.7);
+    border: 2px solid rgb(96 165 250 / 0.8);
+    box-shadow: 0 2px 8px rgba(96, 165, 250, 0.3);
   }
 
   .range-input::-moz-range-thumb {
     background: rgb(31 41 55);
-    border-color: rgb(59 130 246 / 0.7);
+    border: 2px solid rgb(96 165 250 / 0.8);
+    box-shadow: 0 2px 8px rgba(96, 165, 250, 0.3);
   }
 
   .range-input::-webkit-slider-thumb:hover {
-    background: rgb(59 130 246 / 0.3);
+    background: rgb(59 130 246 / 0.4);
+    border-color: rgb(147 197 253 / 0.9);
+    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
+    transform: scale(1.15);
   }
 
   .range-input::-moz-range-thumb:hover {
-    background: rgb(59 130 246 / 0.3);
+    background: rgb(59 130 246 / 0.4);
+    border-color: rgb(147 197 253 / 0.9);
+    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
+    transform: scale(1.15);
+  }
+
+  .range-input::-webkit-slider-thumb:active {
+    background: rgb(59 130 246 / 0.5);
+    transform: scale(1.1);
+  }
+
+  .range-input::-moz-range-thumb:active {
+    background: rgb(59 130 246 / 0.5);
+    transform: scale(1.1);
   }
 }
 
@@ -192,160 +190,5 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .range-input::-moz-focus-outer {
   border: 0;
-}
-
-/* 添加滑块上的天数显示 */
-.range-input-wrapper {
-  position: relative;
-}
-
-/* 为滑块添加天数显示 */
-.range-input::-webkit-slider-thumb::before {
-  content: attr(data-value);
-  position: absolute;
-  top: -24px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(255, 255, 255, 0.9);
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 12px;
-  color: #374151;
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.range-input:hover::-webkit-slider-thumb::before {
-  opacity: 1;
-}
-
-/* 使用绝对定位的标签来显示天数 */
-.range-value-tooltip {
-  position: absolute;
-  top: 0;
-  left: var(--value-position);
-  transform: translateX(-50%) translateY(-24px);
-  background: white;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 12px;
-  color: #374151;
-  pointer-events: none;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
-  z-index: 10;
-}
-
-@media (prefers-color-scheme: dark) {
-  .range-value-tooltip {
-    background: #1f2937;
-    color: #e5e7eb;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-  }
-}
-
-/* 添加一个覆盖层来显示数字 */
-.range-thumb-value {
-  position: absolute;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #374151;
-  font-size: 12px;
-  font-weight: 500;
-  pointer-events: none;
-  user-select: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  .range-thumb-value {
-    color: #e5e7eb;
-  }
-}
-
-/* Firefox 的滑块样式 */
-.range-input::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: #ffffff;
-  border: 1px solid rgba(209, 213, 219, 0.8);
-  cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: all 0.2s ease;
-}
-
-.range-input::-moz-range-track {
-  width: 100%;
-  height: 4px;
-  background: rgba(209, 213, 219, 0.5);
-  border-radius: 2px;
-}
-
-/* 隐藏默认的日期输入框占位符 */
-input[type="date"]::-webkit-datetime-edit-fields-wrapper { 
-  display: none;
-}
-
-input[type="date"]::-webkit-calendar-picker-indicator {
-  background: transparent;
-  bottom: 0;
-  color: transparent;
-  cursor: pointer;
-  height: auto;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: auto;
-}
-
-/* 当输入框为空时显示我们自定义的占位符 */
-input[type="date"]:in-range::-webkit-datetime-edit-year-field,
-input[type="date"]:in-range::-webkit-datetime-edit-month-field,
-input[type="date"]:in-range::-webkit-datetime-edit-day-field,
-input[type="date"]:in-range::-webkit-datetime-edit-text {
-  visibility: hidden;
-}
-
-/* Firefox 特定样式 */
-input[type="date"] {
-  position: relative;
-  color: transparent;
-}
-
-input[type="date"]:focus,
-input[type="date"]:valid {
-  color: var(--text-color);
-}
-
-/* 确保当有值时显示日期文本 */
-input[type="date"]:not(:placeholder-shown) {
-  color: var(--text-color);
-}
-
-/* 自定义占位符样式 */
-.date-input-wrapper {
-  position: relative;
-}
-
-.date-placeholder {
-  position: absolute;
-  left: 3rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #9ca3af;
-  pointer-events: none;
-  transition: all 0.2s;
-}
-
-input[type="date"]:focus + .date-placeholder,
-input[type="date"]:not(:placeholder-shown) + .date-placeholder {
-  opacity: 0;
 }
   

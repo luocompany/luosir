@@ -20,8 +20,21 @@ export default function DateTools() {
   // 添加一个格式化日期的函数
   const formatDate = (dateString: string) => {
     if (!dateString) return '';
-    const [year, month, day] = dateString.split('-');
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
+  };
+
+  // 添加一个新的函数来格式化显示的日期
+  const formatDisplayDate = (dateString: string) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}年${month}月${day}日`;
   };
 
   // 日期差值计算的效果
@@ -104,22 +117,33 @@ export default function DateTools() {
                         onChange={(e) => {
                           const newDate = e.target.value;
                           setDate1(newDate);
-                          e.target.value = formatDate(newDate);
+                          // 更新输入框显示的值
+                          if (e.target.value) {
+                            const formattedDate = formatDisplayDate(newDate);
+                            e.target.setAttribute('data-display', formattedDate);
+                          }
                         }}
+                        data-display=""
+                        placeholder=" "
                         aria-label="结束日期"
                         className="custom-date-input w-full p-3 rounded-2xl border border-gray-200 dark:border-gray-700 
                           bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm text-gray-900 dark:text-white 
                           focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all 
-                          hover:border-blue-500/50 appearance-none pl-12 text-base h-12"
+                          hover:border-blue-500/50 appearance-none text-base h-12"
                       />
                       <span className="date-placeholder">结束日期</span>
                       <svg 
-                        className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-hover:text-blue-500/70 transition-colors"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 hover:text-blue-500/70 transition-colors"
                         fill="none" 
                         viewBox="0 0 24 24" 
                         stroke="currentColor"
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        <path 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round" 
+                          strokeWidth={1.5} 
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" 
+                        />
                       </svg>
                     </div>
                   </div>
@@ -138,22 +162,33 @@ export default function DateTools() {
                         onChange={(e) => {
                           const newDate = e.target.value;
                           setDate2(newDate);
-                          e.target.value = formatDate(newDate);
+                          // 更新输入框显示的值
+                          if (e.target.value) {
+                            const formattedDate = formatDisplayDate(newDate);
+                            e.target.setAttribute('data-display', formattedDate);
+                          }
                         }}
-                        aria-label="开始日期"
+                        data-display=""
+                        placeholder=" "
+                        aria-label="始日期"
                         className="custom-date-input w-full p-3 rounded-2xl border border-gray-200 dark:border-gray-700 
                           bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm text-gray-900 dark:text-white 
                           focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all 
-                          hover:border-blue-500/50 appearance-none pl-12 text-base h-12"
+                          hover:border-blue-500/50 appearance-none text-base h-12"
                       />
                       <span className="date-placeholder">开始日期</span>
                       <svg 
-                        className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400 pointer-events-none"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 hover:text-blue-500/70 transition-colors"
                         fill="none" 
                         viewBox="0 0 24 24" 
                         stroke="currentColor"
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        <path 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round" 
+                          strokeWidth={1.5} 
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" 
+                        />
                       </svg>
                     </div>
                   </div>
@@ -185,21 +220,36 @@ export default function DateTools() {
                         id="baseDate"
                         type="date"
                         value={baseDate}
-                        onChange={(e) => setBaseDate(e.target.value)}
+                        onChange={(e) => {
+                          const newDate = e.target.value;
+                          setBaseDate(newDate);
+                          // 更新输入框显示的值
+                          if (e.target.value) {
+                            const formattedDate = formatDisplayDate(newDate);
+                            e.target.setAttribute('data-display', formattedDate);
+                          }
+                        }}
+                        data-display=""
+                        placeholder=" "
                         aria-label="开始日期"
                         className="custom-date-input w-full p-3 rounded-2xl border border-gray-200 dark:border-gray-700 
                           bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm text-gray-900 dark:text-white 
                           focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all 
-                          hover:border-blue-500/50 appearance-none pl-12 text-base h-12"
+                          hover:border-blue-500/50 appearance-none text-base h-12"
                       />
                       <span className="date-placeholder">开始日期</span>
                       <svg 
-                        className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400 pointer-events-none"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 hover:text-blue-500/70 transition-colors"
                         fill="none" 
                         viewBox="0 0 24 24" 
                         stroke="currentColor"
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        <path 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round" 
+                          strokeWidth={1.5} 
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" 
+                        />
                       </svg>
                     </div>
                   </div>
@@ -225,15 +275,17 @@ export default function DateTools() {
                           hover:border-blue-500/50 text-center text-base h-12 pl-12 pr-8"
                       />
                       <svg 
-                        className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 hover:text-blue-500/70 transition-colors"
                         fill="none" 
                         viewBox="0 0 24 24" 
                         stroke="currentColor"
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                          d="M9 7h8M9 12h8M9 17h8M5 7v0m0 5v0m0 5v0" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5}
-                          d="M4.5 7.5l1-1v2M4.5 12.5l1 1M4.5 11.5l1-1M4 17.5h2" />
+                        <path 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round" 
+                          strokeWidth={1.5} 
+                          d="M9 7h8m-8 5h8m-8 5h8M4 7l1-1v2M4 12l1 1M4 11l1-1M4 17h2" 
+                        />
                       </svg>
                       {!days && (
                         <span className="absolute left-0 right-0 top-1/2 -translate-y-1/2 text-gray-400 text-center pointer-events-none">
