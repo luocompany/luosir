@@ -4,6 +4,7 @@
   font-size: 16px;
   text-align: center !important;
   width: 100%;
+  color: transparent !important;
 }
 
 .dark .custom-date-input {
@@ -42,14 +43,24 @@
   transform: translateY(-50%);
   text-align: center;
   pointer-events: none;
-  color: inherit;
+  color: #1f2937;
   z-index: 1;
   width: 100%;
   padding: 0 2rem;
 }
 
+.dark .custom-date-input::before {
+  color: #f3f4f6;
+}
+
 .custom-date-input::-webkit-datetime-edit {
   opacity: 0;
+  color: transparent;
+}
+
+.custom-date-input::-webkit-datetime-edit-fields-wrapper {
+  opacity: 0;
+  color: transparent;
 }
 
 .custom-date-input:not([value=""])::-webkit-datetime-edit {
@@ -70,11 +81,15 @@
 
 @-moz-document url-prefix() {
   .custom-date-input {
-    color: transparent;
+    color: transparent !important;
   }
   
   .custom-date-input::before {
-    color: currentColor;
+    color: #1f2937;
+  }
+  
+  .dark .custom-date-input::before {
+    color: #f3f4f6;
   }
 }
 
