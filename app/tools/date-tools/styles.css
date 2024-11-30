@@ -285,4 +285,67 @@ input[type="number"]::-webkit-outer-spin-button {
   height: 4px;
   background: rgba(209, 213, 219, 0.5);
   border-radius: 2px;
-} 
+}
+
+/* 隐藏默认的日期输入框占位符 */
+input[type="date"]::-webkit-datetime-edit-fields-wrapper { 
+  display: none;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  background: transparent;
+  bottom: 0;
+  color: transparent;
+  cursor: pointer;
+  height: auto;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: auto;
+}
+
+/* 当输入框为空时显示我们自定义的占位符 */
+input[type="date"]:in-range::-webkit-datetime-edit-year-field,
+input[type="date"]:in-range::-webkit-datetime-edit-month-field,
+input[type="date"]:in-range::-webkit-datetime-edit-day-field,
+input[type="date"]:in-range::-webkit-datetime-edit-text {
+  visibility: hidden;
+}
+
+/* Firefox 特定样式 */
+input[type="date"] {
+  position: relative;
+  color: transparent;
+}
+
+input[type="date"]:focus,
+input[type="date"]:valid {
+  color: var(--text-color);
+}
+
+/* 确保当有值时显示日期文本 */
+input[type="date"]:not(:placeholder-shown) {
+  color: var(--text-color);
+}
+
+/* 自定义占位符样式 */
+.date-input-wrapper {
+  position: relative;
+}
+
+.date-placeholder {
+  position: absolute;
+  left: 3rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  pointer-events: none;
+  transition: all 0.2s;
+}
+
+input[type="date"]:focus + .date-placeholder,
+input[type="date"]:not(:placeholder-shown) + .date-placeholder {
+  opacity: 0;
+}
+  
