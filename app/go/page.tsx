@@ -375,24 +375,60 @@ export default function Go() {
             }
           `}</style>
 
-          {/* 常用搜索 */}
+          {/* 常用工具区域 */}
           <div className="space-y-4">
             <h2 className="text-lg font-medium text-gray-900 dark:text-white
               pb-1.5 border-b border-gray-100 dark:border-gray-800">
-              常用搜索
+              常用工具
             </h2>
             <div className="site-grid">
               {[
+                { name: '数字转英文', url: 'https://mail.luosir.top/tools/number-to-english' },
+                { name: '数字转中文', url: 'https://mail.luosir.top/tools/number-to-chinese' },
+                { name: '日期工具', url: 'https://mail.luosir.top/tools/date-tools' },
+                { name: 'PDF转换', url: 'https://www.ilovepdf.com/zh-cn' },
+                { name: 'YouTube', url: 'https://www.youtube.com' },
+                { name: '世界港口查询', url: 'https://cn.jctrans.com' },
+                { name: '绿色破解软件', url: 'https://www.azhongruanjian.com/'},
                 { name: 'Wikipedia', url: 'https://www.wikipedia.org' },
+              ].map(tool => (
+                <a
+                  key={tool.name}
+                  href={tool.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group px-3 py-2.5 text-center rounded-lg
+                    backdrop-blur-xl bg-white/60 dark:bg-gray-800/30
+                    border border-gray-100 dark:border-gray-700/30
+                    hover:border-blue-500/30 dark:hover:border-blue-500/30
+                    hover:shadow-[0_4px_20px_rgb(0,0,0,0.04)] 
+                    dark:hover:shadow-[0_4px_20px_rgb(0,0,0,0.15)]
+                    transition-all duration-300"
+                >
+                  <span className="text-gray-700 dark:text-gray-300 text-sm
+                    group-hover:text-blue-600 dark:group-hover:text-blue-400
+                    transition-colors duration-300">
+                    {tool.name}
+                  </span>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* 翻译网址 - 原有区域 */}
+          <div className="space-y-4">
+            <h2 className="text-lg font-medium text-gray-900 dark:text-white
+              pb-1.5 border-b border-gray-100 dark:border-gray-800">
+              翻译网址
+            </h2>
+            <div className="site-grid">
+              {[
                 { name: '谷歌翻译', url: 'https://translate.google.com' },
                 { name: 'Bing翻译', url: 'https://www.bing.com/translator' },
                 { name: 'DeepL翻译', url: 'https://www.deepl.com' },
                 { name: 'Linguee', url: 'https://www.linguee.com' },
                 { name: '有道翻译', url: 'https://fanyi.youdao.com' },
                 { name: 'CNKI翻译', url: 'https://dict.cnki.net' },
-                { name: 'Yandex', url: 'https://yandex.com' },
-                { name: 'YouTube', url: 'https://www.youtube.com' },
-                { name: '世界港口查询', url: 'https://cn.jctrans.com' }
               ].map(site => (
                 <a
                   key={site.name}
