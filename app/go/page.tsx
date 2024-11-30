@@ -387,8 +387,6 @@ export default function Go() {
             </h2>
             <div className="site-grid">
               {[
-                { name: 'Google', url: 'https://www.google.com' },
-                { name: 'Bing', url: 'https://www.bing.com' },
                 { name: 'Wikipedia', url: 'https://www.wikipedia.org' },
                 { name: '谷歌翻译', url: 'https://translate.google.com' },
                 { name: 'Bing翻译', url: 'https://www.bing.com/translator' },
@@ -397,7 +395,8 @@ export default function Go() {
                 { name: '有道翻译', url: 'https://fanyi.youdao.com' },
                 { name: 'CNKI翻译', url: 'https://dict.cnki.net' },
                 { name: 'Yandex', url: 'https://yandex.com' },
-                { name: 'YouTube', url: 'https://www.youtube.com' }
+                { name: 'YouTube', url: 'https://www.youtube.com' },
+                { name: '世界港口查询', url: 'https://cn.jctrans.com' }
               ].map(site => (
                 <a
                   key={site.name}
