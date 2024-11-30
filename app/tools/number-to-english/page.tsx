@@ -57,16 +57,23 @@ const NumberInput = ({ value, onChange, onClear }: {
   onClear: () => void;
 }) => (
   <div className="flex-1 relative">
-    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--foreground)]/40 text-lg">
+    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-300 text-lg">
       #
     </div>
     <input
       type="text"
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="w-full pl-10 pr-4 py-4 text-lg font-mono tracking-wider border-2 border-[var(--blue-accent)] 
-        bg-[var(--input-bg)] rounded-xl focus:ring-2 focus:ring-[var(--blue-accent)] focus:outline-none 
-        transition-all placeholder:text-[var(--foreground)]/30 text-[var(--foreground)]"
+      className="w-full pl-10 pr-4 py-4 text-lg font-mono tracking-wider 
+        border border-gray-300 dark:border-gray-600
+        bg-white dark:bg-gray-800
+        text-gray-800 dark:text-gray-100
+        rounded-xl
+        focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400
+        dark:focus:ring-blue-500 dark:focus:border-blue-500
+        hover:border-gray-400 dark:hover:border-gray-500
+        transition-all
+        placeholder:text-gray-400 dark:placeholder:text-gray-500"
       placeholder="0.00"
       inputMode="decimal"
       style={{
@@ -78,8 +85,8 @@ const NumberInput = ({ value, onChange, onClear }: {
       <button
         type="button"
         onClick={onClear}
-        className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--foreground)]/40 
-          hover:text-[var(--foreground)]/60 transition-colors"
+        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400
+          hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
       >
         <XCircleIcon className="h-5 w-5" />
       </button>
@@ -129,36 +136,15 @@ const ResultDisplay = ({ result, onCopy, copied }: {
 );
 
 // DollarFormatDisplay 组件的更新版本
-const DollarFormatDisplay = ({ number, onCopy, copied }: {
-  number: string;
+const DollarFormatDisplay = ({ result, onCopy, copied }: {
+  result: USDResult;
   onCopy: () => void;
   copied: boolean;
 }) => {
-  const formatUSDAmount = (num: string): USDResult => {
-    if (!num || isNaN(Number(num.replace(/,/g, '')))) return '';
-    
-    const parts = num.split('.');
-    const integerPart = Number(parts[0].replace(/,/g, ''));
-    const decimalPart = parts[1] ? parts[1].slice(0, 2).padEnd(2, '0') : '00';
-    
-    const integerWords = numberUtils.convertInteger(integerPart).toUpperCase();
-    const centWords = numberUtils.convertInteger(parseInt(decimalPart)).toUpperCase();
-    
-    const dollarText = integerPart === 1 ? 'DOLLAR' : 'DOLLARS';
-    const centText = parseInt(decimalPart) === 1 ? 'CENT' : 'CENTS';
-    
-    return {
-      dollars: `USD ${integerWords} ${dollarText}`,
-      cents: parseInt(decimalPart) > 0 ? `${centWords} ${centText}` : ''
-    };
-  };
-
-  const dollarResult = formatUSDAmount(number);
-
   const handleCopyClick = () => {
-    if (dollarResult === '') return;
+    if (result === '') return;
     
-    const resultText = `${dollarResult.dollars}${dollarResult.cents ? ` AND ${dollarResult.cents}` : ''}`;
+    const resultText = `${result.dollars}${result.cents ? ` AND ${result.cents}` : ''}`;
     
     navigator.clipboard.writeText(resultText).then(() => {
       onCopy();
@@ -176,19 +162,19 @@ const DollarFormatDisplay = ({ number, onCopy, copied }: {
       </button>
       
       <p className="text-[var(--foreground)] leading-relaxed text-xs">
-        {!number ? (
+        {!result ? (
           <span className="text-[var(--foreground)]/60">等待输入...</span>
         ) : (
           <strong>
-            {typeof dollarResult === 'string' ? dollarResult : (
+            {typeof result === 'string' ? result : (
               <>
-                {dollarResult.dollars}
-                {dollarResult.cents && (
+                {result.dollars}
+                {result.cents && (
                   <>
                     {' '}
                     <span className="text-red-500 font-bold">AND</span>
                     {' '}
-                    {dollarResult.cents}
+                    {result.cents}
                   </>
                 )}
               </>
@@ -203,6 +189,7 @@ const DollarFormatDisplay = ({ number, onCopy, copied }: {
 export default function NumberToEnglish() {
   const [number, setNumber] = useState('');
   const [result, setResult] = useState<ConversionResult>('');
+  const [dollarResult, setDollarResult] = useState<USDResult>('');
   const [realtime, setRealtime] = useState(true);
   const [copied, setCopied] = useState(false);
   const [copiedDollar, setCopiedDollar] = useState(false);
@@ -238,9 +225,29 @@ export default function NumberToEnglish() {
     };
   };
 
+  const formatUSDAmount = (num: string): USDResult => {
+    if (!num || isNaN(Number(num.replace(/,/g, '')))) return '';
+    
+    const parts = num.split('.');
+    const integerPart = Number(parts[0].replace(/,/g, ''));
+    const decimalPart = parts[1] ? parts[1].slice(0, 2).padEnd(2, '0') : '00';
+    
+    const integerWords = numberUtils.convertInteger(integerPart).toUpperCase();
+    const centWords = numberUtils.convertInteger(parseInt(decimalPart)).toUpperCase();
+    
+    const dollarText = integerPart === 1 ? 'DOLLAR' : 'DOLLARS';
+    const centText = parseInt(decimalPart) === 1 ? 'CENT' : 'CENTS';
+    
+    return {
+      dollars: `USD ${integerWords} ${dollarText}`,
+      cents: parseInt(decimalPart) > 0 ? `${centWords} ${centText}` : ''
+    };
+  };
+
   useEffect(() => {
     if (realtime && number) {
       setResult(convertToEnglish(number));
+      setDollarResult(formatUSDAmount(number));
     }
   }, [number, realtime]);
 
@@ -248,6 +255,7 @@ export default function NumberToEnglish() {
     e.preventDefault();
     if (!realtime) {
       setResult(convertToEnglish(number));
+      setDollarResult(formatUSDAmount(number));
     }
   };
 
@@ -262,18 +270,27 @@ export default function NumberToEnglish() {
   };
 
   return (
-    <div className="flex flex-col bg-[var(--background)] text-[var(--foreground)]">
-      <main className="flex-1 container mx-auto px-4 py-12 max-w-3xl">
-        <div className="flex items-center mb-4 sm:mb-8">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50/90 via-white/60 to-gray-100/90 
+                    dark:from-gray-900 dark:via-gray-800/80 dark:to-gray-900/90">
+      <main className="flex-1 container mx-auto px-4 py-8 max-w-6xl">
+        <div className="flex items-center mb-8 sm:mb-12">
           <Link 
             href="/tools" 
-            className="inline-flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 transition-colors"
+            className="group inline-flex items-center px-4 py-2 rounded-full 
+                      bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg 
+                      border border-gray-200/50 dark:border-gray-700/50 
+                      text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 
+                      transition-all hover:shadow-lg hover:scale-[1.02]"
           >
-            <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5 mr-1.5" />
-            <span className="text-sm sm:text-base font-medium">返回</span>
+            <ArrowLeft className="h-4 w-4 mr-1.5 transition-transform group-hover:-translate-x-0.5" />
+            <span className="text-sm font-medium">返回</span>
           </Link>
         </div>
-        <div className="backdrop-blur-xl bg-[var(--card-bg)] rounded-2xl p-8 shadow-lg border border-[var(--card-border)]">
+
+        <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-2xl p-6 sm:p-8 
+                      rounded-[2rem] shadow-xl 
+                      border border-gray-200/50 dark:border-gray-700/50 
+                      hover:shadow-2xl transition-all duration-500">
           <h1 className="text-2xl font-bold text-[var(--foreground)] mb-6">数字转英文工具</h1>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="flex items-center justify-end mb-6">
@@ -331,7 +348,7 @@ export default function NumberToEnglish() {
             <div>
               <h2 className="text-lg font-medium text-[var(--foreground)] mb-4">美元格式</h2>
               <DollarFormatDisplay 
-                number={number}
+                result={dollarResult}
                 onCopy={() => {
                   setCopiedDollar(true);
                   setTimeout(() => setCopiedDollar(false), 2000);

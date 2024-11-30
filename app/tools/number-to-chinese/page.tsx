@@ -46,18 +46,26 @@ export default function NumberToChinese() {
   };
 
   return (
-    <div className="flex flex-col bg-[var(--background)] text-[var(--foreground)]">
-      <main className="flex-1 container mx-auto px-4 py-12 max-w-3xl">
-        <div className="flex items-center mb-4 sm:mb-8">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50/90 via-white/60 to-gray-100/90 
+                    dark:from-gray-900 dark:via-gray-800/80 dark:to-gray-900/90">
+      <main className="flex-1 container mx-auto px-4 py-8 max-w-6xl">
+        <div className="flex items-center mb-8 sm:mb-12">
           <Link 
             href="/tools" 
-            className="inline-flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 transition-colors"
+            className="group inline-flex items-center px-4 py-2 rounded-full 
+                      bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg 
+                      border border-gray-200/50 dark:border-gray-700/50 
+                      text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 
+                      transition-all hover:shadow-lg hover:scale-[1.02]"
           >
-            <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5 mr-1.5" />
-            <span className="text-sm sm:text-base font-medium">返回</span>
+            <ArrowLeft className="h-4 w-4 mr-1.5 transition-transform group-hover:-translate-x-0.5" />
+            <span className="text-sm font-medium">返回</span>
           </Link>
         </div>
-        <div className="backdrop-blur-xl bg-[var(--card-bg)] rounded-2xl p-8 shadow-lg border border-[var(--card-border)]">
+        <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-2xl p-6 sm:p-8 
+                      rounded-[2rem] shadow-xl 
+                      border border-gray-200/50 dark:border-gray-700/50 
+                      hover:shadow-2xl transition-all duration-500">
           <h1 className="text-2xl font-bold text-[var(--foreground)] mb-6">人民币大写金额转换</h1>
           <form className="space-y-6">
             <div className="flex items-center justify-end mb-6">
@@ -77,14 +85,21 @@ export default function NumberToChinese() {
 
             <div className="flex gap-4">
               <div className="flex-1 relative">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--foreground)]/40 text-lg">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-300 text-lg">
                   #
                 </div>
                 <input
                   type="text"
-                  className="w-full pl-10 pr-4 py-4 text-lg font-mono tracking-wider border-2 border-[var(--blue-accent)] 
-                    bg-[var(--input-bg)] rounded-xl focus:ring-2 focus:ring-[var(--blue-accent)] focus:outline-none 
-                    transition-all placeholder:text-[var(--foreground)]/30 text-[var(--foreground)]"
+                  className="w-full pl-10 pr-4 py-4 text-lg font-mono tracking-wider 
+                    border border-gray-300 dark:border-gray-600
+                    bg-white dark:bg-gray-800
+                    text-gray-800 dark:text-gray-100
+                    rounded-xl
+                    focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400
+                    dark:focus:ring-blue-500 dark:focus:border-blue-500
+                    hover:border-gray-400 dark:hover:border-gray-500
+                    transition-all
+                    placeholder:text-gray-400 dark:placeholder:text-gray-500"
                   placeholder="0.00"
                   value={lowerAmount}
                   onChange={(e) => setLowerAmount(e.target.value)}
@@ -98,8 +113,8 @@ export default function NumberToChinese() {
                   <button
                     type="button"
                     onClick={() => setLowerAmount('')}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--foreground)]/40 
-                      hover:text-[var(--foreground)]/60 transition-colors"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400
+                      hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
                   >
                     <XCircleIcon className="h-5 w-5" />
                   </button>
@@ -179,7 +194,7 @@ export default function NumberToChinese() {
                 <div className="space-y-3">
                   <p>一、中文大写金额数字到"元"为止的，在"元"之后、应写"整"(或"正")字；在"角"和"分"之后，不写"整"(或"正")字。</p>
                   
-                  <p>二、中文大写金额��字前应标明"人民币"字样，大写金额数字应紧接"人民币"字样填写，不得留有空白。大写金额数字前未印"人民币"字样的，应加填"人民币"三字，在票据和结算凭证大写金额栏内不得预印固定的"仟、佰、拾、万、仟、佰、拾、元、角、分"字样。</p>
+                  <p>二、中文大写金额字前应标明"人民币"字样，大写金额数字应紧接"人民币"字样填写，不得留有空白。大写金额数字前未印"人民币"字样的，应加填"人民币"三字，在票据和结算凭证大写金额栏内不得预印固定的"仟、佰、拾、万、仟、佰、拾、元、角、分"字样。</p>
                   
                   <div>
                     <p>三、阿拉伯数字小写金额数字中有"0"时，中文大写应按照汉语语言规律、金额数字构成和防止涂改的要求进行书写。举例如下：</p>

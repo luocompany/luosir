@@ -84,14 +84,19 @@ export default function DateTools() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50/90 via-white/60 to-gray-100/90 dark:from-gray-900 dark:via-gray-900/80 dark:to-gray-800">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50/90 via-white/60 to-gray-100/90 
+                    dark:from-gray-900 dark:via-gray-800/80 dark:to-gray-900/90">
       <main className="flex-1 container mx-auto px-4 py-8 max-w-6xl">
         <div className="max-w-full mx-auto">
           {/* 返回按钮优化 */}
           <div className="flex items-center mb-8 sm:mb-12">
             <Link 
               href="/tools" 
-              className="group inline-flex items-center px-4 py-2 rounded-full bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-gray-200/50 dark:border-gray-700/50 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 transition-all hover:shadow-lg hover:scale-[1.02]"
+              className="group inline-flex items-center px-4 py-2 rounded-full 
+                        bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg 
+                        border border-gray-200/50 dark:border-gray-700/50 
+                        text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 
+                        transition-all hover:shadow-lg hover:scale-[1.02]"
             >
               <ArrowLeft className="h-4 w-4 mr-1.5 transition-transform group-hover:-translate-x-0.5" />
               <span className="text-sm font-medium">返回</span>
@@ -100,9 +105,12 @@ export default function DateTools() {
 
           {/* 网格布局优化 */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-            {/* 日期差值计算部分 - 优化卡片样式 */}
-            <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-2xl p-6 sm:p-8 rounded-[2rem] shadow-xl border border-gray-200/50 dark:border-gray-700/50 h-fit hover:shadow-2xl transition-all duration-500">
-              <h2 className="text-2xl font-semibold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-8">
+            {/* 日期差值计算部分 */}
+            <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-2xl p-6 sm:p-8 
+                          rounded-[2rem] shadow-xl 
+                          border border-gray-200/50 dark:border-gray-700/50 
+                          h-fit hover:shadow-2xl transition-all duration-500">
+              <h2 className="text-2xl font-semibold mb-8 text-gray-900 dark:text-gray-100">
                 计算日期差值
               </h2>
               <div className="space-y-6">
@@ -195,10 +203,16 @@ export default function DateTools() {
                 </div>
 
                 {diffDays !== null && (
-                  <div className="mt-4 sm:mt-6 p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-gradient-to-r from-blue-50/90 to-blue-50/50 dark:from-blue-900/30 dark:to-blue-900/10 backdrop-blur-xl border border-blue-100/80 dark:border-blue-800/30">
+                  <div className="mt-4 sm:mt-6 p-4 sm:p-6 rounded-xl sm:rounded-2xl 
+                                bg-gradient-to-r from-blue-50/90 to-blue-50/50 
+                                dark:from-blue-900/30 dark:to-blue-900/10 
+                                backdrop-blur-xl 
+                                border border-blue-100/80 dark:border-blue-800/30">
                     <p className="text-center text-lg sm:text-xl font-medium text-gray-900 dark:text-white">
                       计算结果：相差
-                      <span className="text-blue-600 dark:text-blue-400 font-semibold mx-2">{diffDays}</span>
+                      <span className="text-blue-600 dark:text-blue-400 font-semibold mx-2">
+                        {diffDays}
+                      </span>
                       天
                     </p>
                   </div>
@@ -206,9 +220,12 @@ export default function DateTools() {
               </div>
             </div>
 
-            {/* 日期推算部分 - 优化卡片样式 */}
-            <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-2xl p-6 sm:p-8 rounded-[2rem] shadow-xl border border-gray-200/50 dark:border-gray-700/50 h-fit hover:shadow-2xl transition-all duration-500">
-              <h2 className="text-2xl font-semibold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-8">
+            {/* 日期推算部分 */}
+            <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-2xl p-6 sm:p-8 
+                          rounded-[2rem] shadow-xl 
+                          border border-gray-200/50 dark:border-gray-700/50 
+                          h-fit hover:shadow-2xl transition-all duration-500">
+              <h2 className="text-2xl font-semibold mb-8 text-gray-900 dark:text-gray-100">
                 日期推算
               </h2>
               <div className="space-y-3 sm:space-y-4">
@@ -299,7 +316,9 @@ export default function DateTools() {
                   </div>
                 </div>
 
-                <div className="space-y-4 bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl p-6 backdrop-blur-sm border border-gray-200/30 dark:border-gray-700/30">
+                <div className="space-y-4 bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl p-6 
+                              backdrop-blur-sm 
+                              border border-gray-200/30 dark:border-gray-700/30">
                   <div className="relative px-4">
                     <label htmlFor="daysRange" className="sr-only">天数范围选择</label>
                     <input
@@ -418,7 +437,10 @@ export default function DateTools() {
               </div>
 
               {resultDate && (
-                <div className="mt-4 sm:mt-6 p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-blue-50/50 dark:bg-blue-900/20 backdrop-blur-sm border border-blue-100 dark:border-blue-800/50">
+                <div className="mt-4 sm:mt-6 p-4 sm:p-6 rounded-xl sm:rounded-2xl 
+                              bg-blue-50/50 dark:bg-blue-900/20 
+                              backdrop-blur-sm 
+                              border border-blue-100 dark:border-blue-800/50">
                   <p className="text-center text-lg sm:text-xl font-medium text-gray-900 dark:text-white">
                     {Math.abs(parseInt(days))}天
                     <span className={parseInt(days) >= 0 ? 
@@ -428,7 +450,9 @@ export default function DateTools() {
                       {parseInt(days) >= 0 ? '后' : '前'}
                     </span>
                     是: 
-                    <span className="text-blue-600 dark:text-blue-400 font-semibold ml-2">{formatDate(resultDate)}</span>
+                    <span className="text-blue-600 dark:text-blue-400 font-semibold ml-2">
+                      {formatDate(resultDate)}
+                    </span>
                   </p>
                 </div>
               )}
