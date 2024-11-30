@@ -96,6 +96,7 @@ export default function DateTools() {
                 <div className="flex flex-col sm:flex-row items-center gap-4">
                   <div className="relative flex-1 w-full">
                     <div className="date-input-wrapper">
+                      <label htmlFor="date1" className="sr-only">结束日期</label>
                       <input
                         id="date1"
                         type="date"
@@ -105,6 +106,7 @@ export default function DateTools() {
                           setDate1(newDate);
                           e.target.value = formatDate(newDate);
                         }}
+                        aria-label="结束日期"
                         className="custom-date-input w-full p-3 rounded-2xl border border-gray-200 dark:border-gray-700 
                           bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm text-gray-900 dark:text-white 
                           focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all 
@@ -128,6 +130,7 @@ export default function DateTools() {
 
                   <div className="relative flex-1 w-full">
                     <div className="date-input-wrapper">
+                      <label htmlFor="date2" className="sr-only">开始日期</label>
                       <input
                         id="date2"
                         type="date"
@@ -137,6 +140,7 @@ export default function DateTools() {
                           setDate2(newDate);
                           e.target.value = formatDate(newDate);
                         }}
+                        aria-label="开始日期"
                         className="custom-date-input w-full p-3 rounded-2xl border border-gray-200 dark:border-gray-700 
                           bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm text-gray-900 dark:text-white 
                           focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all 
@@ -176,11 +180,13 @@ export default function DateTools() {
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
                   <div className="relative flex-1">
                     <div className="date-input-wrapper">
+                      <label htmlFor="baseDate" className="sr-only">开始日期</label>
                       <input
                         id="baseDate"
                         type="date"
                         value={baseDate}
                         onChange={(e) => setBaseDate(e.target.value)}
+                        aria-label="开始日期"
                         className="custom-date-input w-full p-3 rounded-2xl border border-gray-200 dark:border-gray-700 
                           bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm text-gray-900 dark:text-white 
                           focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all 
@@ -204,17 +210,19 @@ export default function DateTools() {
 
                   <div className="relative flex-1">
                     <div className="relative">
+                      <label htmlFor="daysInput" className="sr-only">间隔天数</label>
                       <input
                         id="daysInput"
                         type="number"
                         value={days}
                         onChange={(e) => setDays(e.target.value)}
+                        aria-label="间隔天数"
+                        min="-365"
+                        max="365"
                         className="w-full p-3 rounded-2xl border border-gray-200 dark:border-gray-700 
                           bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm text-gray-900 dark:text-white 
                           focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all 
                           hover:border-blue-500/50 text-center text-base h-12 pl-12 pr-8"
-                        min="-365"
-                        max="365"
                       />
                       <svg 
                         className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
