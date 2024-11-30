@@ -249,13 +249,16 @@ export default function DateTools() {
 
                 <div className="space-y-4 bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl p-6 backdrop-blur-sm border border-gray-200/30 dark:border-gray-700/30">
                   <div className="relative px-4">
+                    <label htmlFor="daysRange" className="sr-only">天数范围选择</label>
                     <input
+                      id="daysRange"
                       type="range"
                       min="-365"
                       max="365"
                       step="1"
                       value={days}
                       onChange={(e) => setDays(e.target.value)}
+                      aria-label="天数范围选择"
                       className="range-input"
                     />
                   </div>
