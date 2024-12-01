@@ -166,9 +166,8 @@ export default function Go() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50/80 via-white to-gray-50/80 
-                    dark:from-gray-900 dark:via-gray-900/95 dark:to-gray-900">
-      {/* Logo区域 - 改为absolute定位 */}
+    <div className="min-h-screen flex flex-col bg-[var(--background)]">
+      {/* Logo区域 */}
       <div className="absolute top-0 left-0 p-4 z-50">
         <Link href="/tools" className="flex items-center space-x-3 group">
           <Image 
@@ -178,8 +177,7 @@ export default function Go() {
             height={36} 
             className="group-hover:scale-105 transition-transform duration-300"
           />
-          <span className="text-lg font-medium bg-clip-text text-transparent 
-            bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300">
+          <span className="text-lg font-medium text-[var(--foreground)]">
             LC网址导航
           </span>
         </Link>
@@ -188,9 +186,10 @@ export default function Go() {
       <main className="flex-1 container mx-auto px-4 py-8">
         {/* 搜索框区域 */}
         <div className="max-w-3xl mx-auto mt-8 mb-12">
-          <div className="search-box backdrop-blur-xl bg-white/90 dark:bg-gray-800/50 
-            rounded-2xl p-6 shadow-lg shadow-gray-200/50 dark:shadow-none
-            border border-gray-100 dark:border-gray-700/30
+          <div className="search-box backdrop-blur-xl bg-white/90 dark:bg-[var(--card-bg)] 
+            rounded-2xl p-6 
+            shadow-lg shadow-gray-200/50 dark:shadow-none
+            border border-[var(--card-border)]
             hover:shadow-xl hover:shadow-gray-200/50 dark:hover:shadow-none
             transition-all duration-300">
             
@@ -263,15 +262,15 @@ export default function Go() {
                   name="search"
                   placeholder={searchEngine === 'baidu' ? "百度一下，你就知道" : "Search Google or type a URL"}
                   className="w-full px-10 py-2.5 text-sm
-                    bg-white dark:bg-gray-800 
-                    border border-gray-200 dark:border-gray-700/50
+                    bg-white dark:bg-[var(--card-bg)]
+                    border border-[var(--card-border)]
                     rounded-full
                     hover:shadow-[0_1px_6px_rgba(32,33,36,.28)] dark:hover:shadow-[0_1px_6px_rgba(0,0,0,.28)]
                     focus:shadow-[0_1px_6px_rgba(32,33,36,.28)] dark:focus:shadow-[0_1px_6px_rgba(0,0,0,.28)]
                     focus:border-blue-500/30 dark:focus:border-blue-500/30
                     outline-none transition-all duration-300
                     placeholder:text-gray-500 dark:placeholder:text-gray-400
-                    text-gray-900 dark:text-gray-100"
+                    text-[var(--foreground)]"
                 />
                 <div className="absolute right-4 flex items-center space-x-2">
                   <button
@@ -377,8 +376,8 @@ export default function Go() {
 
           {/* 常用工具区域 */}
           <div className="space-y-4">
-            <h2 className="text-lg font-medium text-gray-900 dark:text-white
-              pb-1.5 border-b border-gray-100 dark:border-gray-800">
+            <h2 className="text-lg font-medium text-[var(--foreground)]
+              pb-1.5 border-b border-[var(--card-border)]">
               常用工具
             </h2>
             <div className="site-grid">
@@ -398,14 +397,14 @@ export default function Go() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group px-3 py-2.5 text-center rounded-lg
-                    backdrop-blur-xl bg-white/60 dark:bg-gray-800/30
-                    border border-gray-100 dark:border-gray-700/30
+                    backdrop-blur-xl bg-white/60 dark:bg-[var(--card-bg)]
+                    border border-[var(--card-border)]
                     hover:border-blue-500/30 dark:hover:border-blue-500/30
                     hover:shadow-[0_4px_20px_rgb(0,0,0,0.04)] 
                     dark:hover:shadow-[0_4px_20px_rgb(0,0,0,0.15)]
                     transition-all duration-300"
                 >
-                  <span className="text-gray-700 dark:text-gray-300 text-sm
+                  <span className="text-[var(--foreground)] text-sm
                     group-hover:text-blue-600 dark:group-hover:text-blue-400
                     transition-colors duration-300">
                     {tool.name}
@@ -417,8 +416,8 @@ export default function Go() {
 
           {/* 翻译网址 - 原有区域 */}
           <div className="space-y-4">
-            <h2 className="text-lg font-medium text-gray-900 dark:text-white
-              pb-1.5 border-b border-gray-100 dark:border-gray-800">
+            <h2 className="text-lg font-medium text-[var(--foreground)]
+              pb-1.5 border-b border-[var(--card-border)]">
               翻译网址
             </h2>
             <div className="site-grid">
@@ -436,14 +435,14 @@ export default function Go() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group px-3 py-2.5 text-center rounded-lg
-                    backdrop-blur-xl bg-white/60 dark:bg-gray-800/30
-                    border border-gray-100 dark:border-gray-700/30
+                    backdrop-blur-xl bg-white/60 dark:bg-[var(--card-bg)]
+                    border border-[var(--card-border)]
                     hover:border-blue-500/30 dark:hover:border-blue-500/30
                     hover:shadow-[0_4px_20px_rgb(0,0,0,0.04)] 
                     dark:hover:shadow-[0_4px_20px_rgb(0,0,0,0.15)]
                     transition-all duration-300"
                 >
-                  <span className="text-gray-700 dark:text-gray-300 text-sm
+                  <span className="text-[var(--foreground)] text-sm
                     group-hover:text-blue-600 dark:group-hover:text-blue-400
                     transition-colors duration-300">
                     {site.name}
