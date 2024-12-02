@@ -226,6 +226,12 @@ function numberToChinese(amount: string): string {
   const bigUnits = ['', '万', '亿', '兆'];
   
   const [integerPart, decimalPart] = amount.replace(/,/g, '').split('.');
+
+  // 添加数值上限检查（兆 = 10^16，所以我们限制到 9999 9999 9999 9999）
+  if (integerPart.length > 16 || (integerPart.length === 16 && integerPart > "9999999999999999")) {
+    return "数字太大";
+  }
+  
   let result = '人民币';
   
   // 处理整数部分
@@ -271,17 +277,21 @@ function numberToChinese(amount: string): string {
       if (groupValue) {
         // 当前组有值
         if (hasValue && !groupValue.startsWith('零') && 
-            !finalResult.endsWith('亿') && !finalResult.endsWith('万')) {
+            !finalResult.endsWith('亿') && !finalResult.endsWith('万') && 
+            !finalResult.endsWith('兆')) { // 添加兆的检查
           finalResult += '零';
         }
         finalResult += groupValue + bigUnit;
         hasValue = true;
       } else {
         // 当前组全为零
-        if (hasValue && bigUnit === '亿') {
+        if (bigUnit === '兆' && hasValue) {
           finalResult += bigUnit;
-        } else if (hasValue && bigUnit === '万' && 
-                   groups.slice(i + 1).some(g => g !== '0000')) {
+        } else if (bigUnit === '亿' && hasValue && 
+                   groups.slice(i + 1).some(g => parseInt(g) !== 0)) {
+          finalResult += bigUnit;
+        } else if (bigUnit === '万' && hasValue && 
+                   groups.slice(i + 1).some(g => parseInt(g) !== 0)) {
           finalResult += bigUnit;
         }
       }
