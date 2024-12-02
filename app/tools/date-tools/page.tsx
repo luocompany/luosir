@@ -110,10 +110,10 @@ export default function DateTools() {
                           rounded-[2rem] shadow-xl 
                           border border-gray-200/50 dark:border-gray-700/50 
                           h-fit hover:shadow-2xl transition-all duration-500">
-              <h2 className="text-2xl font-semibold mb-8 text-gray-900 dark:text-gray-100">
+              <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
                 日期推算
               </h2>
-              <div className="space-y-3 sm:space-y-4">
+              <div className="space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
                   <div className="relative flex-1">
                     <div className="date-input-wrapper">
@@ -322,10 +322,10 @@ export default function DateTools() {
               </div>
 
               {resultDate && (
-                <div className="mt-4 sm:mt-6 p-4 sm:p-6 rounded-xl sm:rounded-2xl 
-                              bg-blue-50/50 dark:bg-blue-900/20 
-                              backdrop-blur-sm 
-                              border border-blue-100 dark:border-blue-800/50">
+                <div className="mt-4 p-4 rounded-xl sm:rounded-2xl 
+                                bg-blue-50/50 dark:bg-blue-900/20 
+                                backdrop-blur-sm 
+                                border border-blue-100 dark:border-blue-800/50">
                   <p className="text-center text-lg sm:text-xl font-medium text-gray-900 dark:text-white">
                     {Math.abs(parseInt(days))}天
                     <span className={parseInt(days) >= 0 ? 
@@ -348,10 +348,10 @@ export default function DateTools() {
                           rounded-[2rem] shadow-xl 
                           border border-gray-200/50 dark:border-gray-700/50 
                           h-fit hover:shadow-2xl transition-all duration-500">
-              <h2 className="text-2xl font-semibold mb-8 text-gray-900 dark:text-gray-100">
+              <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
                 计算日期差值
               </h2>
-              <div className="space-y-6">
+              <div className="space-y-4">
                 <div className="flex flex-col sm:flex-row items-center gap-4">
                   <div className="relative flex-1 w-full">
                     <div className="date-input-wrapper">
@@ -441,11 +441,11 @@ export default function DateTools() {
                 </div>
 
                 {diffDays !== null && (
-                  <div className="mt-4 sm:mt-6 p-4 sm:p-6 rounded-xl sm:rounded-2xl 
-                                bg-gradient-to-r from-blue-50/90 to-blue-50/50 
-                                dark:from-blue-900/30 dark:to-blue-900/10 
-                                backdrop-blur-xl 
-                                border border-blue-100/80 dark:border-blue-800/30">
+                  <div className="mt-4 p-4 rounded-xl sm:rounded-2xl 
+                                  bg-gradient-to-r from-blue-50/90 to-blue-50/50 
+                                  dark:from-blue-900/30 dark:to-blue-900/10 
+                                  backdrop-blur-xl 
+                                  border border-blue-100/80 dark:border-blue-800/30">
                     <p className="text-center text-lg sm:text-xl font-medium text-gray-900 dark:text-white">
                       计算结果：相差
                       <span className="text-blue-600 dark:text-blue-400 font-semibold mx-2">

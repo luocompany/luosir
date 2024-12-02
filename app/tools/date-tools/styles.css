@@ -119,50 +119,56 @@
 .range-input-wrapper {
   position: relative;
   width: 100%;
-  height: 44px;
+  height: 32px;
   display: flex;
   align-items: center;
+  padding: 0;
 }
 
 .range-input {
   -webkit-appearance: none;
   width: 100%;
-  height: 6px;
+  height: 8px;
   background: linear-gradient(to right, 
-    rgb(239 68 68 / 0.2) 0%, 
-    rgb(239 68 68 / 0.1) 40%, 
-    rgb(59 130 246 / 0.1) 50%, 
-    rgb(34 197 94 / 0.1) 60%, 
-    rgb(34 197 94 / 0.2) 100%
+    rgb(239 68 68 / 0.3) 0%, 
+    rgb(239 68 68 / 0.2) 40%, 
+    rgb(59 130 246 / 0.2) 50%, 
+    rgb(34 197 94 / 0.2) 60%, 
+    rgb(34 197 94 / 0.3) 100%
   );
   border-radius: 999px;
   outline: none;
   padding: 0;
-  margin: 10px 0;
+  margin: 4px 0;
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .range-input::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   background: white;
-  border: 2px solid rgb(59 130 246 / 0.5);
+  border: 2px solid rgb(59 130 246);
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.1),
+    0 0 15px rgba(59 130 246, 0.2);
 }
 
 .range-input::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   background: white;
-  border: 2px solid rgb(59 130 246 / 0.5);
+  border: 2px solid rgb(59 130 246);
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.1),
+    0 0 15px rgba(59 130 246, 0.2);
 }
 
 .range-input::-webkit-slider-thumb:hover {
@@ -179,50 +185,72 @@
 
 @media (prefers-color-scheme: dark) {
   .range-input {
+    height: 8px;
     background: linear-gradient(to right, 
-      rgb(239 68 68 / 0.4) 0%, 
-      rgb(239 68 68 / 0.3) 40%, 
-      rgb(59 130 246 / 0.3) 50%, 
-      rgb(34 197 94 / 0.3) 60%, 
-      rgb(34 197 94 / 0.4) 100%
+      rgb(239 68 68) 0%, 
+      rgb(239 68 68 / 0.9) 40%, 
+      rgb(59 130 246 / 0.9) 50%, 
+      rgb(34 197 94 / 0.9) 60%, 
+      rgb(34 197 94) 100%
     );
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 
+      0 2px 8px rgba(0, 0, 0, 0.4),
+      0 0 30px rgba(59, 130, 246, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
   }
 
   .range-input::-webkit-slider-thumb {
-    background: rgb(31 41 55);
-    border: 2px solid rgb(96 165 250 / 0.8);
-    box-shadow: 0 2px 8px rgba(96, 165, 250, 0.3);
+    width: 28px;
+    height: 28px;
+    background: rgb(59 130 246);
+    border: 3px solid rgb(147 197 253);
+    box-shadow: 
+      0 2px 12px rgba(59, 130, 246, 0.8),
+      0 0 35px rgba(59, 130, 246, 0.6);
   }
 
   .range-input::-moz-range-thumb {
-    background: rgb(31 41 55);
-    border: 2px solid rgb(96 165 250 / 0.8);
-    box-shadow: 0 2px 8px rgba(96, 165, 250, 0.3);
+    width: 28px;
+    height: 28px;
+    background: rgb(59 130 246);
+    border: 3px solid rgb(147 197 253);
+    box-shadow: 
+      0 2px 12px rgba(59, 130, 246, 0.8),
+      0 0 35px rgba(59, 130, 246, 0.6);
   }
 
   .range-input::-webkit-slider-thumb:hover {
-    background: rgb(59 130 246 / 0.4);
-    border-color: rgb(147 197 253 / 0.9);
-    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
-    transform: scale(1.15);
+    background: rgb(96 165 250);
+    border-color: rgb(191 219 254);
+    box-shadow: 
+      0 4px 15px rgba(59, 130, 246, 0.9),
+      0 0 45px rgba(59, 130, 246, 0.7);
+    transform: scale(1.2);
   }
 
   .range-input::-moz-range-thumb:hover {
-    background: rgb(59 130 246 / 0.4);
-    border-color: rgb(147 197 253 / 0.9);
-    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
-    transform: scale(1.15);
+    background: rgb(96 165 250);
+    border-color: rgb(191 219 254);
+    box-shadow: 
+      0 4px 15px rgba(59, 130, 246, 0.9),
+      0 0 45px rgba(59, 130, 246, 0.7);
+    transform: scale(1.2);
   }
 
   .range-input::-webkit-slider-thumb:active {
-    background: rgb(59 130 246 / 0.5);
-    transform: scale(1.1);
+    background: rgb(147 197 253);
+    box-shadow: 
+      0 4px 15px rgba(59, 130, 246, 1),
+      0 0 50px rgba(59, 130, 246, 0.8);
+    transform: scale(1.15);
   }
 
   .range-input::-moz-range-thumb:active {
-    background: rgb(59 130 246 / 0.5);
-    transform: scale(1.1);
+    background: rgb(147 197 253);
+    box-shadow: 
+      0 4px 15px rgba(59, 130, 246, 1),
+      0 0 50px rgba(59, 130, 246, 0.8);
+    transform: scale(1.15);
   }
 }
 
