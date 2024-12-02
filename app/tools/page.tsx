@@ -23,8 +23,8 @@ export default function Tools() {
                     hover:bg-gray-50/80 dark:hover:bg-gray-700/50">
                   <span className="text-xl">📅</span>
                   <div>
-                    <h3 className="font-medium text-gray-900 dark:text-gray-100">日期计算器</h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">日期差值计算与推算</p>
+                    <h3 className="font-medium text-gray-900 dark:text-gray-100">交货期计算器</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">日期差值推算与计算</p>
                   </div>
                 </Link>
                 <Link href="/tools/number-to-english" 
@@ -35,7 +35,7 @@ export default function Tools() {
                     hover:bg-gray-50/80 dark:hover:bg-gray-700/50">
                   <span className="text-xl">💰</span>
                   <div>
-                    <h3 className="font-medium text-gray-900 dark:text-gray-100">数字转英文</h3>
+                    <h3 className="font-medium text-gray-900 dark:text-gray-100">美金大写金额</h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400">将数字转换为英文表达</p>
                   </div>
                 </Link>
@@ -47,7 +47,7 @@ export default function Tools() {
                     hover:bg-gray-50/80 dark:hover:bg-gray-700/50">
                   <span className="text-xl">💴</span>
                   <div>
-                    <h3 className="font-medium text-gray-900 dark:text-gray-100">数字转中文</h3>
+                    <h3 className="font-medium text-gray-900 dark:text-gray-100">人民币大写金额</h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400">将数字转换为中文表达</p>
                   </div>
                 </Link>
