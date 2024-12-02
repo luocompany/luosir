@@ -105,122 +105,7 @@ export default function DateTools() {
 
           {/* 网格布局优化 */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-            {/* 日期差值计算部分 */}
-            <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-2xl p-6 sm:p-8 
-                          rounded-[2rem] shadow-xl 
-                          border border-gray-200/50 dark:border-gray-700/50 
-                          h-fit hover:shadow-2xl transition-all duration-500">
-              <h2 className="text-2xl font-semibold mb-8 text-gray-900 dark:text-gray-100">
-                计算日期差值
-              </h2>
-              <div className="space-y-6">
-                <div className="flex flex-col sm:flex-row items-center gap-4">
-                  <div className="relative flex-1 w-full">
-                    <div className="date-input-wrapper">
-                      <label htmlFor="date1" className="sr-only">结束日期</label>
-                      <input
-                        id="date1"
-                        type="date"
-                        value={date1}
-                        onChange={(e) => {
-                          const newDate = e.target.value;
-                          setDate1(newDate);
-                          // 更新输入框显示的值
-                          if (e.target.value) {
-                            const formattedDate = formatDisplayDate(newDate);
-                            e.target.setAttribute('data-display', formattedDate);
-                          }
-                        }}
-                        data-display=""
-                        placeholder=" "
-                        aria-label="结束日期"
-                        className="custom-date-input w-full p-3 rounded-2xl border border-gray-200 dark:border-gray-700 
-                          bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm text-gray-900 dark:text-white 
-                          focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all 
-                          hover:border-blue-500/50 appearance-none text-base h-12"
-                      />
-                      <span className="date-placeholder">结束日期</span>
-                      <svg 
-                        className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 hover:text-blue-500/70 transition-colors"
-                        fill="none" 
-                        viewBox="0 0 24 24" 
-                        stroke="currentColor"
-                      >
-                        <path 
-                          strokeLinecap="round" 
-                          strokeLinejoin="round" 
-                          strokeWidth={1.5} 
-                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" 
-                        />
-                      </svg>
-                    </div>
-                  </div>
-
-                  <div className="hidden sm:flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
-                    <span className="text-gray-600 dark:text-gray-300 text-lg font-medium select-none">-</span>
-                  </div>
-
-                  <div className="relative flex-1 w-full">
-                    <div className="date-input-wrapper">
-                      <label htmlFor="date2" className="sr-only">开始日期</label>
-                      <input
-                        id="date2"
-                        type="date"
-                        value={date2}
-                        onChange={(e) => {
-                          const newDate = e.target.value;
-                          setDate2(newDate);
-                          // 更新输入框显示的值
-                          if (e.target.value) {
-                            const formattedDate = formatDisplayDate(newDate);
-                            e.target.setAttribute('data-display', formattedDate);
-                          }
-                        }}
-                        data-display=""
-                        placeholder=" "
-                        aria-label="始日期"
-                        className="custom-date-input w-full p-3 rounded-2xl border border-gray-200 dark:border-gray-700 
-                          bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm text-gray-900 dark:text-white 
-                          focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all 
-                          hover:border-blue-500/50 appearance-none text-base h-12"
-                      />
-                      <span className="date-placeholder">开始日期</span>
-                      <svg 
-                        className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 hover:text-blue-500/70 transition-colors"
-                        fill="none" 
-                        viewBox="0 0 24 24" 
-                        stroke="currentColor"
-                      >
-                        <path 
-                          strokeLinecap="round" 
-                          strokeLinejoin="round" 
-                          strokeWidth={1.5} 
-                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" 
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-
-                {diffDays !== null && (
-                  <div className="mt-4 sm:mt-6 p-4 sm:p-6 rounded-xl sm:rounded-2xl 
-                                bg-gradient-to-r from-blue-50/90 to-blue-50/50 
-                                dark:from-blue-900/30 dark:to-blue-900/10 
-                                backdrop-blur-xl 
-                                border border-blue-100/80 dark:border-blue-800/30">
-                    <p className="text-center text-lg sm:text-xl font-medium text-gray-900 dark:text-white">
-                      计算结果：相差
-                      <span className="text-blue-600 dark:text-blue-400 font-semibold mx-2">
-                        {diffDays}
-                      </span>
-                      天
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* 日期推算部分 */}
+            {/* 日期推算部分 - 现在放在第一位 */}
             <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-2xl p-6 sm:p-8 
                           rounded-[2rem] shadow-xl 
                           border border-gray-200/50 dark:border-gray-700/50 
@@ -456,6 +341,121 @@ export default function DateTools() {
                   </p>
                 </div>
               )}
+            </div>
+
+            {/* 日期差值计算部分 - 现在放在第二位 */}
+            <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-2xl p-6 sm:p-8 
+                          rounded-[2rem] shadow-xl 
+                          border border-gray-200/50 dark:border-gray-700/50 
+                          h-fit hover:shadow-2xl transition-all duration-500">
+              <h2 className="text-2xl font-semibold mb-8 text-gray-900 dark:text-gray-100">
+                计算日期差值
+              </h2>
+              <div className="space-y-6">
+                <div className="flex flex-col sm:flex-row items-center gap-4">
+                  <div className="relative flex-1 w-full">
+                    <div className="date-input-wrapper">
+                      <label htmlFor="date1" className="sr-only">结束日期</label>
+                      <input
+                        id="date1"
+                        type="date"
+                        value={date1}
+                        onChange={(e) => {
+                          const newDate = e.target.value;
+                          setDate1(newDate);
+                          // 更新输入框显示的值
+                          if (e.target.value) {
+                            const formattedDate = formatDisplayDate(newDate);
+                            e.target.setAttribute('data-display', formattedDate);
+                          }
+                        }}
+                        data-display=""
+                        placeholder=" "
+                        aria-label="结束日期"
+                        className="custom-date-input w-full p-3 rounded-2xl border border-gray-200 dark:border-gray-700 
+                          bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm text-gray-900 dark:text-white 
+                          focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all 
+                          hover:border-blue-500/50 appearance-none text-base h-12"
+                      />
+                      <span className="date-placeholder">结束日期</span>
+                      <svg 
+                        className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 hover:text-blue-500/70 transition-colors"
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke="currentColor"
+                      >
+                        <path 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round" 
+                          strokeWidth={1.5} 
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" 
+                        />
+                      </svg>
+                    </div>
+                  </div>
+
+                  <div className="hidden sm:flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                    <span className="text-gray-600 dark:text-gray-300 text-lg font-medium select-none">-</span>
+                  </div>
+
+                  <div className="relative flex-1 w-full">
+                    <div className="date-input-wrapper">
+                      <label htmlFor="date2" className="sr-only">开始日期</label>
+                      <input
+                        id="date2"
+                        type="date"
+                        value={date2}
+                        onChange={(e) => {
+                          const newDate = e.target.value;
+                          setDate2(newDate);
+                          // 更新输入框显示的值
+                          if (e.target.value) {
+                            const formattedDate = formatDisplayDate(newDate);
+                            e.target.setAttribute('data-display', formattedDate);
+                          }
+                        }}
+                        data-display=""
+                        placeholder=" "
+                        aria-label="始日期"
+                        className="custom-date-input w-full p-3 rounded-2xl border border-gray-200 dark:border-gray-700 
+                          bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm text-gray-900 dark:text-white 
+                          focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all 
+                          hover:border-blue-500/50 appearance-none text-base h-12"
+                      />
+                      <span className="date-placeholder">开始日期</span>
+                      <svg 
+                        className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 hover:text-blue-500/70 transition-colors"
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke="currentColor"
+                      >
+                        <path 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round" 
+                          strokeWidth={1.5} 
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" 
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                {diffDays !== null && (
+                  <div className="mt-4 sm:mt-6 p-4 sm:p-6 rounded-xl sm:rounded-2xl 
+                                bg-gradient-to-r from-blue-50/90 to-blue-50/50 
+                                dark:from-blue-900/30 dark:to-blue-900/10 
+                                backdrop-blur-xl 
+                                border border-blue-100/80 dark:border-blue-800/30">
+                    <p className="text-center text-lg sm:text-xl font-medium text-gray-900 dark:text-white">
+                      计算结果：相差
+                      <span className="text-blue-600 dark:text-blue-400 font-semibold mx-2">
+                        {diffDays}
+                      </span>
+                      天
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
