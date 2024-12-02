@@ -349,15 +349,6 @@ export default function NumberToEnglish() {
 
           <div className="mt-8 space-y-4">
             <div>
-              <h2 className="text-lg font-medium text-[var(--foreground)] mb-4">转换结果</h2>
-              <ResultDisplay 
-                result={result}
-                onCopy={handleCopy}
-                copied={copied}
-              />
-            </div>
-            
-            <div>
               <h2 className="text-lg font-medium text-[var(--foreground)] mb-4">美元格式</h2>
               <DollarFormatDisplay 
                 result={dollarResult}
@@ -366,6 +357,15 @@ export default function NumberToEnglish() {
                   setTimeout(() => setCopiedDollar(false), 2000);
                 }}
                 copied={copiedDollar}
+              />
+            </div>
+
+            <div>
+              <h2 className="text-lg font-medium text-[var(--foreground)] mb-4">转换结果</h2>
+              <ResultDisplay 
+                result={result}
+                onCopy={handleCopy}
+                copied={copied}
               />
             </div>
           </div>
