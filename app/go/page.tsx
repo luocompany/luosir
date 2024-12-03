@@ -390,6 +390,17 @@ export default function Go() {
                 { name: '世界港口查询', url: 'https://cn.jctrans.com' },
                 { name: '绿色破解软件', url: 'https://www.azhongruanjian.com/'},
                 { name: 'Wikipedia', url: 'https://www.wikipedia.org' },
+                { name: 'Office2010破解版', url: 'http://www.xitongzhijia.net/soft/24189.html' },
+                { name: 'Windows系统ISO', url: 'https://msdn.itellyou.cn/' },
+                { name: 'Google字体', url: 'https://fonts.google.com' },
+                { name: 'Adobe Acrobat 9', url: 'http://lishui.jz5u.com:8088/goodsoft/AdobeAcrobat9_www.jz5u.com.rar' },
+                { name: 'Acrobat XI Pro', url: 'http://rj.baidu.com/soft/detail/27081.html' },
+                { name: 'PDF修改器', url: 'http://www.pc6.com/softview/SoftView_103033.html' },
+                { name: 'Foxit PDF Editor', url: 'http://dl.pconline.com.cn/html_2/1/81/id=10234&pn=0.html' },
+                { name: 'OneNote', url: 'http://www.onenote.com/' },
+                { name: 'EverNote', url: 'https://www.yinxiang.com' },
+                { name: '装柜专家', url: 'http://pan.baidu.com/s/1qW9ff8w' },
+                { name: '装箱大师', url: 'http://www.zhuangxiang.com/download.html' },
               ].map(tool => (
                 <a
                   key={tool.name}
