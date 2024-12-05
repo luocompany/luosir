@@ -187,178 +187,184 @@ export default function Go() {
         {/* 搜索框区域 */}
         <div className="max-w-3xl mx-auto mt-8 mb-12">
           <div className="search-box backdrop-blur-xl bg-white/90 dark:bg-[var(--card-bg)] 
-            rounded-2xl p-6 
+            rounded-2xl p-4 
             shadow-lg shadow-gray-200/50 dark:shadow-none
             border border-[var(--card-border)]
             hover:shadow-xl hover:shadow-gray-200/50 dark:hover:shadow-none
             transition-all duration-300">
             
-            {/* 搜索类型标签 */}
-            <div className="search-tabs mb-4 flex flex-wrap gap-2 text-xs justify-center">
-              {searchEngine === 'baidu' ? (
-                // 百度搜索标签
-                [
-                  { name: '网页', url: 'https://www.baidu.com' },
-                  { name: '图片', url: 'https://image.baidu.com' },
-                  { name: '地图', url: 'https://map.baidu.com' },
-                  { name: '新闻', url: 'https://news.baidu.com' },
-                  // 在大屏幕上显示的额外选项
-                  { name: '视频', url: 'https://video.baidu.com', desktopOnly: true },
-                  { name: '贴吧', url: 'https://tieba.baidu.com', desktopOnly: true },
-                  { name: '知道', url: 'https://zhidao.baidu.com', desktopOnly: true },
-                  { name: '文库', url: 'https://wenku.baidu.com', desktopOnly: true },
-                  { name: '百科', url: 'https://baike.baidu.com', desktopOnly: true },
-                ].map(tab => (
-                  <button
-                    key={tab.name}
-                    onClick={() => setBaiduTab(tab.name)}
-                    className={`px-3 py-1.5 text-[12px] transition-all duration-300
-                      ${tab.desktopOnly ? 'hidden md:block' : ''} 
-                      ${baiduTab === tab.name
-                        ? 'text-blue-500 dark:text-blue-400 font-medium'
-                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
-                      }`}
-                  >
-                    {tab.name}
-                  </button>
-                ))
-              ) : (
-                // Google搜索标签
-                [
-                  { name: 'All', url: 'https://www.google.com' },
-                  { name: 'Images', url: 'https://www.google.com/imghp' },
-                  { name: 'Maps', url: 'https://maps.google.com' },
-                  { name: 'News', url: 'https://news.google.com' },
-                  // 在大屏幕上显示的额外选项
-                  { name: 'Videos', url: 'https://www.google.com/video', desktopOnly: true },
-                  { name: 'Shopping', url: 'https://shopping.google.com', desktopOnly: true },
-                  { name: 'Books', url: 'https://books.google.com', desktopOnly: true },
-                  { name: 'Scholar', url: 'https://scholar.google.com', desktopOnly: true },
-                ].map(tab => (
-                  <button
-                    key={tab.name}
-                    onClick={() => setGoogleTab(tab.name)}
-                    className={`px-3 py-1.5 text-[12px] transition-all duration-300
-                      ${tab.desktopOnly ? 'hidden md:block' : ''} 
-                      ${googleTab === tab.name
-                        ? 'text-blue-500 dark:text-blue-400 font-medium'
-                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
-                      }`}
-                  >
-                    {tab.name}
-                  </button>
-                ))
-              )}
-            </div>
-
-            {/* 搜索框 */}
-            <form onSubmit={handleSearch} className="relative mb-6">
-              <div className="relative flex items-center w-full">
-                <div className="absolute left-3.5 text-gray-400">
-                  <Search className="w-4 h-4" />
-                </div>
-                <input
-                  type="text"
-                  name="search"
-                  placeholder={searchEngine === 'baidu' ? "百度一下，你就知道" : "Search Google or type a URL"}
-                  className="w-full px-10 py-2.5 text-sm
-                    bg-white dark:bg-[var(--card-bg)]
-                    border border-[var(--card-border)]
-                    rounded-full
-                    hover:shadow-[0_1px_6px_rgba(32,33,36,.28)] dark:hover:shadow-[0_1px_6px_rgba(0,0,0,.28)]
-                    focus:shadow-[0_1px_6px_rgba(32,33,36,.28)] dark:focus:shadow-[0_1px_6px_rgba(0,0,0,.28)]
-                    focus:border-blue-500/30 dark:focus:border-blue-500/30
-                    outline-none transition-all duration-300
-                    placeholder:text-gray-500 dark:placeholder:text-gray-400
-                    text-[var(--foreground)]"
-                />
-                <div className="absolute right-4 flex items-center space-x-2">
-                  <button
-                    type="button"
-                    className={`p-1.5 rounded-full transition-colors group relative
-                      hover:bg-gray-100 dark:hover:bg-gray-700
-                      ${isListening ? 'bg-red-50 dark:bg-red-900/30' : ''}`}
-                    onClick={startSpeechRecognition}
-                  >
-                    <svg className={`w-5 h-5 transition-colors ${searchEngine === 'baidu' ? 
-                      (isBaiduListening ? 'animate-pulse' : '') : (isListening ? 'animate-pulse' : '')}`} 
-                      viewBox="0 0 24 24" 
-                      fill="none"
-                    >
-                      <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" 
-                        fill={searchEngine === 'baidu' ? 
-                          (isBaiduListening ? '#ea4335' : '#4e6ef2') : 
-                          (isListening ? '#ea4335' : '#4285f4')}/>
-                      <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" 
-                        fill={searchEngine === 'baidu' ? 
-                          (isBaiduListening ? '#ea4335' : '#4e6ef2') : 
-                          (isListening ? '#ea4335' : '#34a853')}/>
-                    </svg>
-                    <span className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-800 text-white text-xs rounded 
-                      opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                      {searchEngine === 'baidu' ? 
-                        (isBaiduListening ? '正在聆听...' : '语音搜索') : 
-                        (isListening ? 'Listening...' : 'Search by voice')}
-                    </span>
-                  </button>
-                  <div className="h-5 w-px bg-gray-200 dark:bg-gray-600/50 mx-1"></div>
-                  <button
-                    type="submit"
-                    className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors group relative"
-                  >
-                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" 
-                        fill={searchEngine === 'baidu' ? '#4e6ef2' : '#4285f4'}/>
-                    </svg>
-                    <span className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-800 text-white text-xs rounded 
-                      opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                      {searchEngine === 'baidu' ? '索' : 'Search'}
-                    </span>
-                  </button>
-                </div>
-              </div>
-            </form>
-
-            {/* 搜索引擎选择 - 移到搜索框下方 */}
-            <div className="flex items-center justify-center space-x-8">
-              <button
-                onClick={() => setSearchEngine('baidu')}
-                className={`flex items-center px-3 py-1.5 rounded-lg transition-all duration-300
-                  ${searchEngine === 'baidu' 
-                    ? 'opacity-100' 
-                    : 'opacity-60 hover:opacity-80'}`}
-              >
-                <Image 
-                  src="/baidu-logo.png"
-                  alt="百度" 
-                  width={92} 
-                  height={30} 
-                  className={`h-5 w-auto transition-all duration-300
+            {/* 搜索区域flex容器 */}
+            <div className="flex space-x-4">
+              {/* 左侧搜索引擎选择 */}
+              <div className="flex flex-col justify-center space-y-4 py-2">
+                <button
+                  onClick={() => setSearchEngine('baidu')}
+                  className={`flex items-center justify-center w-14 h-8 rounded-xl transition-all duration-300 
                     ${searchEngine === 'baidu' 
                       ? '' 
-                      : 'grayscale hover:grayscale-0'
-                    }`}
-                />
-              </button>
-              <button
-                onClick={() => setSearchEngine('google')}
-                className={`flex items-center px-3 py-1.5 rounded-lg transition-all duration-300
-                  ${searchEngine === 'google' 
-                    ? 'opacity-100' 
-                    : 'opacity-60 hover:opacity-80'}`}
-              >
-                <Image 
-                  src="/google-logo.png"
-                  alt="Google" 
-                  width={92} 
-                  height={30} 
-                  className={`h-5 w-auto transition-all duration-300
+                      : ''}`}
+                >
+                  <Image 
+                    src="/baidu-logo.png"
+                    alt="百度" 
+                    width={92} 
+                    height={30} 
+                    className={`h-3.5 w-auto transition-all duration-300
+                      ${searchEngine === 'baidu' 
+                        ? 'opacity-100 scale-110' 
+                        : 'opacity-40 hover:opacity-70 grayscale hover:grayscale-0'
+                      }`}
+                  />
+                </button>
+                <button
+                  onClick={() => setSearchEngine('google')}
+                  className={`flex items-center justify-center w-14 h-8 rounded-xl transition-all duration-300
                     ${searchEngine === 'google' 
                       ? '' 
-                      : 'grayscale hover:grayscale-0'
-                    }`}
-                />
-              </button>
+                      : ''}`}
+                >
+                  <Image 
+                    src="/google-logo.png"
+                    alt="Google" 
+                    width={92} 
+                    height={30} 
+                    className={`h-3.5 w-auto transition-all duration-300
+                      ${searchEngine === 'google' 
+                        ? 'opacity-100 scale-110' 
+                        : 'opacity-40 hover:opacity-70 grayscale hover:grayscale-0'
+                      }`}
+                  />
+                </button>
+              </div>
+
+              {/* 右侧搜索内容区域 */}
+              <div className="flex-1">
+                {/* 搜索类型标签 */}
+                <div className="search-tabs mb-3 flex flex-wrap gap-1.5 text-xs justify-center">
+                  {searchEngine === 'baidu' ? (
+                    // 百度搜索标签
+                    [
+                      { name: '网页', url: 'https://www.baidu.com' },
+                      { name: '图片', url: 'https://image.baidu.com' },
+                      { name: '地图', url: 'https://map.baidu.com' },
+                      { name: '新闻', url: 'https://news.baidu.com' },
+                      // 在大屏幕上显示的额外选项
+                      { name: '视频', url: 'https://video.baidu.com', desktopOnly: true },
+                      { name: '贴吧', url: 'https://tieba.baidu.com', desktopOnly: true },
+                      { name: '知道', url: 'https://zhidao.baidu.com', desktopOnly: true },
+                      { name: '文库', url: 'https://wenku.baidu.com', desktopOnly: true },
+                      { name: '百科', url: 'https://baike.baidu.com', desktopOnly: true },
+                    ].map(tab => (
+                      <button
+                        key={tab.name}
+                        onClick={() => setBaiduTab(tab.name)}
+                        className={`px-3 py-1.5 text-[12px] transition-all duration-300
+                          ${tab.desktopOnly ? 'hidden md:block' : ''} 
+                          ${baiduTab === tab.name
+                            ? 'text-blue-500 dark:text-blue-400 font-medium'
+                            : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                          }`}
+                      >
+                        {tab.name}
+                      </button>
+                    ))
+                  ) : (
+                    // Google搜索标签
+                    [
+                      { name: 'All', url: 'https://www.google.com' },
+                      { name: 'Images', url: 'https://www.google.com/imghp' },
+                      { name: 'Maps', url: 'https://maps.google.com' },
+                      { name: 'News', url: 'https://news.google.com' },
+                      // 在大屏幕上显示的额外选项
+                      { name: 'Videos', url: 'https://www.google.com/video', desktopOnly: true },
+                      { name: 'Shopping', url: 'https://shopping.google.com', desktopOnly: true },
+                      { name: 'Books', url: 'https://books.google.com', desktopOnly: true },
+                      { name: 'Scholar', url: 'https://scholar.google.com', desktopOnly: true },
+                    ].map(tab => (
+                      <button
+                        key={tab.name}
+                        onClick={() => setGoogleTab(tab.name)}
+                        className={`px-3 py-1.5 text-[12px] transition-all duration-300
+                          ${tab.desktopOnly ? 'hidden md:block' : ''} 
+                          ${googleTab === tab.name
+                            ? 'text-blue-500 dark:text-blue-400 font-medium'
+                            : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                          }`}
+                      >
+                        {tab.name}
+                      </button>
+                    ))
+                  )}
+                </div>
+
+                {/* 搜索框 */}
+                <form onSubmit={handleSearch} className="relative">
+                  <div className="relative flex items-center w-full">
+                    <div className="absolute left-3.5 text-gray-400">
+                      <Search className="w-4 h-4" />
+                    </div>
+                    <input
+                      type="text"
+                      name="search"
+                      placeholder={searchEngine === 'baidu' ? "百度一下，你就知道" : "Search Google or type a URL"}
+                      className="w-full px-10 py-2.5 text-sm
+                        bg-white dark:bg-[var(--card-bg)]
+                        border border-[var(--card-border)]
+                        rounded-full
+                        hover:shadow-[0_1px_6px_rgba(32,33,36,.28)] dark:hover:shadow-[0_1px_6px_rgba(0,0,0,.28)]
+                        focus:shadow-[0_1px_6px_rgba(32,33,36,.28)] dark:focus:shadow-[0_1px_6px_rgba(0,0,0,.28)]
+                        focus:border-blue-500/30 dark:focus:border-blue-500/30
+                        outline-none transition-all duration-300
+                        placeholder:text-gray-500 dark:placeholder:text-gray-400
+                        text-[var(--foreground)]"
+                    />
+                    <div className="absolute right-4 flex items-center space-x-2">
+                      <button
+                        type="button"
+                        className={`p-1.5 rounded-full transition-colors group relative
+                          hover:bg-gray-100 dark:hover:bg-gray-700
+                          ${isListening ? 'bg-red-50 dark:bg-red-900/30' : ''}`}
+                        onClick={startSpeechRecognition}
+                      >
+                        <svg className={`w-5 h-5 transition-colors ${searchEngine === 'baidu' ? 
+                          (isBaiduListening ? 'animate-pulse' : '') : (isListening ? 'animate-pulse' : '')}`} 
+                          viewBox="0 0 24 24" 
+                          fill="none"
+                        >
+                          <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" 
+                            fill={searchEngine === 'baidu' ? 
+                              (isBaiduListening ? '#ea4335' : '#4e6ef2') : 
+                              (isListening ? '#ea4335' : '#4285f4')}/>
+                          <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" 
+                            fill={searchEngine === 'baidu' ? 
+                              (isBaiduListening ? '#ea4335' : '#4e6ef2') : 
+                              (isListening ? '#ea4335' : '#34a853')}/>
+                        </svg>
+                        <span className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-800 text-white text-xs rounded 
+                          opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                          {searchEngine === 'baidu' ? 
+                            (isBaiduListening ? '正在聆听...' : '语音搜索') : 
+                            (isListening ? 'Listening...' : 'Search by voice')}
+                        </span>
+                      </button>
+                      <div className="h-5 w-px bg-gray-200 dark:bg-gray-600/50 mx-1"></div>
+                      <button
+                        type="submit"
+                        className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors group relative"
+                      >
+                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" 
+                            fill={searchEngine === 'baidu' ? '#4e6ef2' : '#4285f4'}/>
+                        </svg>
+                        <span className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-800 text-white text-xs rounded 
+                          opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                          {searchEngine === 'baidu' ? '索' : 'Search'}
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
         </div>
