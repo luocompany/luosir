@@ -30,6 +30,14 @@ export default function Home() {
               />
 
               <Card
+                title="来单助手"
+                description="自动生成报价表和订单确认表，提升工作效率"
+                href="/quotation"
+                iconPath="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                buttonText="立即使用"
+              />
+
+              <Card
                 title="敬请期待"
                 description="更多AI工具正在开发中..."
                 iconPath="M12 6v6m0 0v6m0-6h6m-6 0H6"
