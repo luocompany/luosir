@@ -166,13 +166,13 @@ export default function Quotation() {
                 {/* 基本信息 */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium">收件方</label>
+                    <label className="block text-sm font-medium">客户名称</label>
                     <input
                       type="text"
                       value={quotationData.to}
                       onChange={e => setQuotationData(prev => ({ ...prev, to: e.target.value }))}
                       className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)]"
-                      placeholder="Indian Chain Pvt Ltd, Kolkata, India"
+                      placeholder="客户名称"
                     />
                   </div>
                   <div className="space-y-2">
@@ -182,6 +182,7 @@ export default function Quotation() {
                       value={quotationData.date}
                       onChange={e => setQuotationData(prev => ({ ...prev, date: e.target.value }))}
                       className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)]"
+                      placeholder="日期"
                     />
                   </div>
                   <div className="space-y-2">
@@ -191,7 +192,7 @@ export default function Quotation() {
                       value={quotationData.yourRef}
                       onChange={e => setQuotationData(prev => ({ ...prev, yourRef: e.target.value }))}
                       className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)]"
-                      placeholder="Stud Link Anchor Chain"
+                      placeholder="客户询价号码"
                     />
                   </div>
                   <div className="space-y-2">
@@ -201,7 +202,7 @@ export default function Quotation() {
                       value={quotationData.ourRef}
                       onChange={e => setQuotationData(prev => ({ ...prev, ourRef: e.target.value }))}
                       className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)]"
-                      placeholder="C241111Hb"
+                      placeholder="我司报价号码"
                     />
                   </div>
                 </div>
@@ -211,21 +212,37 @@ export default function Quotation() {
                   <table className="w-full min-w-[800px]">
                     <thead>
                       <tr className="border-b border-[var(--card-border)]">
-                        <th className="py-1 px-2 text-left text-sm font-medium">序号</th>
-                        <th className="py-1 px-2 text-left text-sm font-medium">产品名称</th>
-                        <th className="py-1 px-2 text-left text-sm font-medium">描述</th>
-                        <th className="py-1 px-2 text-left text-sm font-medium" style={{ width: '80px' }}>数量</th>
-                        <th className="py-1 px-2 text-left text-sm font-medium" style={{ width: '80px' }}>单位</th>
-                        <th className="py-1 px-2 text-left text-sm font-medium">单价</th>
-                        <th className="py-1 px-2 text-left text-sm font-medium">金额</th>
-                        <th className="py-1 px-2 text-left text-sm font-medium">交期</th>
-                        <th className="py-1 px-2 text-left text-sm font-medium">备注</th>
+                        <th className="py-1 px-2 text-left text-sm font-medium">No.</th>
+                        <th className="py-1 px-2 text-left text-sm font-medium">Product Name</th>
+                        <th className="py-1 px-2 text-left text-sm font-medium">Description</th>
+                        <th className="py-1 px-2 text-left text-sm font-medium" style={{ width: '80px' }}>Quantity</th>
+                        <th className="py-1 px-2 text-left text-sm font-medium" style={{ width: '80px' }}>Unit</th>
+                        <th className="py-1 px-2 text-left text-sm font-medium">Unit Price</th>
+                        <th className="py-1 px-2 text-left text-sm font-medium">Amount</th>
+                        <th className="py-1 px-2 text-left text-sm font-medium">Delivery Time</th>
+                        <th className="py-1 px-2 text-left text-sm font-medium">Remarks</th>
                       </tr>
                     </thead>
                     <tbody>
                       {quotationData.items.map((item, index) => (
                         <tr key={item.lineNo} className="border-b border-[var(--card-border)]">
-                          <td className="py-1 px-2 text-sm">{item.lineNo}</td>
+                          <td 
+                            className="py-1 px-2 text-sm cursor-pointer relative"
+                            onClick={() => {
+                              setQuotationData(prev => ({
+                                ...prev,
+                                items: prev.items.filter((_, i) => i !== index) // 删除对应行
+                              }));
+                            }}
+                          >
+                            {index + 1}
+                            <span 
+                              className="absolute left-[-20px] opacity-0 transition-opacity hover:opacity-100"
+                              style={{ opacity: item.lineNo === index + 1 ? 1 : 0 }}
+                            >
+                              - {/* 显示删除提示符号 */}
+                            </span>
+                          </td>
                           <td className="py-1 px-2">
                             <input
                               type="text"
@@ -246,36 +263,57 @@ export default function Quotation() {
                             <input
                               type="number"
                               value={item.quantity}
-                              onChange={e => updateLineItem(index, 'quantity', parseFloat(e.target.value))}
+                              onChange={e => {
+                                const value = parseFloat(e.target.value);
+                                if (value >= 0) { // 确保数量不为负数
+                                  updateLineItem(index, 'quantity', value);
+                                  // 根据数量更新单位
+                                  const newUnit = value === 1 ? 'pc' : 'pcs'; // 1 为单数，其他为复数
+                                  updateLineItem(index, 'unit', newUnit);
+                                }
+                              }}
                               className="w-full px-1 py-1 rounded border border-[var(--card-border)] bg-[var(--background)]"
                             />
                           </td>
                           <td className="py-1 px-2">
                             <select
-                              value={item.unit || 'pcs'}
+                              value={item.unit || ''}
                               onChange={e => updateLineItem(index, 'unit', e.target.value)}
                               className="w-full px-1 py-1 rounded border border-[var(--card-border)] bg-[var(--background)]"
                             >
-                              <option value="pc">pc</option>
-                              <option value="pcs">pcs</option>
-                              <option value="set">set</option>
-                              <option value="sets">sets</option>
-                              <option value="length">length</option>
-                              <option value="lengths">lengths</option>
+                              {item.quantity === 0 && <option value="">请选择单位</option>}
+                              {item.quantity === 1 ? (
+                                <>
+                                  <option value="pc">pc</option>
+                                  <option value="set">set</option>
+                                  <option value="length">length</option>
+                                </>
+                              ) : (
+                                <>
+                                  <option value="pcs">pcs</option>
+                                  <option value="sets">sets</option>
+                                  <option value="lengths">lengths</option>
+                                </>
+                              )}
                             </select>
                           </td>
                           <td className="py-1 px-2">
                             <input
                               type="number"
-                              value={item.unitPrice}
-                              onChange={e => updateLineItem(index, 'unitPrice', parseFloat(e.target.value))}
+                              value={item.unitPrice ? item.unitPrice.toFixed(2) : '0.00'}
+                              onChange={e => {
+                                const value = parseFloat(e.target.value);
+                                if (value >= 0) { // 确保单价不为负数
+                                  updateLineItem(index, 'unitPrice', value);
+                                }
+                              }}
                               className="w-full px-1 py-1 rounded border border-[var(--card-border)] bg-[var(--background)]"
                             />
                           </td>
                           <td className="py-1 px-2">
                             <input
                               type="number"
-                              value={item.amount}
+                              value={item.amount ? item.amount.toFixed(2) : '0.00'}
                               readOnly
                               className="w-full px-1 py-1 rounded border border-[var(--card-border)] bg-[var(--background)]"
                             />
@@ -309,7 +347,7 @@ export default function Quotation() {
                   className="px-4 py-2 rounded-lg border border-[var(--card-border)] 
                            hover:bg-[var(--background)] transition-colors"
                 >
-                  添加行
+                  增加行
                 </button>
 
                 {/* 总金额 */}
