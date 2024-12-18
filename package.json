@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@types/react-beautiful-dnd": "^13.1.8",
+    "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.4",
     "lucide-react": "^0.460.0",
     "next": "14.1.0",
     "openai": "^4.72.0",
