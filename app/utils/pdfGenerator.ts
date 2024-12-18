@@ -55,10 +55,10 @@ export const generateQuotationPDF = (data: QuotationData) => {
   doc.setFontSize(10);
   doc.text('Thanks for your inquiry, and our best offer is as follows:', 15, contentStartY + 20);
   
-  // 添加��品表格
+  // 添加品表格
   autoTable(doc, {
     startY: contentStartY + 30,
-    head: [['Line No.', 'Part Name', 'Description', 'Q\'TY', 'Unit', 'U/Price', 'Amount', 'D/T', 'Remarks']],
+    head: [['No.', 'Part Name', 'Description', 'Q\'TY', 'Unit', 'U/Price', 'Amount', 'D/T', 'Remarks']],
     body: data.items.map(item => [
       item.lineNo,
       item.partName,
@@ -72,7 +72,7 @@ export const generateQuotationPDF = (data: QuotationData) => {
     ]),
     foot: [[
       { content: 'TOTAL AMOUNT :', colSpan: 6, styles: { halign: 'right', fontStyle: 'bold' } },
-      { content: data.items.reduce((sum: number, item: LineItem) => sum + item.amount, 0).toFixed(2), colSpan: 3, styles: { fontStyle: 'bold' } }
+      { content: `${data.items.reduce((sum: number, item: LineItem) => sum + item.amount, 0).toFixed(2)} (${data.currency})`, colSpan: 3, styles: { fontStyle: 'bold' } }
     ]],
     styles: {
       fontSize: 9,

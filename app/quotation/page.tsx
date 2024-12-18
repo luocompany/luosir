@@ -186,13 +186,24 @@ export default function Quotation() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium">客户询价号</label>
+                    <label className="block text-sm font-medium">客户询价号码</label>
                     <input
                       type="text"
                       value={quotationData.yourRef}
                       onChange={e => setQuotationData(prev => ({ ...prev, yourRef: e.target.value }))}
                       className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)]"
                       placeholder="客户询价号码"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium">报价人</label>
+                    <input
+                      type="text"
+                      value={quotationData.from}
+                      onChange={e => setQuotationData(prev => ({ ...prev, from: e.target.value }))}
+                      className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)]"
+                      placeholder="报价人"
                     />
                   </div>
                   <div className="space-y-2">
@@ -205,6 +216,20 @@ export default function Quotation() {
                       placeholder="我司报价号码"
                     />
                   </div>
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium">币种</label>
+                    <select
+                      value={quotationData.currency}
+                      onChange={e => setQuotationData(prev => ({ ...prev, currency: e.target.value }))}
+                      className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)]"
+                    >
+                      <option value="USD">USD</option>
+                      <option value="EUR">EUR</option>
+                      <option value="CNY">CNY</option>
+                      <option value="JPY">JPY</option>
+                      {/* 可以根据需要添加更多币种 */}
+                    </select>
+                  </div>
                 </div>
 
                 {/* 商品列表 */}
@@ -213,13 +238,12 @@ export default function Quotation() {
                     <thead>
                       <tr className="border-b border-[var(--card-border)]">
                         <th className="py-1 px-2 text-left text-sm font-medium">No.</th>
-                        <th className="py-1 px-2 text-left text-sm font-medium">Product Name</th>
+                        <th className="py-1 px-2 text-left text-sm font-medium">Part Name</th>
                         <th className="py-1 px-2 text-left text-sm font-medium">Description</th>
-                        <th className="py-1 px-2 text-left text-sm font-medium" style={{ width: '80px' }}>Quantity</th>
+                        <th className="py-1 px-2 text-left text-sm font-medium" style={{ width: '80px' }}>Q'TY</th>
                         <th className="py-1 px-2 text-left text-sm font-medium" style={{ width: '80px' }}>Unit</th>
-                        <th className="py-1 px-2 text-left text-sm font-medium">Unit Price</th>
+                        <th className="py-1 px-2 text-left text-sm font-medium">U/Price</th>
                         <th className="py-1 px-2 text-left text-sm font-medium">Amount</th>
-                        <th className="py-1 px-2 text-left text-sm font-medium">Delivery Time</th>
                         <th className="py-1 px-2 text-left text-sm font-medium">Remarks</th>
                       </tr>
                     </thead>
@@ -235,13 +259,7 @@ export default function Quotation() {
                               }));
                             }}
                           >
-                            {index + 1}
-                            <span 
-                              className="absolute left-[-20px] opacity-0 transition-opacity hover:opacity-100"
-                              style={{ opacity: item.lineNo === index + 1 ? 1 : 0 }}
-                            >
-                              - {/* 显示删除提示符号 */}
-                            </span>
+                            {index + 1} {/* 直接显示序号 */}
                           </td>
                           <td className="py-1 px-2">
                             <input
@@ -267,9 +285,6 @@ export default function Quotation() {
                                 const value = parseFloat(e.target.value);
                                 if (value >= 0) { // 确保数量不为负数
                                   updateLineItem(index, 'quantity', value);
-                                  // 根据数量更新单位
-                                  const newUnit = value === 1 ? 'pc' : 'pcs'; // 1 为单数，其他为复数
-                                  updateLineItem(index, 'unit', newUnit);
                                 }
                               }}
                               className="w-full px-1 py-1 rounded border border-[var(--card-border)] bg-[var(--background)]"
@@ -315,14 +330,6 @@ export default function Quotation() {
                               type="number"
                               value={item.amount ? item.amount.toFixed(2) : '0.00'}
                               readOnly
-                              className="w-full px-1 py-1 rounded border border-[var(--card-border)] bg-[var(--background)]"
-                            />
-                          </td>
-                          <td className="py-1 px-2">
-                            <input
-                              type="text"
-                              value={item.deliveryTime}
-                              onChange={e => updateLineItem(index, 'deliveryTime', e.target.value)}
                               className="w-full px-1 py-1 rounded border border-[var(--card-border)] bg-[var(--background)]"
                             />
                           </td>
