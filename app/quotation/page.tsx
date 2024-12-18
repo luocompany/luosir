@@ -46,15 +46,16 @@ export default function Quotation() {
         partName: '',
         description: '',
         quantity: 0,
-        unit: 'Lengths',
+        unit: 'pc',
         unitPrice: 0,
         amount: 0,
-        deliveryTime: '40 days',
+        deliveryTime: '',
         remarks: '',
         customUnit: ''
       }
     ],
     notes: [
+      'Delivery time: 60 days',
       'Price based on EXW-Shanghai, Mill TC',
       'Delivery terms: as mentioned above,subj to unsold',
       'Payment term: 30% deposit, the balance paid before delivery',
@@ -296,7 +297,7 @@ export default function Quotation() {
                               onChange={e => updateLineItem(index, 'unit', e.target.value)}
                               className="w-full px-1 py-1 rounded border border-[var(--card-border)] bg-[var(--background)]"
                             >
-                              {item.quantity === 0 && <option value="">请选择单位</option>}
+                              {item.quantity === 0 && <option value="">unit</option>}
                               {item.quantity === 1 ? (
                                 <>
                                   <option value="pc">pc</option>

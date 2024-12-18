@@ -28,8 +28,8 @@ export const generateQuotationPDF = (data: QuotationData) => {
   const doc = new jsPDF();
   
   // 添加公司Logo
-  const logoWidth = 190; // Logo宽度(mm)
-  const logoHeight = 25; // Logo高度(mm)
+  const logoWidth = 180; // Logo宽度(mm)
+  const logoHeight = 24; // Logo高度(mm)
   const pageWidth = doc.internal.pageSize.width;
   const x = (pageWidth - logoWidth) / 2; // 居中位置
   
@@ -58,7 +58,7 @@ export const generateQuotationPDF = (data: QuotationData) => {
   // 添加品表格
   autoTable(doc, {
     startY: contentStartY + 30,
-    head: [['No.', 'Part Name', 'Description', 'Q\'TY', 'Unit', 'U/Price', 'Amount', 'D/T', 'Remarks']],
+    head: [['No.', 'Part Name', 'Description', 'Q\'TY', 'Unit', 'U/Price', 'Amount', 'Remarks']],
     body: data.items.map(item => [
       item.lineNo,
       item.partName,
@@ -67,7 +67,6 @@ export const generateQuotationPDF = (data: QuotationData) => {
       item.unit,
       item.unitPrice.toFixed(2),
       item.amount.toFixed(2),
-      item.deliveryTime,
       item.remarks
     ]),
     foot: [[
