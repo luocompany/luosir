@@ -124,6 +124,12 @@ export default function Quotation() {
     }
   };
 
+  const currencySymbols: { [key: string]: string } = {
+    USD: '$',
+    EUR: '€',
+    CNY: '¥'
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-[var(--background)]">
       <Navbar />
@@ -245,8 +251,6 @@ export default function Quotation() {
                       <option value="USD">USD</option>
                       <option value="EUR">EUR</option>
                       <option value="CNY">CNY</option>
-                      <option value="JPY">JPY</option>
-                      {/* 可以根据需要添加更多币种 */}
                     </select>
                   </div>
                 </div>
@@ -257,12 +261,12 @@ export default function Quotation() {
                     <thead>
                       <tr className="border-b border-[var(--card-border)] bg-[var(--background)]">
                         <th className="py-2 px-1 text-left text-xs font-medium opacity-70" style={{ width: '40px' }}>No.</th>
-                        <th className="py-2 px-1 text-left text-xs font-medium opacity-70" style={{ width: '120px' }}>Part Name</th>
-                        <th className="py-2 px-1 text-left text-xs font-medium opacity-70">Description</th>
+                        <th className="py-2 px-1 text-left text-xs font-medium opacity-70" style={{ minWidth: '80px' }}>Part Name</th>
+                        <th className="py-2 px-1 text-left text-xs font-medium opacity-70" style={{ minWidth: '120px' }}>Description</th>
                         <th className="py-2 px-1 text-left text-xs font-medium opacity-70" style={{ width: '60px' }}>Q'TY</th>
                         <th className="py-2 px-1 text-left text-xs font-medium opacity-70" style={{ width: '60px' }}>Unit</th>
-                        <th className="py-2 px-1 text-left text-xs font-medium opacity-70" style={{ minWidth: '80px' }}>U/Price</th>
-                        <th className="py-2 px-1 text-left text-xs font-medium opacity-70" style={{ minWidth: '80px', whiteSpace: 'nowrap' }}>Amount</th>
+                        <th className="py-2 px-1 text-left text-xs font-medium opacity-70" style={{ width: '100px' }}>U/Price</th>
+                        <th className="py-2 px-1 text-left text-xs font-medium opacity-70" style={{ width: '100px'}}>Amount</th>
                         <th className="py-2 px-1 text-left text-xs font-medium opacity-70">Remarks</th>
                       </tr>
                     </thead>
@@ -415,7 +419,7 @@ export default function Quotation() {
                                 p-4 rounded-xl border border-[var(--card-border)]">
                   <span className="text-sm font-medium opacity-70">Total Amount</span>
                   <span className="text-xl font-semibold">
-                    {getTotalAmount().toFixed(2)} {quotationData.currency}
+                    {currencySymbols[quotationData.currency]}{getTotalAmount().toFixed(2)}
                   </span>
                 </div>
 

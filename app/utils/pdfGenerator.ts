@@ -23,6 +23,12 @@ interface QuotationData {
   notes: string[];
 }
 
+const currencySymbols: { [key: string]: string } = {
+  USD: '$',
+  EUR: '€', 
+  CNY: '¥'
+};
+
 export const generateQuotationPDF = (data: QuotationData) => {
   const doc = new jsPDF();
   
@@ -35,11 +41,16 @@ export const generateQuotationPDF = (data: QuotationData) => {
   // 添加图片
   doc.addImage('/dochead.jpg', 'JPEG', x, 10, logoWidth, logoHeight);
   
-  // 设置字体
-  doc.setFont('helvetica');
+  // 添加QUOTATION标题
+  doc.setFontSize(14);
+  doc.setFont('helvetica', 'bold');
+  doc.text('QUOTATION', pageWidth / 2, 45, { align: 'center' });
   
-  // 由于添加了Logo，调整后续内容的起始位置
-  const contentStartY = 50; // Logo下方的起始位置
+  // 设置字体
+  doc.setFont('helvetica', 'normal');
+  
+  // 由于添加了Logo和标题，调整后续内容的起始位置
+  const contentStartY = 55; 
   
   // 添加基本信息
   doc.setFontSize(10);
@@ -52,7 +63,7 @@ export const generateQuotationPDF = (data: QuotationData) => {
   // 添加感谢语和币种
   doc.setFontSize(10);
   doc.text('Thanks for your inquiry, and our best offer is as follows:', 15, contentStartY + 20);
-  doc.text(`Currency: ${data.currency}`, doc.internal.pageSize.width - 15, contentStartY + 20, { align: 'right' });
+  doc.text(`Currency: ${currencySymbols[data.currency]}`, doc.internal.pageSize.width - 15, contentStartY + 20, { align: 'right' });
   
   // 添加品表格
   autoTable(doc, {
@@ -64,13 +75,13 @@ export const generateQuotationPDF = (data: QuotationData) => {
       item.description,
       item.quantity,
       item.unit,
-      item.unitPrice.toFixed(2),
-      item.amount.toFixed(2),
+      `${currencySymbols[data.currency]}${item.unitPrice.toFixed(2)}`,
+      `${currencySymbols[data.currency]}${item.amount.toFixed(2)}`,
       item.remarks
     ]),
     foot: [[
-      { content: 'TOTAL AMOUNT :', colSpan: 6, styles: { halign: 'right', fontStyle: 'bold' } },
-      { content: `${data.items.reduce((sum: number, item: LineItem) => sum + item.amount, 0).toFixed(2)} (${data.currency})`, colSpan: 3, styles: { fontStyle: 'bold' } }
+      { content: 'TOTAL AMOUNT:', colSpan: 6, styles: { halign: 'right', fontStyle: 'bold' } },
+      { content: `${currencySymbols[data.currency]}${data.items.reduce((sum: number, item: LineItem) => sum + item.amount, 0).toFixed(2)}`, styles: { fontStyle: 'bold' } }
     ]],
     styles: {
       fontSize: 9,
@@ -78,7 +89,7 @@ export const generateQuotationPDF = (data: QuotationData) => {
       valign: 'middle'
     },
     headStyles: {
-      fillColor: [220, 220, 220],
+      fillColor: [220, 235, 246],
       textColor: [0, 0, 0],
       fontStyle: 'bold',
     },
@@ -87,7 +98,10 @@ export const generateQuotationPDF = (data: QuotationData) => {
       textColor: [0, 0, 0],
     },
     columnStyles: {
-      4: { halign: 'left' },
+      3: { halign: 'center' },  // Q'TY列居中对齐
+      5: { halign: 'right' },   // U/Price列右对齐
+      6: { halign: 'right' },   // Amount列右对齐
+      4: { halign: 'left' },    // Unit列保持左对齐
     },
   });
   
