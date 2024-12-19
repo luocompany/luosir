@@ -178,7 +178,7 @@ export const generateQuotationPDF = (data: QuotationData) => {
   });
   
   // 保存PDF
-  doc.save(`Quotation-${data.quotationNo}-${data.date}.pdf`);
+  doc.save(`Quotation ${data.quotationNo}-${data.date}.pdf`);
 };
 
 // 添加生成销售确认单的函数
@@ -334,5 +334,5 @@ export const generateOrderConfirmationPDF = (data: QuotationData) => {
   // doc.line(15, signatureY + 35, 80, signatureY + 35); // 签名线
 
   // 保存文件
-  doc.save(`Order_Confirmation_${data.inquiryNo || 'draft'}.pdf`);
+  doc.save(`Sales Confirmation ${data.contractNo}-${data.inquiryNo || 'draft'}.pdf`);
 };
