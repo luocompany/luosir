@@ -181,7 +181,7 @@ export default function Quotation() {
                       type="text"
                       value={quotationData.to}
                       onChange={e => setQuotationData(prev => ({ ...prev, to: e.target.value }))}
-                      className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)]"
+                      className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-xs"
                       placeholder="客户名称"
                     />
                   </div>
@@ -191,7 +191,7 @@ export default function Quotation() {
                       type="date"
                       value={quotationData.date}
                       onChange={e => setQuotationData(prev => ({ ...prev, date: e.target.value }))}
-                      className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)]"
+                      className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-xs"
                       placeholder="报价日期"
                     />
                   </div>
@@ -201,7 +201,7 @@ export default function Quotation() {
                       type="text"
                       value={quotationData.yourRef}
                       onChange={e => setQuotationData(prev => ({ ...prev, yourRef: e.target.value }))}
-                      className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)]"
+                      className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-xs"
                       placeholder="客户询价号码"
                     />
                   </div>
@@ -211,7 +211,7 @@ export default function Quotation() {
                     <select
                       value={quotationData.from}
                       onChange={e => setQuotationData(prev => ({ ...prev, from: e.target.value }))}
-                      className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)]"
+                      className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-xs"
                     >
                       <option value="Roger">Roger</option>
                       <option value="Sharon">Sharon</option>
@@ -226,7 +226,7 @@ export default function Quotation() {
                       type="text"
                       value={quotationData.ourRef}
                       onChange={e => setQuotationData(prev => ({ ...prev, ourRef: e.target.value }))}
-                      className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)]"
+                      className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-xs"
                       placeholder="我司报价号码"
                     />
                   </div>
@@ -235,7 +235,7 @@ export default function Quotation() {
                     <select
                       value={quotationData.currency}
                       onChange={e => setQuotationData(prev => ({ ...prev, currency: e.target.value }))}
-                      className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)]"
+                      className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-xs"
                     >
                       <option value="USD">USD</option>
                       <option value="EUR">EUR</option>
@@ -251,7 +251,7 @@ export default function Quotation() {
                   <table className="w-full min-w-[800px]">
                     <thead>
                       <tr className="border-b border-[var(--card-border)]">
-                        <th className="py-1 px-2 text-left text-sm font-medium">No.</th>
+                        <th className="py-1 px-2 text-left text-xs font-medium">No.</th>
                         <th className="py-1 px-2 text-left text-sm font-medium">Part Name</th>
                         <th className="py-1 px-2 text-left text-sm font-medium">Description</th>
                         <th className="py-1 px-2 text-left text-sm font-medium" style={{ width: '80px' }}>Q'TY</th>
@@ -263,9 +263,9 @@ export default function Quotation() {
                     </thead>
                     <tbody>
                       {quotationData.items.map((item, index) => (
-                        <tr key={item.lineNo} className="border-b border-[var(--card-border)]">
+                        <tr key={item.lineNo} className="border-b border-[var(--card-border)] text-xs">
                           <td 
-                            className="py-1 px-2 text-sm cursor-pointer relative"
+                            className="py-1 px-2 text-sm cursor-pointer relative text-xs"
                             onClick={() => {
                               setQuotationData(prev => ({
                                 ...prev,
@@ -280,7 +280,7 @@ export default function Quotation() {
                               type="text"
                               value={item.partName}
                               onChange={e => updateLineItem(index, 'partName', e.target.value)}
-                              className="w-full px-1 py-1 rounded border border-[var(--card-border)] bg-[var(--background)]"
+                              className="w-full px-1 py-1 rounded border border-[var(--card-border)] bg-[var(--background)] text-xs"
                             />
                           </td>
                           <td className="py-1 px-2">
@@ -288,7 +288,7 @@ export default function Quotation() {
                               type="text"
                               value={item.description}
                               onChange={e => updateLineItem(index, 'description', e.target.value)}
-                              className="w-full px-1 py-1 rounded border border-[var(--card-border)] bg-[var(--background)]"
+                              className="w-full px-1 py-1 rounded border border-[var(--card-border)] bg-[var(--background)] text-xs"
                             />
                           </td>
                           <td className="py-1 px-2">
@@ -301,14 +301,14 @@ export default function Quotation() {
                                   updateLineItem(index, 'quantity', value);
                                 }
                               }}
-                              className="w-full px-1 py-1 rounded border border-[var(--card-border)] bg-[var(--background)]"
+                              className="w-full px-1 py-1 rounded border border-[var(--card-border)] bg-[var(--background)] text-xs"
                             />
                           </td>
                           <td className="py-1 px-2">
                             <select
                               value={item.unit}
                               onChange={e => updateLineItem(index, 'unit', e.target.value)}
-                              className="w-full px-1 py-1 rounded border border-[var(--card-border)] bg-[var(--background)]"
+                              className="w-full px-1 py-1 rounded border border-[var(--card-border)] bg-[var(--background)] text-xs"
                             >
                               <option value={item.quantity <= 1 ? "pc" : "pcs"}>
                                 {item.quantity <= 1 ? "pc" : "pcs"}
@@ -331,7 +331,7 @@ export default function Quotation() {
                                   updateLineItem(index, 'unitPrice', value);
                                 }
                               }}
-                              className="w-full px-1 py-1 rounded border border-[var(--card-border)] bg-[var(--background)]"
+                              className="w-full px-1 py-1 rounded border border-[var(--card-border)] bg-[var(--background)] text-xs"
                             />
                           </td>
                           <td className="py-1 px-2">
@@ -339,7 +339,7 @@ export default function Quotation() {
                               type="number"
                               value={item.amount ? item.amount.toFixed(2) : '0.00'}
                               readOnly
-                              className="w-full px-1 py-1 rounded border border-[var(--card-border)] bg-[var(--background)]"
+                              className="w-full px-1 py-1 rounded border border-[var(--card-border)] bg-[var(--background)] text-xs"
                             />
                           </td>
                           <td className="py-1 px-2">
@@ -347,7 +347,7 @@ export default function Quotation() {
                               type="text"
                               value={item.remarks}
                               onChange={e => updateLineItem(index, 'remarks', e.target.value)}
-                              className="w-full px-1 py-1 rounded border border-[var(--card-border)] bg-[var(--background)]"
+                              className="w-full px-1 py-1 rounded border border-[var(--card-border)] bg-[var(--background)] text-xs"
                             />
                           </td>
                         </tr>
@@ -361,7 +361,7 @@ export default function Quotation() {
                   type="button"
                   onClick={addLineItem}
                   className="px-4 py-2 rounded-lg border border-[var(--card-border)] 
-                           hover:bg-[var(--background)] transition-colors"
+                           hover:bg-[var(--background)] transition-colors text-xs"
                 >
                   增加行
                 </button>
@@ -377,7 +377,7 @@ export default function Quotation() {
                   <h3 className="font-medium">注意事项：</h3>
                   {quotationData.notes.map((note, index) => (
                     <div key={index} className="flex items-center space-x-2">
-                      <span>{index + 1}.</span>
+                      <span className="text-xs">{index + 1}.</span>
                       <input
                         type="text"
                         value={note}
@@ -386,7 +386,7 @@ export default function Quotation() {
                           newNotes[index] = e.target.value;
                           setQuotationData(prev => ({ ...prev, notes: newNotes }));
                         }}
-                        className="flex-1 px-2 py-1 rounded border border-[var(--card-border)] bg-[var(--background)]"
+                        className="flex-1 px-2 py-1 rounded border border-[var(--card-border)] bg-[var(--background)] text-xs"
                       />
                     </div>
                   ))}
@@ -397,7 +397,7 @@ export default function Quotation() {
                   type="submit"
                   className="w-full mt-6 px-6 py-3 rounded-lg bg-[var(--blue-accent)] 
                            text-white font-medium hover:opacity-90 transition-opacity
-                           flex items-center justify-center gap-2"
+                           flex items-center justify-center gap-2 text-xs"
                 >
                   <Download className="h-4 w-4" />
                   生成报价表
