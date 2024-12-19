@@ -300,7 +300,7 @@ export default function Quotation() {
   );
 
   // 检查是否有其他地方在输入过程中触发了状态更新
-  // 比如移除或简化这些���作用
+  // 比如移除或简化这些作用
   useEffect(() => {
     // 移除或简化不必要的副作用
   }, [quotationData]);
@@ -534,9 +534,9 @@ export default function Quotation() {
                           <td className="py-1.5 px-1" style={{ width: '100px' }}>
                             <input
                               type="number"
-                              value={item.quantity}
+                              value={item.quantity === 0 ? '' : item.quantity}
                               onChange={e => {
-                                const value = parseFloat(e.target.value);
+                                const value = e.target.value === '' ? 0 : parseFloat(e.target.value);
                                 if (!isNaN(value) && value >= 0) {
                                   updateLineItem(index, 'quantity', value);
                                 }
