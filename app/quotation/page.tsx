@@ -34,7 +34,7 @@ export default function Quotation() {
   const [quotationData, setQuotationData] = useState<QuotationData>({
     to: '',
     date: new Date().toISOString().split('T')[0],
-    from: '',
+    from: 'Roger',
     yourRef: '',
     ourRef: '',
     currency: 'USD',
@@ -51,7 +51,7 @@ export default function Quotation() {
       }
     ],
     notes: [
-      'Delivery time: 60 days',
+      'Delivery time: 30 days',
       'Price based on EXW-Shanghai, Mill TC',
       'Delivery terms: as mentioned above, subj to unsold',
       'Payment term: 30% deposit, the balance paid before delivery',
