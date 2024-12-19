@@ -59,6 +59,10 @@ export default function Quotation() {
     ]
   });
 
+  // 修改状态定义，使用索引来跟踪正在编辑的行
+  const [editingUnitPriceIndex, setEditingUnitPriceIndex] = useState<number | null>(null);
+  const [editingUnitPrice, setEditingUnitPrice] = useState<string>('');
+
   const addLineItem = () => {
     setQuotationData(prev => ({
       ...prev,
@@ -120,7 +124,7 @@ export default function Quotation() {
       generateQuotationPDF(quotationData);
     } catch (error) {
       console.error('Error generating PDF:', error);
-      // TODO: ��加错误提示
+      // TODO: 加错误提示
     }
   };
 
@@ -355,12 +359,28 @@ export default function Quotation() {
                             <input
                               type="text"
                               inputMode="numeric"
-                              value={item.unitPrice ? item.unitPrice.toFixed(2) : '0.00'}
+                              value={editingUnitPriceIndex === index ? editingUnitPrice : (item.unitPrice ? item.unitPrice.toFixed(2) : '')}
                               onChange={e => {
-                                const value = parseFloat(e.target.value);
-                                if (!isNaN(value) && value >= 0) { // 确保输入为数字且不为负数
-                                  updateLineItem(index, 'unitPrice', value);
+                                const inputValue = e.target.value;
+                                if (/^\d*\.?\d{0,2}$/.test(inputValue) || inputValue === '') {
+                                  setEditingUnitPrice(inputValue);
+                                  const value = parseFloat(inputValue);
+                                  if (!isNaN(value)) {
+                                    const roundedValue = Math.round(value * 100) / 100;
+                                    updateLineItem(index, 'unitPrice', roundedValue);
+                                  } else if (inputValue === '') {
+                                    updateLineItem(index, 'unitPrice', 0);
+                                  }
                                 }
+                              }}
+                              onFocus={(e) => {
+                                setEditingUnitPriceIndex(index);
+                                setEditingUnitPrice(item.unitPrice === 0 ? '' : item.unitPrice.toString());
+                                e.target.select();
+                              }}
+                              onBlur={() => {
+                                setEditingUnitPriceIndex(null);
+                                setEditingUnitPrice('');
                               }}
                               className="w-full px-1 py-1 rounded-lg border border-transparent 
                                        bg-transparent text-sm transition-all

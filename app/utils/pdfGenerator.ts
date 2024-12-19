@@ -63,7 +63,7 @@ export const generateQuotationPDF = (data: QuotationData) => {
   // 添加感谢语和币种
   doc.setFontSize(10);
   doc.text('Thanks for your inquiry, and our best offer is as follows:', 15, contentStartY + 20);
-  doc.text(`Currency: ${currencySymbols[data.currency]}`, doc.internal.pageSize.width - 15, contentStartY + 20, { align: 'right' });
+  doc.text(`Currency: ${data.currency}`, doc.internal.pageSize.width - 15, contentStartY + 20, { align: 'right' });
   
   // 添加品表格
   autoTable(doc, {
@@ -75,8 +75,8 @@ export const generateQuotationPDF = (data: QuotationData) => {
       item.description,
       item.quantity,
       item.unit,
-      `${currencySymbols[data.currency]}${item.unitPrice.toFixed(2)}`,
-      `${currencySymbols[data.currency]}${item.amount.toFixed(2)}`,
+      item.unitPrice.toFixed(2),
+      item.amount.toFixed(2),
       item.remarks
     ]),
     foot: [[
