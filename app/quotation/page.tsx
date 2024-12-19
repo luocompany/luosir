@@ -348,11 +348,12 @@ export default function Quotation() {
                           </td>
                           <td className="py-1 px-1">
                             <input
-                              type="number"
+                              type="text"
+                              inputMode="numeric"
                               value={item.unitPrice ? item.unitPrice.toFixed(2) : '0.00'}
                               onChange={e => {
                                 const value = parseFloat(e.target.value);
-                                if (value >= 0) { // 确保单价不为负数
+                                if (!isNaN(value) && value >= 0) { // 确保输入为数字且不为负数
                                   updateLineItem(index, 'unitPrice', value);
                                 }
                               }}
@@ -360,7 +361,8 @@ export default function Quotation() {
                                        bg-transparent text-sm transition-all
                                        hover:border-[var(--card-border)]
                                        focus:border-[var(--blue-accent)] focus:ring-1 
-                                       focus:ring-[var(--blue-accent)] outline-none"
+                                       focus:ring-[var(--blue-accent)] outline-none
+                                       [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                             />
                           </td>
                           <td className="py-1 px-1">
