@@ -16,8 +16,8 @@ interface QuotationData {
   to: string;
   date: string;
   from: string;
-  yourRef: string;
-  ourRef: string;
+  inquiryNo: string;
+  quotationNo: string;
   currency: string;
   items: LineItem[];
   notes: string[];
@@ -56,9 +56,9 @@ export const generateQuotationPDF = (data: QuotationData) => {
   doc.setFontSize(10);
   doc.text(`To: ${data.to}`, 15, contentStartY);
   doc.text(`Date: ${data.date}`, doc.internal.pageSize.width - 15, contentStartY, { align: 'right' });
-  doc.text(`Your ref: ${data.yourRef}`, 15, contentStartY + 5);
+  doc.text(`Inquiry No.: ${data.inquiryNo}`, 15, contentStartY + 5);
   doc.text(`From: ${data.from}`, doc.internal.pageSize.width - 15, contentStartY + 5, { align: 'right' });
-  doc.text(`Our ref: ${data.ourRef}`, 15, contentStartY + 10);
+  doc.text(`Quotation No.: ${data.quotationNo}`, 15, contentStartY + 10);
   
   // 添加感谢语和币种
   doc.setFontSize(10);
@@ -115,5 +115,5 @@ export const generateQuotationPDF = (data: QuotationData) => {
   });
   
   // 保存PDF
-  doc.save(`Quotation-${data.ourRef}-${data.date}.pdf`);
+  doc.save(`Quotation-${data.quotationNo}-${data.date}.pdf`);
 };

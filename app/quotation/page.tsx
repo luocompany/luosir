@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { ArrowLeft, Download } from 'lucide-react';
+import { ArrowLeft, Download, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { generateQuotationPDF } from '../utils/pdfGenerator';
 
@@ -22,11 +22,17 @@ interface QuotationData {
   to: string;
   date: string;
   from: string;
-  yourRef: string;
-  ourRef: string;
+  inquiryNo: string;
+  quotationNo: string;
   currency: string;
   items: LineItem[];
   notes: string[];
+}
+
+interface SettingsData {
+  date: string;
+  from: string;
+  currency: string;
 }
 
 export default function Quotation() {
@@ -35,8 +41,8 @@ export default function Quotation() {
     to: '',
     date: new Date().toISOString().split('T')[0],
     from: 'Roger',
-    yourRef: '',
-    ourRef: '',
+    inquiryNo: '',
+    quotationNo: '',
     currency: 'USD',
     items: [
       {
@@ -62,6 +68,13 @@ export default function Quotation() {
   // 修改状态定义，使用索引来跟踪正在编辑的行
   const [editingUnitPriceIndex, setEditingUnitPriceIndex] = useState<number | null>(null);
   const [editingUnitPrice, setEditingUnitPrice] = useState<string>('');
+
+  const [showSettings, setShowSettings] = useState(false);
+  const [settings, setSettings] = useState<SettingsData>({
+    date: new Date().toISOString().split('T')[0],
+    from: 'Roger',
+    currency: 'USD'
+  });
 
   const addLineItem = () => {
     setQuotationData(prev => ({
@@ -181,7 +194,17 @@ export default function Quotation() {
         <div className="bg-[var(--card-bg)] shadow-sm border border-[var(--card-border)] rounded-xl p-6">
           {activeTab === 'quotation' ? (
             <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-[var(--foreground)]">Generate Quotation</h2>
+              <div className="flex justify-between items-center">
+                <h2 className="text-xl font-semibold text-[var(--foreground)]">Generate Quotation</h2>
+                <button
+                  type="button"
+                  onClick={() => setShowSettings(true)}
+                  title="Date, Sales Person, Currency"
+                  className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                >
+                  <Settings className="h-5 w-5" />
+                </button>
+              </div>
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* 基本信息 */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -201,63 +224,94 @@ export default function Quotation() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium">Quotation Date</label>
-                    <input
-                      type="date"
-                      value={quotationData.date}
-                      onChange={e => setQuotationData(prev => ({ ...prev, date: e.target.value }))}
-                      className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-xs"
-                      placeholder="Quotation Date"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium">Customer Reference</label>
+                    <label className="block text-sm font-medium">Inquiry No.</label>
                     <input
                       type="text"
-                      value={quotationData.yourRef}
-                      onChange={e => setQuotationData(prev => ({ ...prev, yourRef: e.target.value }))}
+                      value={quotationData.inquiryNo}
+                      onChange={e => setQuotationData(prev => ({ ...prev, inquiryNo: e.target.value }))}
                       className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-xs"
-                      placeholder="Customer Reference"
+                      placeholder="Inquiry No."
                     />
                   </div>
-
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium">Sales Person</label>
-                    <select
-                      value={quotationData.from}
-                      onChange={e => setQuotationData(prev => ({ ...prev, from: e.target.value }))}
-                      className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-xs"
-                    >
-                      <option value="Roger">Roger</option>
-                      <option value="Sharon">Sharon</option>
-                      <option value="Emily">Emily</option>
-                      <option value="Summer">Summer</option>
-                      <option value="Nina">Nina</option>
-                    </select>
-                  </div>
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium">Our Reference</label>
+                    <label className="block text-sm font-medium">Quotation No.</label>
                     <input
                       type="text"
-                      value={quotationData.ourRef}
-                      onChange={e => setQuotationData(prev => ({ ...prev, ourRef: e.target.value }))}
+                      value={quotationData.quotationNo}
+                      onChange={e => setQuotationData(prev => ({ ...prev, quotationNo: e.target.value }))}
                       className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-xs"
-                      placeholder="Our Reference"
+                      placeholder="Quotation No."
                     />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium">Currency</label>
-                    <select
-                      value={quotationData.currency}
-                      onChange={e => setQuotationData(prev => ({ ...prev, currency: e.target.value }))}
-                      className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-xs"
-                    >
-                      <option value="USD">USD</option>
-                      <option value="EUR">EUR</option>
-                      <option value="CNY">CNY</option>
-                    </select>
                   </div>
                 </div>
+
+                {/* 添加设置弹窗 */}
+                {showSettings && (
+                  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                    <div className="bg-[var(--card-bg)] rounded-xl p-6 w-full max-w-md m-4">
+                      <h3 className="text-lg font-semibold mb-4">Settings</h3>
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <label className="block text-sm font-medium">Quotation Date</label>
+                          <input
+                            type="date"
+                            value={settings.date}
+                            onChange={e => setSettings(prev => ({ ...prev, date: e.target.value }))}
+                            className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)]"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="block text-sm font-medium">Sales Person</label>
+                          <select
+                            value={settings.from}
+                            onChange={e => setSettings(prev => ({ ...prev, from: e.target.value }))}
+                            className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)]"
+                          >
+                            <option value="Roger">Roger</option>
+                            <option value="Sharon">Sharon</option>
+                            <option value="Emily">Emily</option>
+                            <option value="Summer">Summer</option>
+                            <option value="Nina">Nina</option>
+                          </select>
+                        </div>
+                        <div className="space-y-2">
+                          <label className="block text-sm font-medium">Currency</label>
+                          <select
+                            value={settings.currency}
+                            onChange={e => setSettings(prev => ({ ...prev, currency: e.target.value }))}
+                            className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)]"
+                          >
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                            <option value="CNY">CNY</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div className="flex justify-end gap-2 mt-6">
+                        <button
+                          onClick={() => setShowSettings(false)}
+                          className="px-4 py-2 rounded-lg text-sm font-medium hover:bg-black/5 dark:hover:bg-white/5"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={() => {
+                            setQuotationData(prev => ({
+                              ...prev,
+                              date: settings.date,
+                              from: settings.from,
+                              currency: settings.currency
+                            }));
+                            setShowSettings(false);
+                          }}
+                          className="px-4 py-2 rounded-lg bg-[var(--blue-accent)] text-white text-sm font-medium"
+                        >
+                          Save
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* 商品列表 */}
                 <div className="overflow-x-auto rounded-xl border border-[var(--card-border)] bg-[var(--background)]">
