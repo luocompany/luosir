@@ -75,6 +75,7 @@ export const generateQuotationPDF = (data: QuotationData) => {
     styles: {
       fontSize: 9,
       cellPadding: 2,
+      valign: 'middle'
     },
     headStyles: {
       fillColor: [220, 220, 220],

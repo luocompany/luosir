@@ -295,15 +295,16 @@ export default function Quotation() {
                             />
                           </td>
                           <td className="py-1 px-1">
-                            <input
-                              type="text"
+                            <textarea
                               value={item.description}
                               onChange={e => updateLineItem(index, 'description', e.target.value)}
+                              rows={1}
                               className="w-full px-1 py-1 rounded-lg border border-transparent 
                                        bg-transparent text-sm transition-all
                                        hover:border-[var(--card-border)]
                                        focus:border-[var(--blue-accent)] focus:ring-1 
-                                       focus:ring-[var(--blue-accent)] outline-none"
+                                       focus:ring-[var(--blue-accent)] outline-none
+                                       resize-none"
                             />
                           </td>
                           <td className="py-1 px-1">
@@ -379,15 +380,16 @@ export default function Quotation() {
                             />
                           </td>
                           <td className="py-1 px-1">
-                            <input
-                              type="text"
+                            <textarea
                               value={item.remarks}
                               onChange={e => updateLineItem(index, 'remarks', e.target.value)}
+                              rows={1}
                               className="w-full px-1 py-1 rounded-lg border border-transparent 
                                        bg-transparent text-sm transition-all
                                        hover:border-[var(--card-border)]
                                        focus:border-[var(--blue-accent)] focus:ring-1 
-                                       focus:ring-[var(--blue-accent)] outline-none"
+                                       focus:ring-[var(--blue-accent)] outline-none
+                                       resize-none"
                             />
                           </td>
                         </tr>
