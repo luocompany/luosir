@@ -60,7 +60,7 @@ export default function Quotation() {
       'Delivery time: 30 days',
       'Price based on EXW-Shanghai, Mill TC',
       'Delivery terms: as mentioned above, subj to unsold',
-      'Payment term: 30% deposit, the balance paid before delivery',
+      'Payment term: 50% deposit, the balance paid before delivery',
       'Validity: 5 days'
     ]
   });
@@ -148,7 +148,8 @@ export default function Quotation() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--background)]">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50/90 via-white/60 to-gray-100/90 
+                    dark:from-gray-900 dark:via-gray-800/80 dark:to-gray-900/90">
       <Navbar />
       <div className="w-full max-w-6xl mx-auto px-6 py-10 mt-14 flex-grow">
         {/* 返回按钮 */}
@@ -191,7 +192,10 @@ export default function Quotation() {
         </div>
 
         {/* 主要内容区域 */}
-        <div className="bg-[var(--card-bg)] shadow-sm border border-[var(--card-border)] rounded-xl p-6">
+        <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-2xl 
+                shadow-xl border border-gray-200/50 dark:border-gray-700/50 
+                rounded-[2rem] p-6 sm:p-8
+                hover:shadow-2xl transition-all duration-500">
           {activeTab === 'quotation' ? (
             <div className="space-y-6">
               <div className="flex justify-between items-center">
@@ -207,7 +211,7 @@ export default function Quotation() {
               </div>
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* 基本信息 */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="space-y-2.5">
                     <label className="block text-sm font-medium text-[var(--foreground)] opacity-70">
                       Customer Name
@@ -216,10 +220,14 @@ export default function Quotation() {
                       type="text"
                       value={quotationData.to}
                       onChange={e => setQuotationData(prev => ({ ...prev, to: e.target.value }))}
-                      className="w-full px-4 py-2.5 rounded-xl border border-[var(--card-border)]
-                                bg-[var(--background)] text-sm transition-all
-                                focus:ring-2 focus:ring-[var(--blue-accent)] focus:ring-opacity-50
-                                focus:border-[var(--blue-accent)] outline-none"
+                      className="w-full px-4 py-2.5 rounded-xl 
+                                bg-white/50 dark:bg-gray-900/50
+                                border border-gray-200/50 dark:border-gray-700/50
+                                focus:ring-2 focus:ring-blue-500/30 dark:focus:ring-blue-500/30
+                                focus:border-blue-500/30 dark:focus:border-blue-500/30
+                                placeholder:text-gray-400 dark:placeholder:text-gray-500
+                                text-gray-900 dark:text-gray-100
+                                outline-none transition-all"
                       placeholder="Enter customer name"
                     />
                   </div>
@@ -229,7 +237,14 @@ export default function Quotation() {
                       type="text"
                       value={quotationData.inquiryNo}
                       onChange={e => setQuotationData(prev => ({ ...prev, inquiryNo: e.target.value }))}
-                      className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-xs"
+                      className="w-full px-4 py-2.5 rounded-xl 
+                                bg-white/50 dark:bg-gray-900/50
+                                border border-gray-200/50 dark:border-gray-700/50
+                                focus:ring-2 focus:ring-blue-500/30 dark:focus:ring-blue-500/30
+                                focus:border-blue-500/30 dark:focus:border-blue-500/30
+                                placeholder:text-gray-400 dark:placeholder:text-gray-500
+                                text-gray-900 dark:text-gray-100
+                                outline-none transition-all"
                       placeholder="Inquiry No."
                     />
                   </div>
@@ -239,7 +254,14 @@ export default function Quotation() {
                       type="text"
                       value={quotationData.quotationNo}
                       onChange={e => setQuotationData(prev => ({ ...prev, quotationNo: e.target.value }))}
-                      className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)] text-xs"
+                      className="w-full px-4 py-2.5 rounded-xl 
+                                bg-white/50 dark:bg-gray-900/50
+                                border border-gray-200/50 dark:border-gray-700/50
+                                focus:ring-2 focus:ring-blue-500/30 dark:focus:ring-blue-500/30
+                                focus:border-blue-500/30 dark:focus:border-blue-500/30
+                                placeholder:text-gray-400 dark:placeholder:text-gray-500
+                                text-gray-900 dark:text-gray-100
+                                outline-none transition-all"
                       placeholder="Quotation No."
                     />
                   </div>
@@ -247,8 +269,11 @@ export default function Quotation() {
 
                 {/* 添加设置弹窗 */}
                 {showSettings && (
-                  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-                    <div className="bg-[var(--card-bg)] rounded-xl p-6 w-full max-w-md m-4">
+                  <div className="fixed inset-0 bg-black/50 dark:bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
+                    <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-2xl
+                                    rounded-2xl p-6 w-full max-w-md m-4
+                                    border border-gray-200/50 dark:border-gray-700/50
+                                    shadow-xl">
                       <h3 className="text-lg font-semibold mb-4">Settings</h3>
                       <div className="space-y-4">
                         <div className="space-y-2">
@@ -257,7 +282,14 @@ export default function Quotation() {
                             type="date"
                             value={settings.date}
                             onChange={e => setSettings(prev => ({ ...prev, date: e.target.value }))}
-                            className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)]"
+                            className="w-full px-4 py-2.5 rounded-xl 
+                                      bg-white/50 dark:bg-gray-900/50
+                                      border border-gray-200/50 dark:border-gray-700/50
+                                      focus:ring-2 focus:ring-blue-500/30 dark:focus:ring-blue-500/30
+                                      focus:border-blue-500/30 dark:focus:border-blue-500/30
+                                      placeholder:text-gray-400 dark:placeholder:text-gray-500
+                                      text-gray-900 dark:text-gray-100
+                                      outline-none transition-all"
                           />
                         </div>
                         <div className="space-y-2">
@@ -265,7 +297,14 @@ export default function Quotation() {
                           <select
                             value={settings.from}
                             onChange={e => setSettings(prev => ({ ...prev, from: e.target.value }))}
-                            className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)]"
+                            className="w-full px-4 py-2.5 rounded-xl 
+                                      bg-white/50 dark:bg-gray-900/50
+                                      border border-gray-200/50 dark:border-gray-700/50
+                                      focus:ring-2 focus:ring-blue-500/30 dark:focus:ring-blue-500/30
+                                      focus:border-blue-500/30 dark:focus:border-blue-500/30
+                                      placeholder:text-gray-400 dark:placeholder:text-gray-500
+                                      text-gray-900 dark:text-gray-100
+                                      outline-none transition-all"
                           >
                             <option value="Roger">Roger</option>
                             <option value="Sharon">Sharon</option>
@@ -279,7 +318,14 @@ export default function Quotation() {
                           <select
                             value={settings.currency}
                             onChange={e => setSettings(prev => ({ ...prev, currency: e.target.value }))}
-                            className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)]"
+                            className="w-full px-4 py-2.5 rounded-xl 
+                                      bg-white/50 dark:bg-gray-900/50
+                                      border border-gray-200/50 dark:border-gray-700/50
+                                      focus:ring-2 focus:ring-blue-500/30 dark:focus:ring-blue-500/30
+                                      focus:border-blue-500/30 dark:focus:border-blue-500/30
+                                      placeholder:text-gray-400 dark:placeholder:text-gray-500
+                                      text-gray-900 dark:text-gray-100
+                                      outline-none transition-all"
                           >
                             <option value="USD">USD</option>
                             <option value="EUR">EUR</option>
@@ -314,10 +360,12 @@ export default function Quotation() {
                 )}
 
                 {/* 商品列表 */}
-                <div className="overflow-x-auto rounded-xl border border-[var(--card-border)] bg-[var(--background)]">
+                <div className="overflow-x-auto rounded-xl border border-gray-200/50 dark:border-gray-700/50 
+                        bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm">
                   <table className="w-full min-w-[800px]">
                     <thead>
-                      <tr className="border-b border-[var(--card-border)] bg-[var(--background)]">
+                      <tr className="border-b border-gray-200/50 dark:border-gray-700/50 
+                                     bg-gray-50/50 dark:bg-gray-800/50">
                         <th className="py-2 px-1 text-left text-xs font-medium opacity-70" style={{ width: '40px' }}>No.</th>
                         <th className="py-2 px-1 text-left text-xs font-medium opacity-70" style={{ minWidth: '80px' }}>Part Name</th>
                         <th className="py-2 px-1 text-left text-xs font-medium opacity-70" style={{ minWidth: '120px' }}>Description</th>
@@ -520,11 +568,13 @@ export default function Quotation() {
                 {/* 生成按钮 */}
                 <button
                   type="submit"
-                  className="w-full mt-8 px-6 py-3.5 rounded-xl bg-[var(--blue-accent)] 
-                           text-white font-medium hover:opacity-90 transition-all
-                           focus:ring-2 focus:ring-[var(--blue-accent)] focus:ring-opacity-50
-                           flex items-center justify-center gap-2 text-sm shadow-lg
-                           hover:shadow-xl active:scale-[0.98]"
+                  className="w-full px-6 py-3.5 rounded-xl
+                            bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700
+                            text-white font-medium 
+                            transition-all duration-200
+                            focus:ring-2 focus:ring-blue-500/30 dark:focus:ring-blue-500/30
+                            shadow-lg hover:shadow-xl active:scale-[0.98]
+                            flex items-center justify-center gap-2 text-sm"
                 >
                   <Download className="h-4 w-4" />
                   Generate Quotation
