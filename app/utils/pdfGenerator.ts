@@ -73,14 +73,31 @@ export const generateQuotationPDF = (data: QuotationData) => {
   // 调整后续内容的起始位置，减小间距
   const newContentStartY = currentY + 10; // 减小与后续内容的间距
 
-  // 添加感谢和币种信息
+  // 添加感谢信息
   doc.text('Thanks for your inquiry, and our best offer is as follows:', 15, newContentStartY);
-  doc.text(`Currency: ${data.currency}`, doc.internal.pageSize.width - 15, newContentStartY, { align: 'right' });
   
-  // 右侧信息保持不变
-  doc.text(`Date: ${data.date}`, doc.internal.pageSize.width - 15, 55, { align: 'right' });
-  doc.text(`From: ${data.from}`, doc.internal.pageSize.width - 15, 60, { align: 'right' });
-  doc.text(`Quotation No.: ${data.quotationNo}`, doc.internal.pageSize.width - 15, 65, { align: 'right' });
+  // 调整右侧信息的位置和对齐方式
+  const rightInfoX = doc.internal.pageSize.width - 15; // 右边界
+  const colonX = rightInfoX - 20; // 将冒号位置调整到距离右边界20mm处
+  const valueX = colonX + 2; // 值的位置在冒号右侧1mm处
+  const labelX = colonX - 1; // 标签文本位置在冒号左侧1mm处
+
+  // 添加右侧信息，确保值靠紧冒号对齐
+  doc.text('Date', labelX, 55, { align: 'right' });
+  doc.text(':', colonX, 55);
+  doc.text(data.date, valueX, 55);
+
+  doc.text('From', labelX, 60, { align: 'right' });
+  doc.text(':', colonX, 60);
+  doc.text(data.from, valueX, 60);
+
+  doc.text('Quotation No.', labelX, 65, { align: 'right' });
+  doc.text(':', colonX, 65);
+  doc.text(data.quotationNo, valueX, 65);
+
+  doc.text('Currency', labelX, newContentStartY, { align: 'right' });
+  doc.text(':', colonX, newContentStartY);
+  doc.text(data.currency, valueX, newContentStartY);
   
   // 调整后续内容的位置
   const customerNameHeight = (toLines.length - 1) * 5;
@@ -204,13 +221,31 @@ export const generateOrderConfirmationPDF = (data: QuotationData) => {
 
   // 添加确认信息
   doc.text('We hereby confirm your order with following details:', 15, confirmationContentStartY);
-  doc.text(`Currency: ${data.currency}`, doc.internal.pageSize.width - 15, confirmationContentStartY, { align: 'right' });
+ 
+  // 调整右侧信息的位置和对齐方式
+  const rightInfoX = doc.internal.pageSize.width - 15; // 右边界
+  const colonX = rightInfoX - 20; // 将冒号位置调整到距离右边界50mm处
+  const valueX = colonX + 2; // 值的位置在冒号右侧2mm处
+  const labelX = colonX - 1; // 标签文本位置在冒号左侧1mm处
 
-  // 右侧信息保持不变
-  doc.text(`Contract No.: ${data.contractNo || ''}`, doc.internal.pageSize.width - 15, 55, { align: 'right' });
-  doc.text(`Date: ${data.date}`, doc.internal.pageSize.width - 15, 60, { align: 'right' });
-  doc.text(`From: ${data.from}`, doc.internal.pageSize.width - 15, 65, { align: 'right' });
-  
+  // 右侧信息保持对齐
+  doc.text('Contract No.', labelX, 55, { align: 'right' });
+  doc.text(':', colonX, 55);
+  doc.text(data.contractNo || '', valueX, 55);
+
+  doc.text('Date', labelX, 60, { align: 'right' });
+  doc.text(':', colonX, 60);
+  doc.text(data.date, valueX, 60);
+
+  doc.text('From', labelX, 65, { align: 'right' });
+  doc.text(':', colonX, 65);
+  doc.text(data.from, valueX, 65);
+
+  // Currency信息移到右上角并保持对齐
+  doc.text('Currency', labelX, confirmationContentStartY, { align: 'right' });
+  doc.text(':', colonX, confirmationContentStartY);
+  doc.text(data.currency, valueX, confirmationContentStartY);
+
   // 调整后续内容的位置
   const customerNameHeight = (toLines.length - 1) * 5;
   currentY += Math.max(customerNameHeight, 10); // 确保至少有10的间距

@@ -113,7 +113,7 @@ export default function Quotation() {
   const [quotationData, setQuotationData] = useState<QuotationData>({
     to: '',
     date: new Date().toISOString().split('T')[0],
-    from: 'Roger / Luocompany',
+    from: 'Roger',
     inquiryNo: '',
     quotationNo: '',
     contractNo: 'FL25',
@@ -153,7 +153,7 @@ export default function Quotation() {
   const [showSettings, setShowSettings] = useState(false);
   const [settings, setSettings] = useState<SettingsData>({
     date: new Date().toISOString().split('T')[0],
-    from: 'Roger / Luocompany',
+    from: 'Roger',
     currency: 'USD'
   });
 
@@ -432,11 +432,11 @@ export default function Quotation() {
                             onChange={e => setSettings(prev => ({ ...prev, from: e.target.value }))}
                             className={selectClassName}
                           >
-                            <option value="Roger / Luocompany">Roger / Luocompany</option>
-                            <option value="Sharon / Luocompany">Sharon / Luocompany</option>
-                            <option value="Emily / Luocompany">Emily / Luocompany</option>
-                            <option value="Summer / Luocompany">Summer / Luocompany</option>
-                            <option value="Nina / Luocompany">Nina / Luocompany</option>
+                            <option value="Roger">Roger</option>
+                            <option value="Sharon">Sharon</option>
+                            <option value="Emily">Emily</option>
+                            <option value="Summer">Summer</option>
+                            <option value="Nina">Nina</option>
                           </select>
                         </div>
                         <div className="space-y-2">
