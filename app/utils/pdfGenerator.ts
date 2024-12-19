@@ -53,22 +53,42 @@ export const generateQuotationPDF = (data: QuotationData) => {
   // 由于添加了Logo和标题，调整后续内容的起始位置
   const contentStartY = 55; 
   
-  // 添加基本信息
+  // 添加基本信息 - 支持多行客户名称
   doc.setFontSize(10);
-  doc.text(`To: ${data.to}`, 15, contentStartY);
-  doc.text(`Date: ${data.date}`, doc.internal.pageSize.width - 15, contentStartY, { align: 'right' });
-  doc.text(`Inquiry No.: ${data.inquiryNo}`, 15, contentStartY + 5);
-  doc.text(`From: ${data.from}`, doc.internal.pageSize.width - 15, contentStartY + 5, { align: 'right' });
-  doc.text(`Quotation No.: ${data.quotationNo}`, 15, contentStartY + 10);
+  const toLines = data.to.split('\n');
+  let currentY = contentStartY;
   
-  // 添加感谢和币种
-  doc.setFontSize(10);
-  doc.text('Thanks for your inquiry, and our best offer is as follows:', 15, contentStartY + 20);
-  doc.text(`Currency: ${data.currency}`, doc.internal.pageSize.width - 15, contentStartY + 20, { align: 'right' });
+  // 绘制客户名称（支持多行）
+  doc.text('To:', 15, currentY);
+  toLines.forEach((line, index) => {
+    doc.text(line.trim(), 25, currentY + (index * 5));
+  });
+
+  // 计算客户信息后的位置
+  currentY += (toLines.length * 5) + 2; // 减小间距到2mm
+
+  // Inquiry No. 放在客户信息下面
+  doc.text(`Inquiry No.: ${data.inquiryNo}`, 15, currentY);
+
+  // 调整后续内容的起始位置，减小间距
+  const newContentStartY = currentY + 10; // 减小与后续内容的间距
+
+  // 添加感谢和币种信息
+  doc.text('Thanks for your inquiry, and our best offer is as follows:', 15, newContentStartY);
+  doc.text(`Currency: ${data.currency}`, doc.internal.pageSize.width - 15, newContentStartY, { align: 'right' });
   
-  // 添加品表格
+  // 右侧信息保持不变
+  doc.text(`Date: ${data.date}`, doc.internal.pageSize.width - 15, 55, { align: 'right' });
+  doc.text(`From: ${data.from}`, doc.internal.pageSize.width - 15, 60, { align: 'right' });
+  doc.text(`Quotation No.: ${data.quotationNo}`, doc.internal.pageSize.width - 15, 65, { align: 'right' });
+  
+  // 调整后续内容的位置
+  const customerNameHeight = (toLines.length - 1) * 5;
+  currentY += Math.max(customerNameHeight, 10); // 确保至少有10的间距
+  
+  // 添加商品表格
   autoTable(doc, {
-    startY: contentStartY + 25,
+    startY: newContentStartY + 5,
     head: [['No.', 'Part Name', 'Description', 'Q\'TY', 'Unit', 'U/Price', 'Amount', 'Remarks']],
     body: data.items.map(item => [
       item.lineNo,
@@ -81,8 +101,28 @@ export const generateQuotationPDF = (data: QuotationData) => {
       item.remarks
     ]),
     foot: [[
-      { content: 'TOTAL AMOUNT:', colSpan: 6, styles: { halign: 'right', fontStyle: 'bold' } },
-      { content: `${currencySymbols[data.currency]}${data.items.reduce((sum: number, item: LineItem) => sum + item.amount, 0).toFixed(2)}`, styles: { fontStyle: 'bold' } }
+      { 
+        content: 'TOTAL AMOUNT: ', 
+        colSpan: 6, 
+        styles: { 
+          halign: 'right', 
+          fontStyle: 'bold',
+          cellPadding: { top: 8 }  // 为总金额行添加上边距
+        } 
+      },
+      { 
+        content: `${currencySymbols[data.currency]}${data.items.reduce((sum: number, item: LineItem) => sum + item.amount, 0).toFixed(2)}`, 
+        styles: { 
+          fontStyle: 'bold',
+          cellPadding: { top: 8 }  // 为总金额单元格添加上边距
+        } 
+      },
+      { 
+        content: '',
+        styles: { 
+          cellPadding: { top: 8 }  // 为最后一个单元格添加上边距
+        } 
+      }
     ]],
     styles: {
       fontSize: 9,
@@ -93,16 +133,18 @@ export const generateQuotationPDF = (data: QuotationData) => {
       fillColor: [220, 235, 246],
       textColor: [0, 0, 0],
       fontStyle: 'bold',
+      halign: 'center', // 表头居中对齐
     },
     footStyles: {
       fillColor: [255, 255, 255],
       textColor: [0, 0, 0],
     },
     columnStyles: {
+      0: { halign: 'center' },  // No.列居中对齐
       3: { halign: 'center' },  // Q'TY列居中对齐
+      4: { halign: 'center' },  // Unit列居中对齐
       5: { halign: 'right' },   // U/Price列右对齐
       6: { halign: 'right' },   // Amount列右对齐
-      4: { halign: 'left' },    // Unit列保持左对齐
     },
   });
   
@@ -140,28 +182,43 @@ export const generateOrderConfirmationPDF = (data: QuotationData) => {
   // 基本信息 - 修改为与报价单相同的对齐方式
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(10);
-  doc.text(`To: ${data.to}`, 15, 55);
-  doc.text(`Order No.: ${data.quotationNo}`, 15, 60);
-
-  // 右对齐的信息
-  // Contract No 移到右边并设置红色粗体
-  doc.setFont('helvetica', 'normal');
-  doc.setTextColor(0, 0, 0);  // 设置黑色
-  doc.text(`Contract No.: ${data.contractNo || ''}`, doc.internal.pageSize.width - 15, 55, { align: 'right' });
   
-  // 恢复正常颜色和字体
-  doc.setTextColor(0, 0, 0);  // 恢复黑色
-  doc.setFont('helvetica', 'normal');
+  // 添加基本信息 - 支持多行客户名称
+  const toLines = data.to.split('\n');
+  let currentY = 55;
+  
+  // 先示 To 和客户信息
+  doc.text('To:', 15, currentY);
+  toLines.forEach((line, index) => {
+    doc.text(line.trim(), 25, currentY + (index * 5));
+  });
+
+  // 计算客户信息后的位置，并添加较小的间距
+  currentY += (toLines.length * 5) + 2; // 减小间距到2mm
+
+  // Order No. 放在客户信息下面
+  doc.text(`Order No.: ${data.inquiryNo}`, 15, currentY);
+
+  // 调整后续内容的起始位置，减小间距
+  const confirmationContentStartY = currentY + 10; // 减小与后续内容的间距
+
+  // 添加确认信息
+  doc.text('We hereby confirm your order with following details:', 15, confirmationContentStartY);
+  doc.text(`Currency: ${data.currency}`, doc.internal.pageSize.width - 15, confirmationContentStartY, { align: 'right' });
+
+  // 右侧信息保持不变
+  doc.text(`Contract No.: ${data.contractNo || ''}`, doc.internal.pageSize.width - 15, 55, { align: 'right' });
   doc.text(`Date: ${data.date}`, doc.internal.pageSize.width - 15, 60, { align: 'right' });
   doc.text(`From: ${data.from}`, doc.internal.pageSize.width - 15, 65, { align: 'right' });
-
-  // 添加确认信息 - 调整Y轴位置，使间距与报价单一致
-  doc.text('We hereby confirm your order with following details:', 15, 75);  // 从85改为75
-  doc.text(`Currency: ${data.currency}`, doc.internal.pageSize.width - 15, 75, { align: 'right' });  // 从85改为75
-
+  
+  // 调整后续内容的位置
+  const customerNameHeight = (toLines.length - 1) * 5;
+  currentY += Math.max(customerNameHeight, 10); // 确保至少有10的间距
+  
+  
   // 添加商品表格 - 相应调整起始位置
   autoTable(doc, {
-    startY: 80,  // 从90改为80
+    startY: confirmationContentStartY + 5,
     head: [['No.', 'Part Name', 'Description', 'Q\'TY', 'Unit', 'U/Price', 'Amount', 'Remarks']],
     body: data.items.map(item => [
       item.lineNo,
@@ -174,9 +231,28 @@ export const generateOrderConfirmationPDF = (data: QuotationData) => {
       item.remarks
     ]),
     foot: [[
-      { content: 'TOTAL AMOUNT:', colSpan: 6, styles: { halign: 'right', fontStyle: 'bold' } },
-      { content: `${currencySymbols[data.currency]}${data.items.reduce((sum: number, item: LineItem) => sum + item.amount, 0).toFixed(2)}`, styles: { fontStyle: 'bold' } },
-      { content: '' } // 为remarks列添加空单元格
+      { 
+        content: 'TOTAL AMOUNT: ', 
+        colSpan: 6, 
+        styles: { 
+          halign: 'right', 
+          fontStyle: 'bold',
+          cellPadding: { top: 8 }  // 为总金额行添加上边距
+        } 
+      },
+      { 
+        content: `${currencySymbols[data.currency]}${data.items.reduce((sum: number, item: LineItem) => sum + item.amount, 0).toFixed(2)}`, 
+        styles: { 
+          fontStyle: 'bold',
+          cellPadding: { top: 8 }  // 为总金额单元格添加上边距
+        } 
+      },
+      { 
+        content: '',
+        styles: { 
+          cellPadding: { top: 8 }  // 为最后一个单元格添加上边距
+        } 
+      }
     ]],
     styles: {
       fontSize: 9,
@@ -187,20 +263,22 @@ export const generateOrderConfirmationPDF = (data: QuotationData) => {
       fillColor: [220, 235, 246],
       textColor: [0, 0, 0],
       fontStyle: 'bold',
+      halign: 'center', // 表头居中对齐
     },
     footStyles: {
       fillColor: [255, 255, 255],
       textColor: [0, 0, 0],
     },
     columnStyles: {
+      0: { halign: 'center' },  // No.列居中对齐
       3: { halign: 'center' },  // Q'TY列居中对齐
+      4: { halign: 'center' },  // Unit列居中对齐
       5: { halign: 'right' },   // U/Price列右对齐
       6: { halign: 'right' },   // Amount列右对齐
-      4: { halign: 'left' },    // Unit列保持左对齐
     },
   });
 
-  // 添加注意项
+  // 添加注意
   const finalY = (doc as any).lastAutoTable.finalY || 150;
   doc.setFontSize(10);
   doc.text('Terms & Conditions:', 15, finalY + 10);
@@ -210,10 +288,10 @@ export const generateOrderConfirmationPDF = (data: QuotationData) => {
   });
 
   // 添加签名区域
-  const signatureY = finalY + 20 + (data.notes.length * 5);
-  doc.text('Authorized Signature:', 15, signatureY + 20);
-  doc.line(15, signatureY + 35, 80, signatureY + 35); // 签名线
+  // const signatureY = finalY + 20 + (data.notes.length * 5);
+  // doc.text('Authorized Signature:', 15, signatureY + 20);
+  // doc.line(15, signatureY + 35, 80, signatureY + 35); // 签名线
 
   // 保存文件
-  doc.save(`Order_Confirmation_${data.quotationNo || 'draft'}.pdf`);
+  doc.save(`Order_Confirmation_${data.inquiryNo || 'draft'}.pdf`);
 };

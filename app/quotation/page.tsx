@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import Footer from '../components/Footer';
 import { ArrowLeft, Download, Settings } from 'lucide-react';
 import Link from 'next/link';
@@ -55,21 +55,68 @@ const documentTypes: { [key: string]: DocumentHeader } = {
   confirmation: {
     title: 'Generate Order Confirmation',
     customerLabel: 'Customer Name',
-    numberLabel: 'Contract No.',
-    numberPlaceholder: 'Contract No.',
+    numberLabel: 'Quotation No.',
+    numberPlaceholder: 'Quotation No.',
     showContractNo: true
   }
 };
+
+// 修改主要输入框样式 - 更符合 Apple 风格
+const inputClassName = `w-full px-4 py-2.5 rounded-2xl
+  bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg
+  border border-gray-200/30 dark:border-gray-700/30
+  focus:outline-none focus:ring-2 focus:ring-blue-500/40
+  placeholder:text-gray-400/60 dark:placeholder:text-gray-500/60
+  text-[15px] leading-relaxed text-gray-800 dark:text-gray-100
+  transition-all duration-300 ease-out
+  hover:border-gray-300/50 dark:hover:border-gray-600/50
+  shadow-sm hover:shadow-md`;
+
+// 修改表格内输入框基础样式
+const tableInputClassName = `w-full px-3 py-2 rounded-xl
+  bg-transparent backdrop-blur-sm
+  border border-transparent
+  focus:outline-none focus:ring-2 focus:ring-blue-500/30
+  text-[14px] leading-relaxed text-gray-800 dark:text-gray-100
+  placeholder:text-gray-400/60 dark:placeholder:text-gray-500/60
+  transition-all duration-300 ease-out
+  hover:bg-gray-50/50 dark:hover:bg-gray-800/50
+  text-center`;
+
+// Notes 输入框样式 - 统一更小的高度
+const notesInputClassName = `w-full px-4 py-1 rounded-lg
+  bg-white/60 dark:bg-gray-800/60
+  border border-transparent
+  focus:outline-none focus:ring-2 focus:ring-blue-500
+  text-[14px] leading-relaxed text-gray-800 dark:text-gray-100
+  placeholder:text-gray-400/70 dark:placeholder:text-gray-500/70
+  transition-all duration-200 ease-out`;
+
+// 数字输入框样式
+const numberInputClassName = `${tableInputClassName}
+  [appearance:textfield] 
+  [&::-webkit-outer-spin-button]:appearance-none 
+  [&::-webkit-inner-spin-button]:appearance-none
+  text-center`;
+
+// 下拉选择框样式 - 统一更小的高度
+const selectClassName = `${inputClassName} 
+  appearance-none 
+  bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3e%3cpolyline points="6 9 12 15 18 9"%3e%3c/polyline%3e%3c/svg%3e')] 
+  bg-[length:1.25em_1.25em] 
+  bg-[right_0.5rem_center] 
+  bg-no-repeat
+  pr-10`;
 
 export default function Quotation() {
   const [activeTab, setActiveTab] = useState('quotation');
   const [quotationData, setQuotationData] = useState<QuotationData>({
     to: '',
     date: new Date().toISOString().split('T')[0],
-    from: 'Roger',
+    from: 'Roger / Luocompany',
     inquiryNo: '',
     quotationNo: '',
-    contractNo: 'FL24',
+    contractNo: 'FL25',
     currency: 'USD',
     items: [
       {
@@ -77,7 +124,7 @@ export default function Quotation() {
         partName: '',
         description: '',
         quantity: 0,
-        unit: '',
+        unit: 'pc',
         unitPrice: 0,
         amount: 0,
         remarks: ''
@@ -106,7 +153,7 @@ export default function Quotation() {
   const [showSettings, setShowSettings] = useState(false);
   const [settings, setSettings] = useState<SettingsData>({
     date: new Date().toISOString().split('T')[0],
-    from: 'Roger',
+    from: 'Roger / Luocompany',
     currency: 'USD'
   });
 
@@ -130,29 +177,30 @@ export default function Quotation() {
     setQuotationData(prev => {
       const newItems = [...prev.items];
       const currentItem = { ...newItems[index] };
-
+      
+      // 更新当前字段
+      (currentItem[field] as LineItem[keyof LineItem]) = value;
+      
+      // 如果更新的是数量，自动更新单位的单复数形式
       if (field === 'quantity') {
-        const newQuantity = typeof value === 'string' ? parseFloat(value) : value;
-        if (!currentItem.unit) {
-          currentItem.unit = newQuantity <= 1 ? 'pc' : 'pcs';
-        } else {
-          if (newQuantity <= 1) {
-            currentItem.unit = currentItem.unit.replace(/s$/, '');
-          } else {
-            if (!currentItem.unit.endsWith('s')) {
-              currentItem.unit = currentItem.unit + 's';
-            }
-          }
+        const quantity = Number(value);
+        if (currentItem.unit) {
+          const unitBase = currentItem.unit.replace(/s$/, '');
+          currentItem.unit = quantity <= 1 ? unitBase : `${unitBase}s`;
         }
-        currentItem.quantity = newQuantity;
-      } else {
-        (currentItem[field] as LineItem[keyof LineItem]) = value;
       }
-
+      
+      // 如果直接更新单位，也需要根据当前数量决定单复数
+      if (field === 'unit') {
+        const unitBase = (value as string).replace(/s$/, '');
+        currentItem.unit = currentItem.quantity <= 1 ? unitBase : `${unitBase}s`;
+      }
+      
+      // 如果更新的是数量或单价，重新计算金额
       if (field === 'quantity' || field === 'unitPrice') {
-        currentItem.amount = currentItem.quantity * currentItem.unitPrice;
+        currentItem.amount = Number(currentItem.quantity) * Number(currentItem.unitPrice);
       }
-
+      
       newItems[index] = currentItem;
       return {
         ...prev,
@@ -185,96 +233,47 @@ export default function Quotation() {
     CNY: '¥'
   };
 
-  // 提取表单头部为独立组件
+  // 修改 setQuotationData 的调用方式
+  const handleInputChange = (field: string, value: string) => {
+    setQuotationData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  // 移除 memo，简化组件实现
   const DocumentHeaderForm = ({ type }: { type: 'quotation' | 'confirmation' }) => (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div className="space-y-2.5">
-        <label className="block text-sm font-medium text-[var(--foreground)] opacity-70">
-          {documentTypes[type].customerLabel}
-        </label>
-        <input
-          type="text"
-          value={quotationData.to}
-          onChange={e => setQuotationData(prev => ({ ...prev, to: e.target.value }))}
-          className="w-full px-4 py-2.5 rounded-xl 
-                    bg-white/50 dark:bg-gray-900/50
-                    border border-gray-200/50 dark:border-gray-700/50
-                    hover:border-gray-300 dark:hover:border-gray-600
-                    hover:bg-white dark:hover:bg-gray-800
-                    focus:ring-2 focus:ring-blue-500/30 dark:focus:ring-blue-500/30
-                    focus:border-blue-500/30 dark:focus:border-blue-500/30
-                    focus:bg-white dark:focus:bg-gray-800
-                    placeholder:text-gray-400 dark:placeholder:text-gray-500
-                    text-gray-900 dark:text-gray-100
-                    outline-none transition-all duration-200"
-          placeholder="Enter customer name"
+      <div>
+        <textarea
+          defaultValue={quotationData.to}
+          onBlur={e => handleInputChange('to', e.target.value)}
+          className={`${inputClassName} min-h-[60px] resize
+            hover:border-gray-300 dark:hover:border-gray-600
+            focus:border-blue-500 dark:focus:border-blue-500`}
+          placeholder="Enter customer name and address"
+          rows={2}
         />
       </div>
       <div className="space-y-2">
         <label className="block text-sm font-medium">Inquiry No.</label>
         <input
           type="text"
-          value={quotationData.inquiryNo}
-          onChange={e => setQuotationData(prev => ({ ...prev, inquiryNo: e.target.value }))}
-          className="w-full px-4 py-2.5 rounded-xl 
-                    bg-white/50 dark:bg-gray-900/50
-                    border border-gray-200/50 dark:border-gray-700/50
-                    hover:border-gray-300 dark:hover:border-gray-600
-                    hover:bg-white dark:hover:bg-gray-800
-                    focus:ring-2 focus:ring-blue-500/30 dark:focus:ring-blue-500/30
-                    focus:border-blue-500/30 dark:focus:border-blue-500/30
-                    focus:bg-white dark:focus:bg-gray-800
-                    placeholder:text-gray-400 dark:placeholder:text-gray-500
-                    text-gray-900 dark:text-gray-100
-                    outline-none transition-all duration-200"
+          defaultValue={quotationData.inquiryNo}
+          onBlur={e => handleInputChange('inquiryNo', e.target.value)}
+          className={inputClassName}
           placeholder="Inquiry No."
-        />
-      </div>
-      <div className="space-y-2">
-        <label className="block text-sm font-medium">{documentTypes[type].numberLabel}</label>
-        <input
-          type="text"
-          value={type === 'quotation' ? quotationData.quotationNo : quotationData.contractNo}
-          onChange={e => {
-            const value = e.target.value;
-            setQuotationData(prev => ({
-              ...prev,
-              [type === 'quotation' ? 'quotationNo' : 'contractNo']: value
-            }));
-          }}
-          className="w-full px-4 py-2.5 rounded-xl 
-                    bg-white/50 dark:bg-gray-900/50
-                    border border-gray-200/50 dark:border-gray-700/50
-                    hover:border-gray-300 dark:hover:border-gray-600
-                    hover:bg-white dark:hover:bg-gray-800
-                    focus:ring-2 focus:ring-blue-500/30 dark:focus:ring-blue-500/30
-                    focus:border-blue-500/30 dark:focus:border-blue-500/30
-                    focus:bg-white dark:focus:bg-gray-800
-                    placeholder:text-gray-400 dark:placeholder:text-gray-500
-                    text-gray-900 dark:text-gray-100
-                    outline-none transition-all duration-200"
-          placeholder={documentTypes[type].numberPlaceholder}
         />
       </div>
       {type === 'confirmation' && (
         <div className="space-y-2">
-          <label className="block text-sm font-medium">Quotation No.</label>
+          <label className="block text-sm font-medium">Contract No.</label>
           <input
             type="text"
-            value={quotationData.quotationNo}
-            onChange={e => setQuotationData(prev => ({ ...prev, quotationNo: e.target.value }))}
-            className="w-full px-4 py-2.5 rounded-xl 
-                      bg-white/50 dark:bg-gray-900/50
-                      border border-gray-200/50 dark:border-gray-700/50
-                      hover:border-gray-300 dark:hover:border-gray-600
-                      hover:bg-white dark:hover:bg-gray-800
-                      focus:ring-2 focus:ring-blue-500/30 dark:focus:ring-blue-500/30
-                      focus:border-blue-500/30 dark:focus:border-blue-500/30
-                      focus:bg-white dark:focus:bg-gray-800
-                      placeholder:text-gray-400 dark:placeholder:text-gray-500
-                      text-gray-900 dark:text-gray-100
-                      outline-none transition-all duration-200"
-            placeholder="Quotation No."
+            defaultValue={quotationData.contractNo}
+            onBlur={e => handleInputChange('contractNo', e.target.value)}
+            className={inputClassName}
+            placeholder="Contract No."
           />
         </div>
       )}
@@ -285,73 +284,116 @@ export default function Quotation() {
   const GenerateButton = ({ type }: { type: 'quotation' | 'confirmation' }) => (
     <button
       type="submit"
-      className="w-full px-6 py-3.5 rounded-xl
-                bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700
-                text-white font-medium 
-                transition-all duration-200
-                focus:ring-2 focus:ring-blue-500/30 dark:focus:ring-blue-500/30
-                shadow-lg hover:shadow-xl active:scale-[0.98]
-                flex items-center justify-center gap-2 text-sm"
+      className="w-full px-6 py-4 rounded-2xl
+                bg-blue-500 hover:bg-blue-600
+                text-white font-medium
+                transition-all duration-300
+                shadow-lg shadow-blue-500/25
+                hover:shadow-xl hover:shadow-blue-500/30
+                hover:-translate-y-0.5
+                active:scale-[0.98]
+                flex items-center justify-center gap-2"
     >
-      <Download className="h-4 w-4" />
+      <Download className="h-5 w-5" />
       Generate {type === 'quotation' ? 'Quotation' : 'Order Confirmation'}
     </button>
   );
 
+  // 检查是否有其他地方在输入过程中触发了状态更新
+  // 比如移除或简化这些���作用
+  useEffect(() => {
+    // 移除或简化不必要的副作用
+  }, [quotationData]);
+
+  // 在件加载时同步状态
+  useEffect(() => {
+    setQuotationData(prev => ({
+      ...prev,
+      date: new Date().toISOString().split('T')[0],
+      from: 'Roger',
+      currency: 'USD'
+    }));
+  }, []);
+
+  // 当 quotationData 变化时更新 headerData
+  useEffect(() => {
+    setQuotationData(prev => ({
+      ...prev,
+      to: quotationData.to,
+      inquiryNo: quotationData.inquiryNo,
+      quotationNo: quotationData.quotationNo,
+      contractNo: quotationData.contractNo
+    }));
+  }, [quotationData.to, quotationData.inquiryNo, quotationData.quotationNo, quotationData.contractNo]);
+
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50/90 via-white/60 to-gray-100/90 
-                    dark:from-gray-900 dark:via-gray-800/80 dark:to-gray-900/90">
+    <div className="min-h-screen flex flex-col bg-[#f5f5f7] dark:bg-[#1d1d1f]">
       <main className="flex-1">
         <div className="w-full max-w-6xl mx-auto px-6 py-8">
-          {/* 返回按钮 */}
-          <div className="flex items-center mb-4">
-            <Link 
-              href="/" 
-              className="group inline-flex items-center px-4 py-2 rounded-full 
-                        bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg 
-                        border border-gray-200/50 dark:border-gray-700/50 
-                        text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 
-                        transition-all hover:shadow-lg hover:scale-[1.02]"
-            >
-              <ArrowLeft className="h-4 w-4 mr-1.5 transition-transform group-hover:-translate-x-0.5" />
-              <span className="text-sm font-medium">Back to Home</span>
-            </Link>
-          </div>
+          {/* 返回按钮样式优化 */}
+          <Link 
+            href="/" 
+            className="group inline-flex items-center px-5 py-2.5 rounded-2xl
+                      bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl
+                      border border-gray-200/30 dark:border-gray-700/30
+                      text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100
+                      transition-all duration-300 hover:shadow-lg hover:scale-[1.02]
+                      hover:-translate-y-0.5"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2 transition-transform group-hover:-translate-x-0.5" />
+            <span className="text-sm font-medium">Back to Home</span>
+          </Link>
 
-          {/* 标签切换 */}
-          <div className="flex justify-center gap-3 mb-6">
+          {/* 标签切换样式优化 */}
+          <div className="flex justify-center gap-3 mb-8 mt-6">
             <button 
               onClick={() => setActiveTab('quotation')}
-              className={`px-8 py-2.5 rounded-full text-sm font-medium transition-all ${
-                activeTab === 'quotation' 
-                  ? 'bg-[var(--blue-accent)] text-white' 
-                  : 'text-[var(--foreground)] hover:bg-black/5 dark:hover:bg-white/5'
-              }`}
+              className={`px-8 py-3 rounded-2xl text-sm font-medium transition-all duration-300
+                ${activeTab === 'quotation' 
+                  ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25 scale-[1.02]' 
+                  : 'bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl hover:shadow-md'
+                }`}
             >
               Quotation
             </button>
             <button 
               onClick={() => setActiveTab('confirmation')}
-              className={`px-8 py-2.5 rounded-full text-sm font-medium transition-all ${
-                activeTab === 'confirmation' 
-                  ? 'bg-[var(--blue-accent)] text-white' 
-                  : 'text-[var(--foreground)] hover:bg-black/5 dark:hover:bg-white/5'
-              }`}
+              className={`px-8 py-3 rounded-2xl text-sm font-medium transition-all duration-300
+                ${activeTab === 'confirmation' 
+                  ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25 scale-[1.02]' 
+                  : 'bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl hover:shadow-md'
+                }`}
             >
               Order Confirmation
             </button>
           </div>
 
-          {/* 主内容区域 */}
-          <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-2xl 
-                  shadow-xl border border-gray-200/50 dark:border-gray-700/50 
-                  rounded-[2rem] p-6 sm:p-8
-                  hover:shadow-2xl transition-all duration-500">
+          {/* 主内容区域样式优化 */}
+          <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-2xl
+                  shadow-2xl border border-gray-200/30 dark:border-gray-700/30
+                  rounded-[2.5rem] p-8
+                  hover:shadow-3xl transition-all duration-500">
             <div className="space-y-6">
-              <div className="flex justify-between items-center">
-                <h2 className="text-xl font-semibold text-[var(--foreground)]">
+              <div className="flex items-center gap-4">
+                <h2 className="text-xl font-semibold text-[var(--foreground)] flex-1">
                   {documentTypes[activeTab].title}
                 </h2>
+                
+                <div className="w-48">
+                  <input
+                    type="text"
+                    defaultValue={quotationData.quotationNo}
+                    onBlur={e => handleInputChange('quotationNo', e.target.value)}
+                    placeholder={documentTypes[activeTab].numberPlaceholder}
+                    className="w-full px-4 py-2 rounded-xl 
+                              bg-white/50 dark:bg-gray-900/50
+                              border border-gray-200/50 dark:border-gray-700/50
+                              hover:border-gray-300 dark:hover:border-gray-600
+                              focus:ring-2 focus:ring-blue-500/30
+                              text-sm"
+                  />
+                </div>
+                
                 <button
                   type="button"
                   onClick={() => setShowSettings(true)}
@@ -367,27 +409,20 @@ export default function Quotation() {
 
                 {/* 设置弹窗 */}
                 {showSettings && (
-                  <div className="fixed inset-0 bg-black/50 dark:bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
+                  <div className="fixed inset-0 bg-black/20 dark:bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
                     <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-2xl
                                     rounded-2xl p-6 w-full max-w-md m-4
-                                    border border-gray-200/50 dark:border-gray-700/50
+                                    border border-gray-200/20 dark:border-gray-700/20
                                     shadow-xl">
                       <h3 className="text-lg font-semibold mb-4">Settings</h3>
                       <div className="space-y-4">
                         <div className="space-y-2">
-                          <label className="block text-sm font-medium">Quotation Date</label>
+                          <label className="block text-sm font-medium">Date</label>
                           <input
                             type="date"
                             value={settings.date}
                             onChange={e => setSettings(prev => ({ ...prev, date: e.target.value }))}
-                            className="w-full px-4 py-2.5 rounded-xl 
-                                      bg-white/50 dark:bg-gray-900/50
-                                      border border-gray-200/50 dark:border-gray-700/50
-                                      focus:ring-2 focus:ring-blue-500/30 dark:focus:ring-blue-500/30
-                                      focus:border-blue-500/30 dark:focus:border-blue-500/30
-                                      placeholder:text-gray-400 dark:placeholder:text-gray-500
-                                      text-gray-900 dark:text-gray-100
-                                      outline-none transition-all"
+                            className={inputClassName}
                           />
                         </div>
                         <div className="space-y-2">
@@ -395,20 +430,13 @@ export default function Quotation() {
                           <select
                             value={settings.from}
                             onChange={e => setSettings(prev => ({ ...prev, from: e.target.value }))}
-                            className="w-full px-4 py-2.5 rounded-xl 
-                                      bg-white/50 dark:bg-gray-900/50
-                                      border border-gray-200/50 dark:border-gray-700/50
-                                      focus:ring-2 focus:ring-blue-500/30 dark:focus:ring-blue-500/30
-                                      focus:border-blue-500/30 dark:focus:border-blue-500/30
-                                      placeholder:text-gray-400 dark:placeholder:text-gray-500
-                                      text-gray-900 dark:text-gray-100
-                                      outline-none transition-all"
+                            className={selectClassName}
                           >
-                            <option value="Roger">Roger</option>
-                            <option value="Sharon">Sharon</option>
-                            <option value="Emily">Emily</option>
-                            <option value="Summer">Summer</option>
-                            <option value="Nina">Nina</option>
+                            <option value="Roger / Luocompany">Roger / Luocompany</option>
+                            <option value="Sharon / Luocompany">Sharon / Luocompany</option>
+                            <option value="Emily / Luocompany">Emily / Luocompany</option>
+                            <option value="Summer / Luocompany">Summer / Luocompany</option>
+                            <option value="Nina / Luocompany">Nina / Luocompany</option>
                           </select>
                         </div>
                         <div className="space-y-2">
@@ -416,14 +444,7 @@ export default function Quotation() {
                           <select
                             value={settings.currency}
                             onChange={e => setSettings(prev => ({ ...prev, currency: e.target.value }))}
-                            className="w-full px-4 py-2.5 rounded-xl 
-                                      bg-white/50 dark:bg-gray-900/50
-                                      border border-gray-200/50 dark:border-gray-700/50
-                                      focus:ring-2 focus:ring-blue-500/30 dark:focus:ring-blue-500/30
-                                      focus:border-blue-500/30 dark:focus:border-blue-500/30
-                                      placeholder:text-gray-400 dark:placeholder:text-gray-500
-                                      text-gray-900 dark:text-gray-100
-                                      outline-none transition-all"
+                            className={selectClassName}
                           >
                             <option value="USD">USD</option>
                             <option value="EUR">EUR</option>
@@ -457,21 +478,21 @@ export default function Quotation() {
                   </div>
                 )}
 
-                {/* 商品列表表格 */}
-                <div className="overflow-x-auto rounded-xl border border-gray-200/50 dark:border-gray-700/50 
-                        bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm">
+                {/* 商品列表表格样式优化 */}
+                <div className="overflow-x-auto rounded-2xl border border-gray-200/30 dark:border-gray-700/30
+                      bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg">
                   <table className="w-full min-w-[800px]">
                     <thead>
-                      <tr className="border-b border-gray-200/50 dark:border-gray-700/50 
-                                     bg-gray-50/50 dark:bg-gray-800/50">
-                        <th className="py-2 px-1 text-left text-xs font-medium opacity-70" style={{ width: '40px' }}>No.</th>
-                        <th className="py-2 px-1 text-left text-xs font-medium opacity-70" style={{ minWidth: '80px' }}>Part Name</th>
-                        <th className="py-2 px-1 text-left text-xs font-medium opacity-70" style={{ minWidth: '120px' }}>Description</th>
-                        <th className="py-2 px-1 text-left text-xs font-medium opacity-70" style={{ width: '60px' }}>Q'TY</th>
-                        <th className="py-2 px-1 text-left text-xs font-medium opacity-70" style={{ width: '60px' }}>Unit</th>
-                        <th className="py-2 px-1 text-left text-xs font-medium opacity-70" style={{ width: '100px' }}>U/Price</th>
-                        <th className="py-2 px-1 text-left text-xs font-medium opacity-70" style={{ width: '100px'}}>Amount</th>
-                        <th className="py-2 px-1 text-left text-xs font-medium opacity-70">Remarks</th>
+                      <tr className="border-b border-gray-200/30 dark:border-gray-700/30
+                           bg-gray-50/50 dark:bg-gray-800/50">
+                        <th className="py-2 px-1 text-center text-xs font-bold opacity-90" style={{ width: '40px' }}>No.</th>
+                        <th className="py-2 px-1 text-center text-xs font-bold opacity-90" style={{ minWidth: '80px' }}>Part Name</th>
+                        <th className="py-2 px-1 text-center text-xs font-bold opacity-90" style={{ minWidth: '120px' }}>Description</th>
+                        <th className="py-2 px-1 text-center text-xs font-bold opacity-90" style={{ width: '100px' }}>Q'TY</th>
+                        <th className="py-2 px-1 text-center text-xs font-bold opacity-90" style={{ width: '100px' }}>Unit</th>
+                        <th className="py-2 px-1 text-center text-xs font-bold opacity-90" style={{ width: '100px' }}>U/Price</th>
+                        <th className="py-2 px-1 text-center text-xs font-bold opacity-90" style={{ width: '100px' }}>Amount</th>
+                        <th className="py-2 px-1 text-center text-xs font-bold opacity-90">Remarks</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -490,16 +511,13 @@ export default function Quotation() {
                                 {index + 1}
                               </span>
                           </td>
-                          <td className="py-1 px-1">
+                          <td className="py-1.5 px-1">
                             <input
                               type="text"
                               value={item.partName}
                               onChange={e => updateLineItem(index, 'partName', e.target.value)}
-                              className="w-full px-1 py-1 rounded-lg border border-transparent 
-                                       bg-transparent text-sm transition-all
-                                       hover:border-[var(--card-border)]
-                                       focus:border-[var(--blue-accent)] focus:ring-1 
-                                       focus:ring-[var(--blue-accent)] outline-none"
+                              className={tableInputClassName}
+                              placeholder="Part name"
                             />
                           </td>
                           <td className="py-1 px-1">
@@ -507,52 +525,44 @@ export default function Quotation() {
                               value={item.description}
                               onChange={e => updateLineItem(index, 'description', e.target.value)}
                               rows={1}
-                              className="w-full px-1 py-1 rounded-lg border border-transparent 
-                                       bg-transparent text-sm transition-all
-                                       hover:border-[var(--card-border)]
-                                       focus:border-[var(--blue-accent)] focus:ring-1 
-                                       focus:ring-[var(--blue-accent)] outline-none
-                                       resize-none"
+                              className={`${tableInputClassName} resize min-h-[28px]
+                                hover:border-gray-300 dark:hover:border-gray-600
+                                focus:border-blue-500 dark:focus:border-blue-500`}
+                              placeholder="Enter description"
                             />
                           </td>
-                          <td className="py-1 px-1">
+                          <td className="py-1.5 px-1" style={{ width: '100px' }}>
                             <input
-                              type="text"
-                              inputMode="numeric"
+                              type="number"
                               value={item.quantity}
                               onChange={e => {
                                 const value = parseFloat(e.target.value);
-                                if (!isNaN(value) && value >= 0) { // 确保输入为数字且不为负数
+                                if (!isNaN(value) && value >= 0) {
                                   updateLineItem(index, 'quantity', value);
                                 }
                               }}
-                              className="w-full px-1 py-1 rounded-lg border border-transparent 
-                                       bg-transparent text-sm transition-all
-                                       hover:border-[var(--card-border)]
-                                       focus:border-[var(--blue-accent)] focus:ring-1 
-                                       focus:ring-[var(--blue-accent)] outline-none
-                                       [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                              className={numberInputClassName}
+                              min="0"
+                              step="1"
                             />
                           </td>
-                          <td className="py-1 px-1">
+                          <td className="py-1.5 px-1" style={{ width: '100px' }}>
                             <select
-                              value={item.unit}
-                              onChange={e => updateLineItem(index, 'unit', e.target.value)}
-                              className="w-full px-1 py-1 rounded-lg border border-transparent 
-                                       bg-transparent text-sm transition-all
-                                       hover:border-[var(--card-border)]
-                                       focus:border-[var(--blue-accent)] focus:ring-1 
-                                       focus:ring-[var(--blue-accent)] outline-none"
+                              value={item.unit ? item.unit.replace(/s$/, '') : 'pc'}
+                              onChange={e => {
+                                const baseUnit = e.target.value;
+                                const unit = item.quantity <= 1 ? baseUnit : `${baseUnit}s`;
+                                updateLineItem(index, 'unit', unit);
+                              }}
+                              className={`${tableInputClassName} pr-8 appearance-none 
+                                bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3e%3cpolyline points="6 9 12 15 18 9"%3e%3c/polyline%3e%3c/svg%3e')] 
+                                bg-[length:1em_1em] 
+                                bg-[right_0.5rem_center] 
+                                bg-no-repeat`}
                             >
-                              <option value={item.quantity <= 1 ? "pc" : "pcs"}>
-                                {item.quantity <= 1 ? "pc" : "pcs"}
-                              </option>
-                              <option value={item.quantity <= 1 ? "set" : "sets"}>
-                                {item.quantity <= 1 ? "set" : "sets"}
-                              </option>
-                              <option value={item.quantity <= 1 ? "length" : "lengths"}>
-                                {item.quantity <= 1 ? "length" : "lengths"}
-                              </option>
+                              <option value="pc">pc{item.quantity > 1 ? 's' : ''}</option>
+                              <option value="set">set{item.quantity > 1 ? 's' : ''}</option>
+                              <option value="length">length{item.quantity > 1 ? 's' : ''}</option>
                             </select>
                           </td>
                           <td className="py-1 px-1">
@@ -608,12 +618,10 @@ export default function Quotation() {
                               value={item.remarks}
                               onChange={e => updateLineItem(index, 'remarks', e.target.value)}
                               rows={1}
-                              className="w-full px-1 py-1 rounded-lg border border-transparent 
-                                       bg-transparent text-sm transition-all
-                                       hover:border-[var(--card-border)]
-                                       focus:border-[var(--blue-accent)] focus:ring-1 
-                                       focus:ring-[var(--blue-accent)] outline-none
-                                       resize-none"
+                              className={`${tableInputClassName} resize min-h-[28px]
+                                hover:border-gray-300 dark:hover:border-gray-600
+                                focus:border-blue-500 dark:focus:border-blue-500`}
+                              placeholder="Enter remarks"
                             />
                           </td>
                         </tr>
@@ -622,49 +630,76 @@ export default function Quotation() {
                   </table>
                 </div>
 
-                {/* 添加行按钮 */}
-                <button
-                  type="button"
-                  onClick={addLineItem}
-                  className="px-5 py-2.5 rounded-xl border border-[var(--blue-accent)] 
-                           text-[var(--blue-accent)] hover:bg-[var(--blue-accent)] 
-                           hover:text-white transition-all text-sm font-medium
-                           focus:ring-2 focus:ring-[var(--blue-accent)] focus:ring-opacity-50"
-                >
-                  + Add Line
-                </button>
-
-                {/* 总金额 */}
-                <div className="flex justify-end space-x-4 items-center bg-[var(--background)] 
-                                p-4 rounded-xl border border-[var(--card-border)]">
-                  <span className="text-sm font-medium opacity-70">Total Amount</span>
-                  <span className="text-xl font-semibold">
-                    {currencySymbols[quotationData.currency]}{getTotalAmount().toFixed(2)}
-                  </span>
-                </div>
-
-                {/* 注意事项 - 根据文档类型显示不同的默认注释 */}
-                <div className="space-y-2">
-                  <h3 className="font-medium">Notes:</h3>
-                  {quotationData.notes.map((note, index) => (
-                    <div key={index} className="flex items-center space-x-2">
-                      <span className="text-xs">{index + 1}.</span>
-                      <input
-                        type="text"
-                        value={note}
-                        onChange={e => {
-                          const newNotes = [...quotationData.notes];
-                          newNotes[index] = e.target.value;
-                          setQuotationData(prev => ({ ...prev, notes: newNotes }));
-                        }}
-                        className="flex-1 px-2 py-1 rounded border border-[var(--card-border)] bg-[var(--background)] text-xs"
-                      />
+                {/* 表格下方区域重新设计 */}
+                <div className="space-y-6 mt-4">
+                  {/* 操作栏 - 合并添加行按钮和总金额 */}
+                  <div className="flex items-center justify-between gap-4">
+                    <button
+                      type="button"
+                      onClick={addLineItem}
+                      className="px-5 py-2.5 rounded-xl
+                                bg-blue-500/10 text-blue-600 dark:text-blue-400
+                                hover:bg-blue-500/15 transition-all duration-300
+                                text-sm font-medium flex items-center gap-2"
+                    >
+                      <span className="text-lg leading-none">+</span>
+                      Add Line
+                    </button>
+                    
+                    <div className="flex items-center gap-3" style={{ marginRight: '8.33%' }}>
+                      <span className="text-sm font-medium text-gray-500">Total Amount</span>
+                      <div className="w-[100px] text-right">
+                        <span className="text-xl font-semibold tracking-tight">
+                          {currencySymbols[quotationData.currency]}{getTotalAmount().toFixed(2)}
+                        </span>
+                      </div>
                     </div>
-                  ))}
-                </div>
+                  </div>
 
-                {/* 生成按钮 */}
-                <GenerateButton type={activeTab as 'quotation' | 'confirmation'} />
+                  {/* Notes 部分重新设计 */}
+                  <div className="space-y-2.5 bg-gray-50/50 dark:bg-gray-900/50 
+                                    rounded-xl p-4 border border-gray-200/30 dark:border-gray-700/30">
+                    <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-3">Notes</h3>
+                    <div className="space-y-2">
+                      {quotationData.notes.map((note, index) => (
+                        <div key={index} className="flex items-center gap-2">
+                          <span className="text-xs text-gray-400 w-4">{index + 1}.</span>
+                          <input
+                            type="text"
+                            value={note}
+                            onChange={e => {
+                              const newNotes = [...quotationData.notes];
+                              newNotes[index] = e.target.value;
+                              setQuotationData(prev => ({ ...prev, notes: newNotes }));
+                            }}
+                            className="flex-1 px-3 py-1.5 rounded-lg
+                                      bg-white/60 dark:bg-gray-800/60
+                                      border border-transparent
+                                      focus:outline-none focus:ring-1 focus:ring-blue-500/30
+                                      text-sm text-gray-700 dark:text-gray-300
+                                      placeholder:text-gray-400/70 dark:placeholder:text-gray-500/70"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 生成按钮样式优化 */}
+                  <button
+                    type="submit"
+                    className="w-full px-6 py-3.5 rounded-xl
+                              bg-blue-500 hover:bg-blue-600
+                              text-white font-medium text-sm
+                              transition-all duration-300
+                              shadow-lg shadow-blue-500/25
+                              hover:shadow-xl hover:shadow-blue-500/30
+                              active:scale-[0.98]
+                              flex items-center justify-center gap-2"
+                  >
+                    <Download className="h-4 w-4" />
+                    Generate {activeTab === 'quotation' ? 'Quotation' : 'Order Confirmation'}
+                  </button>
+                </div>
               </form>
             </div>
           </div>
