@@ -334,5 +334,5 @@ export const generateOrderConfirmationPDF = (data: QuotationData) => {
   // doc.line(15, signatureY + 35, 80, signatureY + 35); // 签名线
 
   // 保存文件
-  doc.save(`Sales Confirmation ${data.contractNo}-${data.inquiryNo || 'draft'}.pdf`);
+  doc.save(`Sales Confirmation ${data.contractNo}-${data.date}.pdf`);
 };
