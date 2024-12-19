@@ -184,7 +184,9 @@ export default function Quotation() {
       // 如果更新的是数量，自动更新单位的单复数形式
       if (field === 'quantity') {
         const quantity = Number(value);
-        if (currentItem.unit) {
+        if (!currentItem.unit) {
+          currentItem.unit = quantity <= 1 ? 'pc' : 'pcs';
+        } else {
           const unitBase = currentItem.unit.replace(/s$/, '');
           currentItem.unit = quantity <= 1 ? unitBase : `${unitBase}s`;
         }
@@ -534,7 +536,7 @@ export default function Quotation() {
                           <td className="py-1.5 px-1" style={{ width: '100px' }}>
                             <input
                               type="number"
-                              value={item.quantity === 0 ? '' : item.quantity}
+                              value={item.quantity}
                               onChange={e => {
                                 const value = e.target.value === '' ? 0 : parseFloat(e.target.value);
                                 if (!isNaN(value) && value >= 0) {

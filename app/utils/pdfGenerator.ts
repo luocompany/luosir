@@ -158,10 +158,13 @@ export const generateQuotationPDF = (data: QuotationData) => {
     },
     columnStyles: {
       0: { halign: 'center' },  // No.列居中对齐
+      1: { halign: 'center' },  // Part Name列居中对齐
+      2: { halign: 'center' },  // Description列居中对齐
       3: { halign: 'center' },  // Q'TY列居中对齐
       4: { halign: 'center' },  // Unit列居中对齐
       5: { halign: 'right' },   // U/Price列右对齐
       6: { halign: 'right' },   // Amount列右对齐
+      7: { halign: 'center' },  // Remarks列居中对齐
     },
   });
   
@@ -306,10 +309,13 @@ export const generateOrderConfirmationPDF = (data: QuotationData) => {
     },
     columnStyles: {
       0: { halign: 'center' },  // No.列居中对齐
+      1: { halign: 'center' },  // Part Name列居中对齐
+      2: { halign: 'center' },  // Description列居中对齐
       3: { halign: 'center' },  // Q'TY列居中对齐
       4: { halign: 'center' },  // Unit列居中对齐
       5: { halign: 'right' },   // U/Price列右对齐
       6: { halign: 'right' },   // Amount列右对齐
+      7: { halign: 'center' },  // Remarks列居中对齐
     },
   });
 
