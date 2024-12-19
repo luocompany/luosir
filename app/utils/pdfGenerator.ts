@@ -49,15 +49,15 @@ export const generateQuotationPDF = (data: QuotationData) => {
   doc.text(`Your ref: ${data.yourRef}`, 15, contentStartY + 5);
   doc.text(`From: ${data.from}`, doc.internal.pageSize.width - 15, contentStartY + 5, { align: 'right' });
   doc.text(`Our ref: ${data.ourRef}`, 15, contentStartY + 10);
-  doc.text(`Currency: ${data.currency}`, doc.internal.pageSize.width - 15, contentStartY + 10, { align: 'right' });
   
-  // 添加感谢语
+  // 添加感谢语和币种
   doc.setFontSize(10);
   doc.text('Thanks for your inquiry, and our best offer is as follows:', 15, contentStartY + 20);
+  doc.text(`Currency: ${data.currency}`, doc.internal.pageSize.width - 15, contentStartY + 20, { align: 'right' });
   
   // 添加品表格
   autoTable(doc, {
-    startY: contentStartY + 30,
+    startY: contentStartY + 23,
     head: [['No.', 'Part Name', 'Description', 'Q\'TY', 'Unit', 'U/Price', 'Amount', 'Remarks']],
     body: data.items.map(item => [
       item.lineNo,
