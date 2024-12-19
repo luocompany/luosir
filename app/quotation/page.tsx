@@ -15,9 +15,7 @@ interface LineItem {
   unit: string;
   unitPrice: number;
   amount: number;
-  deliveryTime: string;
   remarks: string;
-  customUnit?: string;
 }
 
 interface QuotationData {
@@ -46,18 +44,16 @@ export default function Quotation() {
         partName: '',
         description: '',
         quantity: 0,
-        unit: 'pc',
+        unit: '',
         unitPrice: 0,
         amount: 0,
-        deliveryTime: '',
-        remarks: '',
-        customUnit: ''
+        remarks: ''
       }
     ],
     notes: [
       'Delivery time: 60 days',
       'Price based on EXW-Shanghai, Mill TC',
-      'Delivery terms: as mentioned above,subj to unsold',
+      'Delivery terms: as mentioned above, subj to unsold',
       'Payment term: 30% deposit, the balance paid before delivery',
       'Validity: 5 days'
     ]
@@ -71,29 +67,42 @@ export default function Quotation() {
         partName: '',
         description: '',
         quantity: 0,
-        unit: 'Lengths',
+        unit: '',
         unitPrice: 0,
         amount: 0,
-        deliveryTime: '40 days',
-        remarks: '',
-        customUnit: ''
+        remarks: ''
       }]
     }));
   };
 
-  const updateLineItem = (index: number, field: keyof LineItem, value: any) => {
+  const updateLineItem = (index: number, field: keyof LineItem, value: LineItem[keyof LineItem]) => {
     setQuotationData(prev => {
       const newItems = [...prev.items];
-      newItems[index] = {
-        ...newItems[index],
-        [field]: value
-      };
-      
-      // 自动计算金额
-      if (field === 'quantity' || field === 'unitPrice') {
-        newItems[index].amount = newItems[index].quantity * newItems[index].unitPrice;
+      const currentItem = { ...newItems[index] };
+
+      if (field === 'quantity') {
+        const newQuantity = typeof value === 'string' ? parseFloat(value) : value;
+        if (!currentItem.unit) {
+          currentItem.unit = newQuantity <= 1 ? 'pc' : 'pcs';
+        } else {
+          if (newQuantity <= 1) {
+            currentItem.unit = currentItem.unit.replace(/s$/, '');
+          } else {
+            if (!currentItem.unit.endsWith('s')) {
+              currentItem.unit = currentItem.unit + 's';
+            }
+          }
+        }
+        currentItem.quantity = newQuantity;
+      } else {
+        (currentItem[field] as LineItem[keyof LineItem]) = value;
       }
-      
+
+      if (field === 'quantity' || field === 'unitPrice') {
+        currentItem.amount = currentItem.quantity * currentItem.unitPrice;
+      }
+
+      newItems[index] = currentItem;
       return {
         ...prev,
         items: newItems
@@ -111,7 +120,7 @@ export default function Quotation() {
       generateQuotationPDF(quotationData);
     } catch (error) {
       console.error('Error generating PDF:', error);
-      // TODO: 添加错误提示
+      // TODO: ��加错误提示
     }
   };
 
@@ -177,13 +186,13 @@ export default function Quotation() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium">日期</label>
+                    <label className="block text-sm font-medium">报价日期</label>
                     <input
                       type="date"
                       value={quotationData.date}
                       onChange={e => setQuotationData(prev => ({ ...prev, date: e.target.value }))}
                       className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)]"
-                      placeholder="日期"
+                      placeholder="报价日期"
                     />
                   </div>
                   <div className="space-y-2">
@@ -199,13 +208,17 @@ export default function Quotation() {
 
                   <div className="space-y-2">
                     <label className="block text-sm font-medium">报价人</label>
-                    <input
-                      type="text"
+                    <select
                       value={quotationData.from}
                       onChange={e => setQuotationData(prev => ({ ...prev, from: e.target.value }))}
                       className="w-full px-4 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--background)]"
-                      placeholder="报价人"
-                    />
+                    >
+                      <option value="Roger">Roger</option>
+                      <option value="Sharon">Sharon</option>
+                      <option value="Emily">Emily</option>
+                      <option value="Summer">Summer</option>
+                      <option value="Nina">Nina</option>
+                    </select>
                   </div>
                   <div className="space-y-2">
                     <label className="block text-sm font-medium">报价号码</label>
@@ -293,24 +306,19 @@ export default function Quotation() {
                           </td>
                           <td className="py-1 px-2">
                             <select
-                              value={item.unit || ''}
+                              value={item.unit}
                               onChange={e => updateLineItem(index, 'unit', e.target.value)}
                               className="w-full px-1 py-1 rounded border border-[var(--card-border)] bg-[var(--background)]"
                             >
-                              {item.quantity === 0 && <option value="">unit</option>}
-                              {item.quantity === 1 ? (
-                                <>
-                                  <option value="pc">pc</option>
-                                  <option value="set">set</option>
-                                  <option value="length">length</option>
-                                </>
-                              ) : (
-                                <>
-                                  <option value="pcs">pcs</option>
-                                  <option value="sets">sets</option>
-                                  <option value="lengths">lengths</option>
-                                </>
-                              )}
+                              <option value={item.quantity <= 1 ? "pc" : "pcs"}>
+                                {item.quantity <= 1 ? "pc" : "pcs"}
+                              </option>
+                              <option value={item.quantity <= 1 ? "set" : "sets"}>
+                                {item.quantity <= 1 ? "set" : "sets"}
+                              </option>
+                              <option value={item.quantity <= 1 ? "length" : "lengths"}>
+                                {item.quantity <= 1 ? "length" : "lengths"}
+                              </option>
                             </select>
                           </td>
                           <td className="py-1 px-2">

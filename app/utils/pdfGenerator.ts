@@ -9,7 +9,6 @@ interface LineItem {
   unit: string;
   unitPrice: number;
   amount: number;
-  deliveryTime: string;
   remarks: string;
 }
 
@@ -85,6 +84,9 @@ export const generateQuotationPDF = (data: QuotationData) => {
     footStyles: {
       fillColor: [255, 255, 255],
       textColor: [0, 0, 0],
+    },
+    columnStyles: {
+      4: { halign: 'left' },
     },
   });
   

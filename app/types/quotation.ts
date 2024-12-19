@@ -6,7 +6,6 @@ export interface LineItem {
   unit: string;
   unitPrice: number;
   amount: number;
-  deliveryTime: string;
   remarks: string;
 }
 
