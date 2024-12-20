@@ -332,6 +332,45 @@ export default function Quotation() {
     }));
   }, [quotationData.to, quotationData.inquiryNo, quotationData.quotationNo, quotationData.contractNo]);
 
+  // 修改 quotationData 的初始值，添加 Sharon 的默认 notes
+  const getSalesPersonNotes = (salesPerson: string, type: string) => {
+    if (salesPerson === 'Sharon') {
+      return [
+        'Price based on EXW-JIANG SU, CHINA.',
+        'Delivery terms: as mentioned above,subj to unsold',
+        'Excluding handling & packing charge and freight cost',
+        'Payment term: 30 days',
+        'Validity: 20 days'
+      ];
+    }
+    
+    // 保持原有的默认值
+    return type === 'quotation' 
+      ? [
+          'Delivery time: 30 days',
+          'Price based on EXW-Shanghai, Mill TC',
+          'Delivery terms: as mentioned above, subj to unsold',
+          'Payment term: 50% deposit, the balance paid before delivery',
+          'Validity: 5 days'
+        ]
+      : [
+          'Order confirmed',
+          'Delivery time: 30 days after payment received',
+          'Payment term: 50% deposit, the balance paid before delivery',
+          'Shipping term: EXW-Shanghai'
+        ];
+  };
+
+  // 在设置面板中，当销售人员改变时更新 notes
+  const handleSalesPersonChange = (newSalesPerson: string) => {
+    setSettings(prev => ({ ...prev, from: newSalesPerson }));
+    setQuotationData(prev => ({
+      ...prev,
+      from: newSalesPerson,
+      notes: getSalesPersonNotes(newSalesPerson, activeTab)
+    }));
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-[#f5f5f7] dark:bg-[#1d1d1f]">
       <main className="flex-1">
@@ -435,7 +474,7 @@ export default function Quotation() {
                           <label className="block text-sm font-medium">Sales Person</label>
                           <select
                             value={settings.from}
-                            onChange={e => setSettings(prev => ({ ...prev, from: e.target.value }))}
+                            onChange={e => handleSalesPersonChange(e.target.value)}
                             className={selectClassName}
                           >
                             <option value="Roger">Roger</option>
