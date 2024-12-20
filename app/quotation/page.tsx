@@ -53,7 +53,7 @@ const documentTypes: { [key: string]: DocumentHeader } = {
     showContractNo: false
   },
   confirmation: {
-    title: 'Generate Order Confirmation',
+    title: 'Generate Order',
     customerLabel: 'Customer Name',
     numberLabel: 'Quotation No.',
     numberPlaceholder: 'Quotation No.',
@@ -149,6 +149,10 @@ export default function Quotation() {
   // 修改定义，使用索引来跟踪正在编辑的行
   const [editingUnitPriceIndex, setEditingUnitPriceIndex] = useState<number | null>(null);
   const [editingUnitPrice, setEditingUnitPrice] = useState<string>('');
+
+  // 添加新的状态来跟踪正在编辑的数量
+  const [editingQuantityIndex, setEditingQuantityIndex] = useState<number | null>(null);
+  const [editingQuantity, setEditingQuantity] = useState<string>('');
 
   const [showSettings, setShowSettings] = useState(false);
   const [settings, setSettings] = useState<SettingsData>({
@@ -343,7 +347,7 @@ export default function Quotation() {
                       hover:-translate-y-0.5"
           >
             <ArrowLeft className="h-4 w-4 mr-2 transition-transform group-hover:-translate-x-0.5" />
-            <span className="text-sm font-medium">Back to Home</span>
+            <span className="text-sm font-medium">Back</span>
           </Link>
 
           {/* 标签切换样式优化 */}
@@ -535,17 +539,30 @@ export default function Quotation() {
                           </td>
                           <td className="py-1.5 px-1" style={{ width: '100px' }}>
                             <input
-                              type="number"
-                              value={item.quantity}
+                              type="text"
+                              inputMode="numeric"
+                              value={editingQuantityIndex === index ? editingQuantity : (item.quantity || '')}
                               onChange={e => {
-                                const value = e.target.value === '' ? 0 : parseFloat(e.target.value);
-                                if (!isNaN(value) && value >= 0) {
-                                  updateLineItem(index, 'quantity', value);
+                                const inputValue = e.target.value;
+                                // 允许空值和数字输入
+                                if (/^\d*$/.test(inputValue)) {
+                                  setEditingQuantity(inputValue);
+                                  const value = parseInt(inputValue);
+                                  if (!isNaN(value) || inputValue === '') {
+                                    updateLineItem(index, 'quantity', value || 0);
+                                  }
                                 }
                               }}
+                              onFocus={(e) => {
+                                setEditingQuantityIndex(index);
+                                setEditingQuantity(item.quantity === 0 ? '' : item.quantity.toString());
+                                e.target.select();
+                              }}
+                              onBlur={() => {
+                                setEditingQuantityIndex(null);
+                                setEditingQuantity('');
+                              }}
                               className={numberInputClassName}
-                              min="0"
-                              step="1"
                             />
                           </td>
                           <td className="py-1.5 px-1" style={{ width: '100px' }}>
