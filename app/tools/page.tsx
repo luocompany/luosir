@@ -21,7 +21,7 @@ export default function Tools() {
                     transition-colors duration-200 flex items-center space-x-3
                     bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm
                     hover:bg-gray-50/80 dark:hover:bg-gray-700/50">
-                  <span className="text-xl">���</span>
+                  <span className="text-xl">🕒</span>
                   <div>
                     <h3 className="font-medium text-gray-900 dark:text-gray-100">交货期计算器</h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400">日期差值推算与计算</p>
