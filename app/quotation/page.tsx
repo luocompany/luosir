@@ -4,7 +4,7 @@ import { useState, useEffect, memo } from 'react';
 import Footer from '../components/Footer';
 import { ArrowLeft, Download, Settings } from 'lucide-react';
 import Link from 'next/link';
-import { generateQuotationPDF, generateOrderConfirmationPDF } from '../utils/pdfGenerator';
+import { generateQuotationPDF, generateOrderConfirmationPDF, generateInvoicePDF } from '../utils/pdfGenerator';
 
 interface LineItem {
   lineNo: number;
@@ -57,6 +57,13 @@ const documentTypes: { [key: string]: DocumentHeader } = {
     customerLabel: 'Customer Name',
     numberLabel: 'Quotation No.',
     numberPlaceholder: 'Quotation No.',
+    showContractNo: true
+  },
+  invoice: {
+    title: 'Generate Invoice',
+    customerLabel: 'Customer Name',
+    numberLabel: 'Invoice No.',
+    numberPlaceholder: 'Invoice No.',
     showContractNo: true
   }
 };
@@ -222,10 +229,16 @@ export default function Quotation() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      if (activeTab === 'quotation') {
-        generateQuotationPDF(quotationData);
-      } else {
-        generateOrderConfirmationPDF(quotationData);
+      switch (activeTab) {
+        case 'quotation':
+          generateQuotationPDF(quotationData);
+          break;
+        case 'confirmation':
+          generateOrderConfirmationPDF(quotationData);
+          break;
+        case 'invoice':
+          generateInvoicePDF(quotationData);
+          break;
       }
     } catch (error) {
       console.error('Error generating PDF:', error);
@@ -305,7 +318,7 @@ export default function Quotation() {
     </button>
   );
 
-  // 检查是否有其他地方在输入过程中触发了状态更新
+  // 检查是否有其他地方在入过程中触发了状态更新
   // 比如移除或简化这些作用
   useEffect(() => {
     // 移除或简化不必要的副作用
@@ -335,30 +348,49 @@ export default function Quotation() {
   // 修改 quotationData 的初始值，添加 Sharon 的默认 notes
   const getSalesPersonNotes = (salesPerson: string, type: string) => {
     if (salesPerson === 'Sharon') {
-      return [
-        'Price based on EXW-JIANG SU, CHINA.',
-        'Delivery terms: as mentioned above,subj to unsold',
-        'Excluding handling & packing charge and freight cost',
-        'Payment term: 30 days',
-        'Validity: 20 days'
-      ];
+      return type === 'invoice' 
+        ? [
+            'Bank Information:',
+            'Beneficiary: Your Company Name',
+            'Bank: Your Bank Name',
+            'Account: Your Account Number',
+            'Swift Code: Your Swift Code'
+          ]
+        : [
+            'Price based on EXW-JIANG SU, CHINA.',
+            'Delivery terms: as mentioned above,subj to unsold',
+            'Excluding handling & packing charge and freight cost',
+            'Payment term: 30 days',
+            'Validity: 20 days'
+          ];
     }
     
-    // 保持原有的默认值
-    return type === 'quotation' 
-      ? [
+    // 默认值
+    switch (type) {
+      case 'invoice':
+        return [
+          'Bank Information:',
+          'Beneficiary: Your Company Name',
+          'Bank: Your Bank Name',
+          'Account: Your Account Number',
+          'Swift Code: Your Swift Code'
+        ];
+      case 'quotation':
+        return [
           'Delivery time: 30 days',
           'Price based on EXW-Shanghai, Mill TC',
           'Delivery terms: as mentioned above, subj to unsold',
           'Payment term: 50% deposit, the balance paid before delivery',
           'Validity: 5 days'
-        ]
-      : [
+        ];
+      default:
+        return [
           'Order confirmed',
           'Delivery time: 30 days after payment received',
           'Payment term: 50% deposit, the balance paid before delivery',
           'Shipping term: EXW-Shanghai'
         ];
+    }
   };
 
   // 在设置面板中，当销售人员改变时更新 notes
@@ -391,26 +423,19 @@ export default function Quotation() {
 
           {/* 标签切换样式优化 */}
           <div className="flex justify-center gap-3 mb-8 mt-6">
-            <button 
-              onClick={() => setActiveTab('quotation')}
-              className={`px-8 py-3 rounded-2xl text-sm font-medium transition-all duration-300
-                ${activeTab === 'quotation' 
-                  ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25 scale-[1.02]' 
-                  : 'bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl hover:shadow-md'
-                }`}
-            >
-              Quotation
-            </button>
-            <button 
-              onClick={() => setActiveTab('confirmation')}
-              className={`px-8 py-3 rounded-2xl text-sm font-medium transition-all duration-300
-                ${activeTab === 'confirmation' 
-                  ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25 scale-[1.02]' 
-                  : 'bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl hover:shadow-md'
-                }`}
-            >
-              Order Confirmation
-            </button>
+            {['quotation', 'confirmation', 'invoice'].map((tab) => (
+              <button 
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-8 py-3 rounded-2xl text-sm font-medium transition-all duration-300
+                  ${activeTab === tab 
+                    ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25 scale-[1.02]' 
+                    : 'bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl hover:shadow-md'
+                  }`}
+              >
+                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              </button>
+            ))}
           </div>
 
           {/* 主内容区域样式优化 */}
@@ -755,7 +780,7 @@ export default function Quotation() {
                               flex items-center justify-center gap-2"
                   >
                     <Download className="h-4 w-4" />
-                    Generate {activeTab === 'quotation' ? 'Quotation' : 'Order Confirmation'}
+                    Generate {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
                   </button>
                 </div>
               </form>

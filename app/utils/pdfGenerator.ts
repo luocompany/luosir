@@ -336,3 +336,123 @@ export const generateOrderConfirmationPDF = (data: QuotationData) => {
   // 保存文件
   doc.save(`Sales Confirmation ${data.contractNo}-${data.date}.pdf`);
 };
+
+// 添加发票专用的 PDF 生成函数
+export const generateInvoicePDF = async (data: QuotationData) => {
+  const doc = new jsPDF();
+  
+  // 设置字体
+  doc.setFont('helvetica');
+  
+  // 添加页眉
+  doc.setFontSize(24);
+  doc.text('INVOICE', 105, 20, { align: 'center' });
+  
+  // 添加发票号和日期
+  doc.setFontSize(10);
+  doc.text(`Invoice No.: ${data.quotationNo}`, 20, 40);
+  doc.text(`Date: ${data.date}`, 20, 45);
+  
+  // 添加公司信息
+  doc.setFontSize(12);
+  doc.text('From:', 20, 60);
+  doc.setFontSize(10);
+  doc.text(data.from, 20, 65);
+  
+  // 添加客户信息
+  doc.setFontSize(12);
+  doc.text('Bill To:', 20, 80);
+  doc.setFontSize(10);
+  const toLines = data.to.split('\n');
+  toLines.forEach((line, index) => {
+    doc.text(line, 20, 85 + (index * 5));
+  });
+  
+  // 添加合同号（如果有）
+  if (data.contractNo) {
+    doc.text(`Contract No.: ${data.contractNo}`, 20, 105);
+  }
+  
+  // 创建表格
+  const headers = [
+    'No.',
+    'Part Name',
+    'Description',
+    'Q\'TY',
+    'Unit',
+    'Unit Price',
+    'Amount'
+  ];
+  
+  const tableData = data.items.map((item, index) => [
+    (index + 1).toString(),
+    item.partName,
+    item.description,
+    item.quantity.toString(),
+    item.unit,
+    `${data.currency} ${item.unitPrice.toFixed(2)}`,
+    `${data.currency} ${item.amount.toFixed(2)}`
+  ]);
+  
+  // 计算总金额
+  const totalAmount = data.items.reduce((sum, item) => sum + item.amount, 0);
+  
+  // 添加表格
+  (doc as any).autoTable({
+    startY: 115,
+    head: [headers],
+    body: tableData,
+    theme: 'grid',
+    styles: {
+      fontSize: 8,
+      cellPadding: 2,
+    },
+    columnStyles: {
+      0: { cellWidth: 15 },
+      1: { cellWidth: 30 },
+      2: { cellWidth: 45 },
+      3: { cellWidth: 20 },
+      4: { cellWidth: 20 },
+      5: { cellWidth: 25 },
+      6: { cellWidth: 25 }
+    },
+    headStyles: {
+      fillColor: [220, 220, 220],
+      textColor: [0, 0, 0],
+      fontStyle: 'bold'
+    }
+  });
+  
+  // 获取表格结束的Y坐标
+  const finalY = (doc as any).lastAutoTable.finalY || 150;
+  
+  // 添加总金额
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'bold');
+  doc.text(
+    `Total Amount: ${data.currency} ${totalAmount.toFixed(2)}`,
+    190,
+    finalY + 10,
+    { align: 'right' }
+  );
+  
+  // 添加注释
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  data.notes.forEach((note, index) => {
+    doc.text(note, 20, finalY + 30 + (index * 5));
+  });
+  
+  // 添加签名区域
+  doc.line(20, finalY + 60, 80, finalY + 60); // 供应商签名线
+  doc.text('Supplier Signature', 20, finalY + 65);
+  
+  doc.line(120, finalY + 60, 180, finalY + 60); // 客户签名线
+  doc.text('Customer Signature', 120, finalY + 65);
+  
+  // 生成文件名
+  const fileName = `Invoice_${data.quotationNo || 'draft'}_${data.date}.pdf`;
+  
+  // 下载 PDF
+  doc.save(fileName);
+};
