@@ -34,6 +34,7 @@ interface QuotationData {
   bankInfo: string;
   showRemarks?: boolean;
   remarks?: string;
+  showDescription?: boolean;
 }
 
 const currencySymbols: { [key: string]: string } = {
@@ -149,43 +150,77 @@ export const generateQuotationPDF = async (data: QuotationData) => {
   const customerNameHeight = (toLines.length - 1) * 5;
   currentY += Math.max(customerNameHeight, 10); // 确保至少有10的间距
   
-  // 添加商品表格
-  autoTable(doc, {
-    startY: newContentStartY + 5,
-    head: [['No.', 'Part Name', 'Description', 'Q\'TY', 'Unit', 'U/Price', 'Amount', 'Remarks']],
-    body: data.items.map(item => [
-      item.lineNo,
-      item.partName,
-      item.description,
+  // 动态构建表头
+  const headers = ['No.', 'Part Name'];
+  if (data.showDescription) headers.push('Description');
+  headers.push('Q\'TY', 'Unit', 'U/Price', 'Amount');
+  if (data.showRemarks) headers.push('Remarks');
+
+  // 动态构建表格数据
+  const tableBody = data.items.map(item => {
+    const row = [item.lineNo, item.partName];
+    if (data.showDescription) row.push(item.description);
+    row.push(
       item.quantity,
       item.unit,
       item.unitPrice.toFixed(2),
-      item.amount.toFixed(2),
-      item.remarks
-    ]),
+      item.amount.toFixed(2)
+    );
+    if (data.showRemarks) row.push(item.remarks);
+    return row;
+  });
+
+  // 动态计算列样式
+  const columnStyles: { [key: string]: any } = {
+    0: { halign: 'center' },  // No.
+    1: { halign: 'center' }   // Part Name
+  };
+  
+  let currentCol = 2;
+  if (data.showDescription) {
+    columnStyles[currentCol] = { halign: 'center' };
+    currentCol++;
+  }
+  
+  // Q'TY, Unit, U/Price, Amount
+  columnStyles[currentCol] = { halign: 'center' };
+  columnStyles[currentCol + 1] = { halign: 'center' };
+  columnStyles[currentCol + 2] = { halign: 'center' };
+  columnStyles[currentCol + 3] = { halign: 'center' };
+  
+  if (data.showRemarks) {
+    columnStyles[currentCol + 4] = { halign: 'center' };
+  }
+
+  // 修改表格配置
+  autoTable(doc, {
+    startY: newContentStartY + 5,
+    head: [headers],
+    body: tableBody,
     foot: [[
       { 
         content: 'TOTAL AMOUNT: ', 
-        colSpan: 6, 
+        colSpan: data.showDescription && data.showRemarks ? 6 : 
+                 data.showDescription || data.showRemarks ? 5 : 4, 
         styles: { 
           halign: 'right', 
           fontStyle: 'bold',
-          cellPadding: { top: 8 }  // 为总金额行添加上边距
+          cellPadding: { top: 8 }
         } 
       },
       { 
-        content: `${currencySymbols[data.currency]}${data.items.reduce((sum: number, item: LineItem) => sum + item.amount, 0).toFixed(2)}`, 
+        content: `${currencySymbols[data.currency]}${data.items.reduce((sum, item) => sum + item.amount, 0).toFixed(2)}`, 
         styles: { 
           fontStyle: 'bold',
-          cellPadding: { top: 8 }  // 为总金额单元格添加上边距
+          cellPadding: { top: 8 }
         } 
       },
-      { 
+      ...(data.showRemarks ? [{ 
         content: '',
         styles: { 
-          cellPadding: { top: 8 }  // 为最后一个单元格添加上边距
+          cellPadding: { top: 8 }
         } 
-      }
+      }] : [])
     ]],
     styles: {
       fontSize: 9,
@@ -204,16 +239,7 @@ export const generateQuotationPDF = async (data: QuotationData) => {
       fillColor: [255, 255, 255],
       textColor: [0, 0, 0],
     },
-    columnStyles: {
-      0: { halign: 'center' },  // No.列居中对齐
-      1: { halign: 'center' },  // Part Name列居中对齐
-      2: { halign: 'center' },  // Description列居中对齐
-      3: { halign: 'center' },  // Q'TY列居中对齐
-      4: { halign: 'center' },  // Unit列居中对齐
-      5: { halign: 'center' },   // U/Price列右对齐
-      6: { halign: 'center' },   // Amount列右对齐
-      7: { halign: 'center' },  // Remarks列居中对齐
-    },
+    columnStyles: columnStyles,
   });
   
   // 添加注意事项
@@ -377,7 +403,7 @@ export const generateOrderConfirmationPDF = async (data: QuotationData) => {
     },
   });
 
-  // 添加注意
+  // 添加注意事项
   const finalY = (doc as any).lastAutoTable.finalY || 150;
   doc.setFontSize(10);
   doc.text('Terms & Conditions:', 15, finalY + 10);
@@ -386,7 +412,7 @@ export const generateOrderConfirmationPDF = async (data: QuotationData) => {
     doc.text(`${index + 1}. ${note}`, 15, finalY + 15 + (index * 5));
   });
 
-  // 添加签名区域
+  // 添加签名区
   // const signatureY = finalY + 20 + (data.notes.length * 5);
   // doc.text('Authorized Signature:', 15, signatureY + 20);
   // doc.line(15, signatureY + 35, 80, signatureY + 35); // 签名线
@@ -512,7 +538,7 @@ export const generateInvoicePDF = async (data: QuotationData) => {
     styles: {
       fontSize: 9,
       cellPadding: 2,
-      lineColor: [0, 0, 0],   // 黑色边框
+      lineColor: [0, 0, 0],   // 黑边框
       lineWidth: 0.1,         // 细边框
       textColor: [0, 0, 0],    // 黑色文字
       font: 'NotoSansSC',  // 设置表格使用中文字体
@@ -639,11 +665,18 @@ export const generateInvoicePDF = async (data: QuotationData) => {
       });
   }
 
-  // 始终添加发票号提示
-  terms.push({
-    content: `Please state our invoice no. "${data.quotationNo}" on your payment documents.`,
-    isInvoiceNo: true
-  });
+  // 修改发票号提示的添加逻辑
+  if (data.quotationNo && data.quotationNo.trim() !== '') {
+    terms.push({
+      content: `Please state our invoice no. "${data.quotationNo}" on your payment documents.`,
+      isInvoiceNo: true
+    });
+  } else {
+    terms.push({
+      content: `Please state our invoice no. on your payment documents.`,
+      isInvoiceNo: false
+    });
+  }
 
   // 根据条款数量决定显示格式
   if (terms.length === 1) {

@@ -70,6 +70,12 @@ const numberInputClassName = `${tableInputClassName}
   [&::-webkit-inner-spin-button]:appearance-none
   text-center`;
 
+const settingsPanelClassName = `bg-blue-50/80 dark:bg-blue-900/10 backdrop-blur-xl
+  border border-blue-200/50 dark:border-blue-700/30
+  rounded-2xl overflow-hidden
+  shadow-lg shadow-blue-500/5
+  p-4`;
+
 export default function Invoice() {
   const getDefaultPaymentDate = (invoiceDate: string) => {
     const date = new Date(invoiceDate);
@@ -341,12 +347,12 @@ export default function Invoice() {
 
           <div className={`mb-4 overflow-hidden transition-all duration-300 ease-in-out
                           ${showSettings ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
-            <div className="bg-gray-50/50 dark:bg-gray-900/50 
-                          rounded-2xl p-6 
-                          border border-gray-200/30 dark:border-gray-700/30">
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium">Date</label>
+            <div className={settingsPanelClassName}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 px-1">
+                    Date
+                  </label>
                   <input
                     type="date"
                     value={settings.date}
@@ -354,44 +360,55 @@ export default function Invoice() {
                       setSettings(prev => ({ ...prev, date: e.target.value }));
                       setInvoiceData(prev => ({ ...prev, date: e.target.value }));
                     }}
-                    className={inputClassName}
+                    className={`${inputClassName} !py-1.5`}
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium">Currency</label>
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 px-1">
+                    Currency
+                  </label>
                   <select
                     value={settings.currency}
                     onChange={e => {
                       setSettings(prev => ({ ...prev, currency: e.target.value }));
                       setInvoiceData(prev => ({ ...prev, currency: e.target.value }));
                     }}
-                    className={`${inputClassName} pr-8 appearance-none 
+                    className={`${inputClassName} !py-1.5 appearance-none 
                       bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3e%3cpolyline points="6 9 12 15 18 9"%3e%3c/polyline%3e%3c/svg%3e')] 
-                      bg-[length:1.25em_1.25em] 
-                      bg-[right_0.5rem_center] 
-                      bg-no-repeat`}
+                      bg-[length:1em_1em] 
+                      bg-[right_1rem_center] 
+                      bg-no-repeat
+                      pr-10`}
                   >
                     <option value="USD">USD</option>
                     <option value="CNY">CNY</option>
                   </select>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium">Display Options</label>
-                  <div className="flex flex-col gap-2 h-auto px-4">
-                    <div className="flex items-center">
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 px-1">
+                    Display Options
+                  </label>
+                  <div className="flex flex-col gap-2 h-full justify-center px-4 py-1">
+                    <label className="flex items-center gap-2 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={settings.showHsCode}
-                        onChange={e => setSettings(prev => ({ ...prev, showHsCode: e.target.checked }))}
-                        className="w-4 h-4 rounded border-gray-300 text-blue-500 
-                                  focus:ring-blue-500 focus:ring-offset-0"
+                        onChange={e => setSettings(prev => ({ 
+                          ...prev, 
+                          showHsCode: e.target.checked 
+                        }))}
+                        className="w-3.5 h-3.5 rounded 
+                          border-gray-300 dark:border-gray-600
+                          text-blue-500 
+                          focus:ring-blue-500/40
+                          cursor-pointer"
                       />
-                      <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                      <span className="text-xs text-gray-600 dark:text-gray-400">
                         HS Code
                       </span>
-                    </div>
+                    </label>
                   </div>
                 </div>
               </div>
@@ -620,29 +637,35 @@ export default function Invoice() {
             </div>
 
             <div className="space-y-4">
-              <div className="space-y-2">
+              <div className="bg-blue-50/80 dark:bg-blue-900/10 
+                              border border-blue-200/50 dark:border-blue-700/30
+                              rounded-2xl p-4 space-y-3">
                 <label className="block text-sm font-medium">Payment Terms:</label>
                 
-                <div className="space-y-3 pl-4">
-                  <div className="flex flex-col space-y-2">
-                    <div className="flex items-center gap-2">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={invoiceData.showPaymentDate}
+                      onChange={e => setInvoiceData(prev => ({ 
+                        ...prev, 
+                        showPaymentDate: e.target.checked 
+                      }))}
+                      className="w-4 h-4 rounded border-gray-300 text-blue-500 
+                                focus:ring-blue-500 focus:ring-offset-0"
+                    />
+                    <div className="flex flex-wrap items-center gap-2 text-sm">
+                      <span>Full paid not later than</span>
                       <input
-                        type="checkbox"
-                        checked={invoiceData.showPaymentDate}
-                        onChange={e => setInvoiceData(prev => ({ ...prev, showPaymentDate: e.target.checked }))}
-                        className="w-4 h-4 rounded border-gray-300 text-blue-500 
-                                  focus:ring-blue-500 focus:ring-offset-0"
+                        type="date"
+                        value={invoiceData.paymentDate}
+                        onChange={e => setInvoiceData(prev => ({ 
+                          ...prev, 
+                          paymentDate: e.target.value 
+                        }))}
+                        className={`${inputClassName} !py-1.5 !px-2 w-32`}
                       />
-                      <div className="flex flex-wrap items-center gap-x-2 text-sm">
-                        <span className="whitespace-nowrap">Full paid not later than</span>
-                        <input
-                          type="date"
-                          value={invoiceData.paymentDate}
-                          onChange={e => setInvoiceData(prev => ({ ...prev, paymentDate: e.target.value }))}
-                          className={`${inputClassName} !py-1 !px-2 min-w-0 w-32`}
-                        />
-                        <span className="whitespace-nowrap">by telegraphic transfer.</span>
-                      </div>
+                      <span>by telegraphic transfer.</span>
                     </div>
                   </div>
 
@@ -671,7 +694,7 @@ export default function Invoice() {
                     </div>
                   </div>
 
-                  <div className="text-sm text-gray-600 dark:text-gray-400 pl-6">
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
                     Please state our invoice no. "{invoiceData.invoiceNo}" on your payment documents.
                   </div>
                 </div>

@@ -34,6 +34,8 @@ interface QuotationData {
     hasDecimals: boolean;
   };
   bankInfo: string;
+  showDescription: boolean;
+  showRemarks: boolean;
 }
 
 interface SettingsData {
@@ -117,19 +119,6 @@ const selectClassName = `${inputClassName}
   bg-no-repeat
   pr-10`;
 
-// 修改单选按钮组样式，使其更紧凑
-const radioGroupClassName = `flex gap-1.5`;
-
-// 修改单选按钮样式，使其更小巧
-const radioButtonClassName = `flex items-center justify-center px-3 py-1.5 
-  rounded-lg border border-gray-200/50 dark:border-gray-700/50
-  text-xs font-medium transition-all duration-300
-  hover:border-gray-300 dark:hover:border-gray-600
-  cursor-pointer`;
-
-const radioButtonActiveClassName = `bg-blue-500 text-white border-transparent 
-  shadow-sm shadow-blue-500/25`;
-
 // 修改日期输入框样式，使其更紧凑
 const dateInputClassName = `px-3 py-1.5 rounded-xl
   bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg
@@ -163,6 +152,45 @@ const salesSelectClassName = `px-3 py-1.5 rounded-xl
 // 修改单位输入框样式，添加文本居中对齐
 const unitInputClassName = `${tableInputClassName}
   text-center`;  // 添加文本居中
+
+// 修改设置面板的基础样式，添加淡蓝色背景
+const settingsPanelClassName = `bg-blue-50/80 dark:bg-blue-900/10 backdrop-blur-xl
+  border border-blue-200/50 dark:border-blue-700/30
+  rounded-2xl overflow-hidden
+  shadow-lg shadow-blue-500/5
+  p-4`;
+
+// 修改输入框基础样式，采用 Apple 风格
+const appleInputClassName = `w-full px-4 py-2.5
+  bg-gray-50/50 dark:bg-gray-900/50
+  border border-gray-200/50 dark:border-gray-700/50
+  rounded-xl
+  text-sm text-gray-900 dark:text-gray-100
+  placeholder:text-gray-400/70 dark:placeholder:text-gray-500/70
+  focus:outline-none focus:ring-2 focus:ring-blue-500/30
+  transition-all duration-300`;
+
+// 单选按钮相关样式只保留这三个
+const radioGroupClassName = `flex p-0.5 gap-1
+  bg-gray-100/50 dark:bg-gray-900/50 
+  rounded-lg
+  border border-gray-200/50 dark:border-gray-700/50`;
+
+const radioButtonClassName = `flex items-center justify-center px-3 py-1.5
+  rounded-md
+  text-xs font-medium
+  transition-all duration-200
+  cursor-pointer`;
+
+const radioButtonActiveClassName = `bg-white dark:bg-gray-800 
+  text-blue-500 dark:text-blue-400
+  shadow-sm`;
+
+// 修改复选框组样式
+const checkboxGroupClassName = `flex gap-4 px-4 py-2.5
+  bg-gray-50/50 dark:bg-gray-900/50
+  border border-gray-200/50 dark:border-gray-700/50
+  rounded-xl`;
 
 export default function Quotation() {
   const [activeTab, setActiveTab] = useState('quotation');
@@ -207,9 +235,11 @@ export default function Quotation() {
       hasDecimals: false
     },
     bankInfo: '',
+    showDescription: true,
+    showRemarks: true
   });
 
-  // 修改定义，使用索引来跟踪正在���辑的
+  // 修改定义，使用索引来跟踪正在编辑的
   const [editingUnitPriceIndex, setEditingUnitPriceIndex] = useState<number | null>(null);
   const [editingUnitPrice, setEditingUnitPrice] = useState<string>('');
 
@@ -373,8 +403,8 @@ export default function Quotation() {
     </button>
   );
 
-  // 查是否有其他地��在编辑过程中触发了状态更新
-  // 比如移除或简化这些作用
+  // 查是否有他地在编辑过程中触发了状态更新
+  // 比如移除或简化些作用
   useEffect(() => {
     // 移除或简化不必要的副作用
   }, [quotationData]);
@@ -445,6 +475,15 @@ export default function Quotation() {
     setQuotationData(prev => ({ ...prev, currency: newCurrency }));
   };
 
+  // 在 settings 变化时同步更新 quotationData
+  useEffect(() => {
+    setQuotationData(prev => ({
+      ...prev,
+      showDescription: settings.showDescription,
+      showRemarks: settings.showRemarks
+    }));
+  }, [settings.showDescription, settings.showRemarks]);
+
   return (
     <div className="min-h-screen flex flex-col bg-[#f5f5f7] dark:bg-[#1d1d1f]">
       <main className="flex-1">
@@ -480,7 +519,7 @@ export default function Quotation() {
             ))}
           </div>
 
-          {/* 主内容区域样式优化 */}
+          {/* 主内区域样式优化 */}
           <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-2xl
                   shadow-2xl border border-gray-200/30 dark:border-gray-700/30
                   rounded-[2.5rem] p-8
@@ -524,25 +563,35 @@ export default function Quotation() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className={`overflow-hidden transition-all duration-300 ease-in-out
                                 ${showSettings ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
-                  <div className="bg-gray-50/50 dark:bg-gray-900/50 
-                                rounded-2xl p-6 
-                                border border-gray-200/30 dark:border-gray-700/30">
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-6">
-                      <div className="space-y-1.5"> {/* 减小垂直间距 */}
-                        <label className="block text-sm font-medium">Date</label>
+                  <div className={settingsPanelClassName}>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                      {/* 日期选择 */}
+                      <div className="space-y-1.5">
+                        <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 px-1">
+                          Date
+                        </label>
                         <input
                           type="date"
                           value={settings.date}
                           onChange={e => setSettings(prev => ({ ...prev, date: e.target.value }))}
-                          className={dateInputClassName}
+                          className={appleInputClassName}
                         />
                       </div>
-                      <div className="space-y-1.5"> {/* 减小垂直间距 */}
-                        <label className="block text-sm font-medium">Sales Person</label>
+                      
+                      {/* 销售人员选择 */}
+                      <div className="space-y-1.5">
+                        <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 px-1">
+                          Sales Person
+                        </label>
                         <select
                           value={settings.from}
                           onChange={e => handleSalesPersonChange(e.target.value)}
-                          className={salesSelectClassName}
+                          className={`${appleInputClassName} appearance-none 
+                            bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3e%3cpolyline points="6 9 12 15 18 9"%3e%3c/polyline%3e%3c/svg%3e')] 
+                            bg-[length:1em_1em] 
+                            bg-[right_1rem_center] 
+                            bg-no-repeat
+                            pr-10`}
                         >
                           <option value="Roger">Roger</option>
                           <option value="Sharon">Sharon</option>
@@ -551,14 +600,19 @@ export default function Quotation() {
                           <option value="Nina">Nina</option>
                         </select>
                       </div>
-                      <div className="col-span-2 sm:col-span-1 flex flex-col justify-end gap-3">
-                        <div className={radioGroupClassName}>
+
+                      {/* 币种选择 */}
+                      <div className="space-y-1.5">
+                        <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 px-1">
+                          Currency
+                        </label>
+                        <div className={`${radioGroupClassName} h-[38px]`}>
                           {Object.entries(currencySymbols).map(([currency, symbol]) => (
                             <label
                               key={currency}
-                              className={`${radioButtonClassName} ${
+                              className={`${radioButtonClassName} flex-1 ${
                                 settings.currency === currency ? radioButtonActiveClassName : 
-                                'bg-white/90 dark:bg-gray-800/90'
+                                'text-gray-600 dark:text-gray-400'
                               }`}
                             >
                               <input
@@ -573,9 +627,15 @@ export default function Quotation() {
                             </label>
                           ))}
                         </div>
-                        
-                        <div className="flex gap-3">
-                          <label className="flex items-center gap-1.5 cursor-pointer group">
+                      </div>
+
+                      {/* 显示选项 */}
+                      <div className="space-y-1.5">
+                        <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 px-1">
+                          Display Options
+                        </label>
+                        <div className={`${checkboxGroupClassName} h-[38px]`}>
+                          <label className="flex items-center gap-2 cursor-pointer">
                             <input
                               type="checkbox"
                               checked={settings.showDescription}
@@ -583,18 +643,18 @@ export default function Quotation() {
                                 ...prev, 
                                 showDescription: e.target.checked 
                               }))}
-                              className="w-3.5 h-3.5 rounded border-gray-300 text-blue-500
-                                        focus:ring-blue-500/40 cursor-pointer
-                                        transition-all duration-200"
+                              className="w-3.5 h-3.5 rounded 
+                                border-gray-300 dark:border-gray-600
+                                text-blue-500 
+                                focus:ring-blue-500/40
+                                cursor-pointer"
                             />
-                            <span className="text-xs text-gray-600 dark:text-gray-400
-                                           group-hover:text-gray-900 dark:group-hover:text-gray-200
-                                           transition-colors">
+                            <span className="text-xs text-gray-600 dark:text-gray-400">
                               Description
                             </span>
                           </label>
                           
-                          <label className="flex items-center gap-1.5 cursor-pointer group">
+                          <label className="flex items-center gap-2 cursor-pointer">
                             <input
                               type="checkbox"
                               checked={settings.showRemarks}
@@ -602,13 +662,13 @@ export default function Quotation() {
                                 ...prev, 
                                 showRemarks: e.target.checked 
                               }))}
-                              className="w-3.5 h-3.5 rounded border-gray-300 text-blue-500
-                                        focus:ring-blue-500/40 cursor-pointer
-                                        transition-all duration-200"
+                              className="w-3.5 h-3.5 rounded 
+                                border-gray-300 dark:border-gray-600
+                                text-blue-500 
+                                focus:ring-blue-500/40
+                                cursor-pointer"
                             />
-                            <span className="text-xs text-gray-600 dark:text-gray-400
-                                           group-hover:text-gray-900 dark:group-hover:text-gray-200
-                                           transition-colors">
+                            <span className="text-xs text-gray-600 dark:text-gray-400">
                               Remarks
                             </span>
                           </label>
