@@ -42,8 +42,6 @@ interface SettingsData {
   date: string;
   currency: string;
   showHsCode: boolean;
-  showPaymentTerms: boolean;
-  showRemarks: boolean;
 }
 
 const inputClassName = `w-full px-4 py-2.5 rounded-2xl
@@ -103,7 +101,7 @@ export default function Invoice() {
       hasDecimals: false
     },
     showPaymentDate: true,
-    showRemarks: true,
+    showRemarks: false,
   });
 
   const [editingUnitPriceIndex, setEditingUnitPriceIndex] = useState<number | null>(null);
@@ -116,8 +114,6 @@ export default function Invoice() {
     date: new Date().toISOString().split('T')[0],
     currency: 'USD',
     showHsCode: true,
-    showPaymentTerms: true,
-    showRemarks: true
   });
 
   const addLineItem = () => {
@@ -396,30 +392,6 @@ export default function Invoice() {
                       />
                       <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
                         HS Code
-                      </span>
-                    </div>
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={settings.showPaymentTerms}
-                        onChange={e => setSettings(prev => ({ ...prev, showPaymentTerms: e.target.checked }))}
-                        className="w-4 h-4 rounded border-gray-300 text-blue-500 
-                                  focus:ring-blue-500 focus:ring-offset-0"
-                      />
-                      <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
-                        Payment Terms
-                      </span>
-                    </div>
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={settings.showRemarks}
-                        onChange={e => setSettings(prev => ({ ...prev, showRemarks: e.target.checked }))}
-                        className="w-4 h-4 rounded border-gray-300 text-blue-500 
-                                  focus:ring-blue-500 focus:ring-offset-0"
-                      />
-                      <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
-                        Remarks
                       </span>
                     </div>
                   </div>
