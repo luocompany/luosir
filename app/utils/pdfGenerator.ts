@@ -337,19 +337,30 @@ export const generateOrderConfirmationPDF = async (data: QuotationData) => {
   
   
   // 添加商品表格 - 相应调整起始位置
-  autoTable(doc, {
-    startY: confirmationContentStartY + 5,
-    head: [['No.', 'Part Name', 'Description', 'Q\'TY', 'Unit', 'U/Price', 'Amount', 'Remarks']],
-    body: data.items.map(item => [
-      item.lineNo,
-      item.partName,
-      item.description,
+  // 动态构建表头
+  const headers = ['No.', 'Part Name'];
+  if (data.showDescription) headers.push('Description');
+  headers.push('Q\'TY', 'Unit', 'U/Price', 'Amount');
+  if (data.showRemarks) headers.push('Remarks');
+
+  // 动态构建表格数据
+  const tableBody = data.items.map(item => {
+    const row = [item.lineNo, item.partName];
+    if (data.showDescription) row.push(item.description);
+    row.push(
       item.quantity,
       item.unit,
       item.unitPrice.toFixed(2),
-      item.amount.toFixed(2),
-      item.remarks
-    ]),
+      item.amount.toFixed(2)
+    );
+    if (data.showRemarks) row.push(item.remarks);
+    return row;
+  });
+
+  autoTable(doc, {
+    startY: confirmationContentStartY + 5,
+    head: [headers],
+    body: tableBody,
     foot: [[
       { 
         content: 'TOTAL AMOUNT: ', 
