@@ -90,7 +90,7 @@ export const generateQuotationPDF = (data: QuotationData) => {
   // 设置字体
   doc.setFont('helvetica', 'normal');
   
-  // 由于添加了Logo和续内容的起始位置
+  // 由于添加了Logo和���容的起始位置
   const contentStartY = 55; 
   
   // 添加基本信息 - 支持多行客户名称
@@ -254,7 +254,7 @@ export const generateOrderConfirmationPDF = (data: QuotationData) => {
   });
 
   // 计算客户信息后的位置，并添加较小的间距
-  currentY += (toLines.length * 5) + 2; // 减小间距到2mm
+  currentY += (toLines.length * 5) + 2; // 小���距到2mm
 
   // Order No. 放在客户信息下面
   doc.text(`Order No.: ${data.inquiryNo}`, 15, currentY);
@@ -405,18 +405,18 @@ export const generateInvoicePDF = async (data: QuotationData) => {
   // 设置字体
   doc.setFontSize(10);
   
-  // 调整户信息始位置到更上方
-  const contentStartY = 55;
+  // 调整客户信息起始位置到更上方
+  const customerInfoStartY = 55;
   
   // 绘制客户名称（支持多行）
-  doc.text('To:', 15, contentStartY);
+  doc.text('To:', 15, customerInfoStartY);
   const toLines = data.to.split('\n');
   toLines.forEach((line, index) => {
-    doc.text(line.trim(), 25, contentStartY + (index * 5));
+    doc.text(line.trim(), 25, customerInfoStartY + (index * 5));
   });
 
   // 计算客户信息后的位置
-  let currentY = contentStartY + (toLines.length * 5) + 2;
+  let currentY = customerInfoStartY + (toLines.length * 5) + 2;
 
   // 添加 P/O 客户息下方
   doc.text(`Order No.: ${data.inquiryNo}`, 15, currentY);
@@ -537,27 +537,62 @@ export const generateInvoicePDF = async (data: QuotationData) => {
   // 获取表格结束位置
   const finalY = (doc as any).lastAutoTable.finalY;
   
-  // 调整金额大位置（与表格更近）
+  // 设置字体和样式
+  doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
-  doc.text(
-    `${data.amountInWords.dollars}${data.amountInWords.hasDecimals ? ' ' + data.amountInWords.cents : ''}`,
-    15,
-    finalY + 8  // 从 +10 改为 +8，使其更靠近表格
-  );
+  
+  // 计算可用宽度（页面宽度减去左右边距）
+  const margin = 15;
+  const maxWidth = doc.internal.pageSize.width - (margin * 2);
+  
+  // 构建完整的大写金额文本
+  let amountText = data.amountInWords.dollars;
+  if (data.amountInWords.hasDecimals) {
+    amountText += ` AND ${data.amountInWords.cents}`;
+  }
+  
+  // 分割文本为单词数组
+  const words = amountText.split(' ');
+  let currentLine = '';
+  let lines = [];
+  
+  // 根据宽度限制组织行
+  for (const word of words) {
+    const testLine = currentLine ? `${currentLine} ${word}` : word;
+    const testWidth = doc.getTextWidth(testLine);
+    
+    if (testWidth > maxWidth) {
+      lines.push(currentLine);
+      currentLine = word;
+    } else {
+      currentLine = testLine;
+    }
+  }
+  if (currentLine) {
+    lines.push(currentLine);
+  }
+  
+  // 绘制每一行
+  lines.forEach((line, index) => {
+    doc.text(line, margin, finalY + 10 + (index * 5));
+  });
 
+  // 继续生成其他内容，使用最后一行的位置
+  const contentStartY = finalY + 10 + (lines.length * 5) + 5;
+  doc.text('Bank Information:', margin, contentStartY);
+  
   // 修改银行信息显示部分
   doc.setFont('NotoSansSC', 'normal');  // 确保使用中文字体
-  doc.text('Bank Information:', 15, finalY + 20);
   const bankInfoLines = data.bankInfo.split('\n').filter(line => line.trim());
 
   // 显示银行信息，每行间距5mm
   bankInfoLines.forEach((line, index) => {
     doc.setFont('NotoSansSC', 'normal');  // 确保每行都使用中文字体
-    doc.text(line.trim(), 15, finalY + 25 + (index * 5));
+    doc.text(line.trim(), 15, contentStartY + 5 + (index * 5));
   });
 
   // 获取银行信息结束位置
-  const bankInfoEndY = finalY + 25 + (bankInfoLines.length * 5);
+  const bankInfoEndY = contentStartY + 5 + (bankInfoLines.length * 5);
   currentY = bankInfoEndY + 2; // 统一使用较小的间距
 
   // 修改付款条款显示逻辑

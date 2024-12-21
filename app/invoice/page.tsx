@@ -168,7 +168,6 @@ export default function Invoice() {
     const getCurrencyPrefix = () => {
       switch(invoiceData.currency) {
         case 'USD': return 'SAY TOTAL US DOLLARS ';
-        case 'EUR': return 'SAY TOTAL EUROS ';
         case 'CNY': return 'SAY TOTAL CHINESE YUAN ';
         default: return 'SAY TOTAL ';
       }
@@ -374,7 +373,6 @@ export default function Invoice() {
                       bg-no-repeat`}
                   >
                     <option value="USD">USD</option>
-                    <option value="EUR">EUR</option>
                     <option value="CNY">CNY</option>
                   </select>
                 </div>
@@ -579,7 +577,7 @@ export default function Invoice() {
                 <span className="text-sm font-medium text-gray-500">Total Amount</span>
                 <div className="w-[100px] text-right">
                   <span className="text-xl font-semibold tracking-tight">
-                    {invoiceData.currency === 'USD' ? '$' : invoiceData.currency === 'EUR' ? '€' : '¥'}
+                    {invoiceData.currency === 'USD' ? '$' : invoiceData.currency === 'CNY' ? '¥' : '¥'}
                     {getTotalAmount().toFixed(2)}
                   </span>
                 </div>
@@ -587,25 +585,26 @@ export default function Invoice() {
             </div>
 
             <div className="mt-4">
-              <div className="text-sm font-extrabold text-gray-600 dark:text-gray-400 flex gap-1">
-                <span>SAY TOTAL</span>
-                <span className="text-blue-600 dark:text-blue-400">
-                  {(() => {
-                    switch(invoiceData.currency) {
-                      case 'USD': return 'US DOLLARS';
-                      case 'EUR': return 'EUROS';
-                      case 'CNY': return 'CHINESE YUAN';
-                      default: return '';
-                    }
-                  })()}
-                </span>
-                <span>
-                  {invoiceData.amountInWords.dollars.split(' ').slice(4).join(' ')}
-                </span>
+              <div className="flex flex-wrap gap-1 text-sm">
+                <span className="text-gray-600 dark:text-gray-400">SAY</span>
+                <span className="text-gray-600 dark:text-gray-400">TOTAL</span>
+                <span className="text-blue-500">US</span>
+                <span className="text-blue-500">DOLLARS</span>
+                {invoiceData.amountInWords.dollars.split(' ').map((word, index) => (
+                  word !== 'SAY' && word !== 'TOTAL' && word !== 'US' && word !== 'DOLLARS' && (
+                    <span key={index} className="text-gray-600 dark:text-gray-400">
+                      {word}
+                    </span>
+                  )
+                ))}
                 {invoiceData.amountInWords.hasDecimals && (
-                  <span className="text-red-500">AND</span>
+                  <>
+                    <span className="text-red-500">AND</span>
+                    <span className="text-gray-600 dark:text-gray-400">
+                      {invoiceData.amountInWords.cents}
+                    </span>
+                  </>
                 )}
-                <span>{invoiceData.amountInWords.cents}</span>
               </div>
             </div>
 
@@ -625,39 +624,26 @@ export default function Invoice() {
                 <label className="block text-sm font-medium">Payment Terms:</label>
                 
                 <div className="space-y-3 pl-4">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={invoiceData.showPaymentDate}
-                      onChange={e => setInvoiceData(prev => ({ 
-                        ...prev, 
-                        showPaymentDate: e.target.checked 
-                      }))}
-                      className="w-4 h-4 rounded border-gray-300 text-blue-500 
-                                focus:ring-blue-500 focus:ring-offset-0"
-                    />
-                    <p className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                      Full paid not later than 
+                  <div className="flex flex-col space-y-2">
+                    <div className="flex items-center gap-2">
                       <input
-                        type="date"
-                        value={invoiceData.paymentDate}
-                        onChange={e => setInvoiceData(prev => ({ 
-                          ...prev, 
-                          paymentDate: e.target.value 
-                        }))}
-                        className={`
-                          !py-1.5 !px-3 w-auto inline-block
-                          rounded-xl bg-white/90 dark:bg-gray-800/90
-                          border border-gray-200/50 dark:border-gray-700/50
-                          focus:outline-none focus:ring-2 focus:ring-blue-500/40
-                          hover:border-gray-300/50 dark:hover:border-gray-600/50
-                          text-gray-800 dark:text-gray-200
-                          transition-all duration-300
-                          cursor-pointer
-                        `}
+                        type="checkbox"
+                        checked={invoiceData.showPaymentDate}
+                        onChange={e => setInvoiceData(prev => ({ ...prev, showPaymentDate: e.target.checked }))}
+                        className="w-4 h-4 rounded border-gray-300 text-blue-500 
+                                  focus:ring-blue-500 focus:ring-offset-0"
                       />
-                      by telegraphic transfer.
-                    </p>
+                      <div className="flex flex-wrap items-center gap-x-2 text-sm">
+                        <span className="whitespace-nowrap">Full paid not later than</span>
+                        <input
+                          type="date"
+                          value={invoiceData.paymentDate}
+                          onChange={e => setInvoiceData(prev => ({ ...prev, paymentDate: e.target.value }))}
+                          className={`${inputClassName} !py-1 !px-2 min-w-0 w-32`}
+                        />
+                        <span className="whitespace-nowrap">by telegraphic transfer.</span>
+                      </div>
+                    </div>
                   </div>
 
                   <div className="flex items-start gap-2">
