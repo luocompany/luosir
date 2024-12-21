@@ -241,14 +241,21 @@ export default function NumberToEnglish() {
     const decimalPart = parts[1] ? parts[1].slice(0, 2).padEnd(2, '0') : '00';
     
     const integerWords = numberUtils.convertInteger(integerPart).toUpperCase();
-    const centWords = numberUtils.convertInteger(parseInt(decimalPart)).toUpperCase();
+    const centValue = parseInt(decimalPart);
+    const centWords = numberUtils.convertInteger(centValue).toUpperCase();
     
-    const dollarText = integerPart === 1 ? 'DOLLAR' : 'DOLLARS';
-    const centText = parseInt(decimalPart) === 1 ? 'CENT' : 'CENTS';
+    // 判断是否有小数部分
+    const hasDecimals = centValue > 0;
+    
+    // 构建美元格式字符串
+    const dollarText = `SAY TOTAL US DOLLARS ${integerWords}`;
+    const centText = hasDecimals ? 
+      ` AND ${centWords} ${centValue === 1 ? 'CENT' : 'CENTS'}` : 
+      ' ONLY';
     
     return {
-      dollars: `USD ${integerWords} ${dollarText}`,
-      cents: parseInt(decimalPart) > 0 ? `${centWords} ${centText}` : ''
+      dollars: dollarText,
+      cents: hasDecimals ? centText : ''
     };
   };
 

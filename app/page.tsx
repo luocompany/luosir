@@ -9,10 +9,10 @@ export default function Home() {
       <Navbar />
       <main className="flex-1 pt-12">
         <section className="bg-[var(--background)] text-[var(--foreground)]">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <h1 className="text-2xl font-semibold mb-6">AI 工具集</h1>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <h1 className="text-2xl font-semibold mb-4">AI 工具集</h1>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               <Card
                 title="Email Assistant"
                 description="AI驱动的邮件写作助手，让您的沟通更专业高效"
@@ -34,6 +34,14 @@ export default function Home() {
                 description="自动生成报价表和订单确认表，提升工作效率"
                 href="/quotation"
                 iconPath="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                buttonText="立即使用"
+              />
+
+              <Card
+                title="发票助手"
+                description="智能化发票管理与生成工具，轻松处理发票相关事务"
+                href="/invoice"
+                iconPath="M9 14V5a2 2 0 012-2h6a2 2 0 012 2v9m-9 0l-5 5v-9a2 2 0 012-2h3m11 0v9l-5-5m5 5v-9a2 2 0 00-2-2h-3"
                 buttonText="立即使用"
               />
 

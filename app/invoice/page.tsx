@@ -36,6 +36,7 @@ interface InvoiceData {
   remarks?: string;
   showPaymentDate: boolean;
   showRemarks: boolean;
+  showHsCode: boolean;
 }
 
 interface SettingsData {
@@ -108,6 +109,7 @@ export default function Invoice() {
     },
     showPaymentDate: true,
     showRemarks: false,
+    showHsCode: false,
   });
 
   const [editingUnitPriceIndex, setEditingUnitPriceIndex] = useState<number | null>(null);
@@ -119,7 +121,7 @@ export default function Invoice() {
   const [settings, setSettings] = useState<SettingsData>({
     date: new Date().toISOString().split('T')[0],
     currency: 'USD',
-    showHsCode: true,
+    showHsCode: false,
   });
 
   const addLineItem = () => {
@@ -626,7 +628,7 @@ export default function Invoice() {
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium">Bank Information</label>
+              <label className="block text-sm font-medium">Bank Information:</label>
               <textarea
                 value={invoiceData.bankInfo}
                 onChange={e => setInvoiceData(prev => ({ ...prev, bankInfo: e.target.value }))}
@@ -652,7 +654,8 @@ export default function Invoice() {
                         showPaymentDate: e.target.checked 
                       }))}
                       className="w-4 h-4 rounded border-gray-300 text-blue-500 
-                                focus:ring-blue-500 focus:ring-offset-0"
+                                focus:ring-blue-500/40
+                                cursor-pointer"
                     />
                     <div className="flex flex-wrap items-center gap-2 text-sm">
                       <span>Full paid not later than</span>
