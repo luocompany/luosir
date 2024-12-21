@@ -33,6 +33,9 @@ interface InvoiceData {
   bankInfo: string;
   paymentDate: string;
   amountInWords: AmountInWords;
+  remarks?: string;
+  showPaymentDate: boolean;
+  showRemarks: boolean;
 }
 
 interface SettingsData {
@@ -40,6 +43,7 @@ interface SettingsData {
   currency: string;
   showHsCode: boolean;
   showPaymentTerms: boolean;
+  showRemarks: boolean;
 }
 
 const inputClassName = `w-full px-4 py-2.5 rounded-2xl
@@ -97,7 +101,9 @@ export default function Invoice() {
       dollars: '',
       cents: '',
       hasDecimals: false
-    }
+    },
+    showPaymentDate: true,
+    showRemarks: true,
   });
 
   const [editingUnitPriceIndex, setEditingUnitPriceIndex] = useState<number | null>(null);
@@ -110,7 +116,8 @@ export default function Invoice() {
     date: new Date().toISOString().split('T')[0],
     currency: 'USD',
     showHsCode: true,
-    showPaymentTerms: true
+    showPaymentTerms: true,
+    showRemarks: true
   });
 
   const addLineItem = () => {
@@ -275,7 +282,9 @@ export default function Invoice() {
         paymentDate: invoiceData.paymentDate,
         amountInWords: invoiceData.amountInWords,
         showHsCode: settings.showHsCode,
-        showPaymentTerms: settings.showPaymentTerms,
+        showPaymentTerms: invoiceData.showPaymentDate,
+        showRemarks: invoiceData.showRemarks,
+        remarks: invoiceData.remarks,
         bankInfo: invoiceData.bankInfo,
       };
 
@@ -376,7 +385,7 @@ export default function Invoice() {
 
                 <div className="space-y-2">
                   <label className="block text-sm font-medium">Display Options</label>
-                  <div className="flex flex-col gap-2 h-[42px] px-4">
+                  <div className="flex flex-col gap-2 h-auto px-4">
                     <div className="flex items-center">
                       <input
                         type="checkbox"
@@ -387,6 +396,30 @@ export default function Invoice() {
                       />
                       <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
                         HS Code
+                      </span>
+                    </div>
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={settings.showPaymentTerms}
+                        onChange={e => setSettings(prev => ({ ...prev, showPaymentTerms: e.target.checked }))}
+                        className="w-4 h-4 rounded border-gray-300 text-blue-500 
+                                  focus:ring-blue-500 focus:ring-offset-0"
+                      />
+                      <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                        Payment Terms
+                      </span>
+                    </div>
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={settings.showRemarks}
+                        onChange={e => setSettings(prev => ({ ...prev, showRemarks: e.target.checked }))}
+                        className="w-4 h-4 rounded border-gray-300 text-blue-500 
+                                  focus:ring-blue-500 focus:ring-offset-0"
+                      />
+                      <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                        Remarks
                       </span>
                     </div>
                   </div>
@@ -611,40 +644,80 @@ export default function Invoice() {
                 onChange={e => setInvoiceData(prev => ({ ...prev, bankInfo: e.target.value }))}
                 className={`${inputClassName} min-h-[100px]`}
                 placeholder="Enter bank information"
-                rows={4}
+                rows={3}
               />
             </div>
 
-            <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-              <div className="flex items-center gap-2 mb-2">
-                <input
-                  type="checkbox"
-                  checked={settings.showPaymentTerms}
-                  onChange={e => setSettings(prev => ({ ...prev, showPaymentTerms: e.target.checked }))}
-                  className="w-4 h-4 rounded border-gray-300 text-blue-500 
-                            focus:ring-blue-500 focus:ring-offset-0"
-                />
-                <p className="flex items-center gap-2">
-                  Terms of Payment: Full paid not later than 
-                  <input
-                    type="date"
-                    value={invoiceData.paymentDate}
-                    onChange={e => setInvoiceData(prev => ({ ...prev, paymentDate: e.target.value }))}
-                    className={`
-                      !py-1.5 !px-3 w-auto inline-block
-                      rounded-xl bg-white/90 dark:bg-gray-800/90
-                      border border-gray-200/50 dark:border-gray-700/50
-                      focus:outline-none focus:ring-2 focus:ring-blue-500/40
-                      hover:border-gray-300/50 dark:hover:border-gray-600/50
-                      text-gray-800 dark:text-gray-200
-                      transition-all duration-300
-                      cursor-pointer
-                    `}
-                  />
-                  by telegraphic transfer.
-                </p>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="block text-sm font-medium">Payment Terms:</label>
+                
+                <div className="space-y-3 pl-4">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={invoiceData.showPaymentDate}
+                      onChange={e => setInvoiceData(prev => ({ 
+                        ...prev, 
+                        showPaymentDate: e.target.checked 
+                      }))}
+                      className="w-4 h-4 rounded border-gray-300 text-blue-500 
+                                focus:ring-blue-500 focus:ring-offset-0"
+                    />
+                    <p className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                      Full paid not later than 
+                      <input
+                        type="date"
+                        value={invoiceData.paymentDate}
+                        onChange={e => setInvoiceData(prev => ({ 
+                          ...prev, 
+                          paymentDate: e.target.value 
+                        }))}
+                        className={`
+                          !py-1.5 !px-3 w-auto inline-block
+                          rounded-xl bg-white/90 dark:bg-gray-800/90
+                          border border-gray-200/50 dark:border-gray-700/50
+                          focus:outline-none focus:ring-2 focus:ring-blue-500/40
+                          hover:border-gray-300/50 dark:hover:border-gray-600/50
+                          text-gray-800 dark:text-gray-200
+                          transition-all duration-300
+                          cursor-pointer
+                        `}
+                      />
+                      by telegraphic transfer.
+                    </p>
+                  </div>
+
+                  <div className="flex items-start gap-2">
+                    <input
+                      type="checkbox"
+                      checked={invoiceData.showRemarks}
+                      onChange={e => setInvoiceData(prev => ({ 
+                        ...prev, 
+                        showRemarks: e.target.checked 
+                      }))}
+                      className="w-4 h-4 mt-2 rounded border-gray-300 text-blue-500 
+                                focus:ring-blue-500 focus:ring-offset-0"
+                    />
+                    <div className="flex-1">
+                      <textarea
+                        value={invoiceData.remarks || ''}
+                        onChange={e => setInvoiceData(prev => ({ 
+                          ...prev, 
+                          remarks: e.target.value 
+                        }))}
+                        className={`${inputClassName} min-h-[60px] w-full`}
+                        placeholder="Enter additional remarks"
+                        rows={2}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="text-sm text-gray-600 dark:text-gray-400 pl-6">
+                    Please state our invoice no. "{invoiceData.invoiceNo}" on your payment documents.
+                  </div>
+                </div>
               </div>
-              <p>Please state our invoice no. "{invoiceData.invoiceNo}" on your payment documents.</p>
             </div>
 
             <button

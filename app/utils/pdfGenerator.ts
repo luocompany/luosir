@@ -32,6 +32,8 @@ interface QuotationData {
   showHsCode?: boolean;
   showPaymentTerms?: boolean;
   bankInfo: string;
+  showRemarks?: boolean;
+  remarks?: string;
 }
 
 const currencySymbols: { [key: string]: string } = {
@@ -88,7 +90,7 @@ export const generateQuotationPDF = (data: QuotationData) => {
   // 设置字体
   doc.setFont('helvetica', 'normal');
   
-  // 由于添加了Logo和标题，调整后续内容的起始位置
+  // 由于添加了Logo和调整后续内容的起始位置
   const contentStartY = 55; 
   
   // 添加基本信息 - 支持多行客户名称
@@ -114,7 +116,7 @@ export const generateQuotationPDF = (data: QuotationData) => {
   // 添加感谢信息
   doc.text('Thanks for your inquiry, and our best offer is as follows:', 15, newContentStartY);
   
-  // 调整右侧信息的位置和对齐方式
+  // 调整右侧信息的位置对齐方式
   const rightInfoX = doc.internal.pageSize.width - 15; // 右边界
   const colonX = rightInfoX - 20; // 将冒号位置调整到距离右边界20mm处
   const valueX = colonX + 2; // 值的位置在冒号右侧1mm处
@@ -403,7 +405,7 @@ export const generateInvoicePDF = async (data: QuotationData) => {
   // 设置字体
   doc.setFontSize(10);
   
-  // 调整客户信息起始位置到更上方
+  // 调整户信息始位置到更上方
   const contentStartY = 55;
   
   // 绘制客户名称（支持多行）
@@ -414,9 +416,9 @@ export const generateInvoicePDF = async (data: QuotationData) => {
   });
 
   // 计算客户信息后的位置
-  const currentY = contentStartY + (toLines.length * 5) + 2;
+  let currentY = contentStartY + (toLines.length * 5) + 2;
 
-  // 添加 P/O 客户信息下方
+  // 添加 P/O 客户息下方
   doc.text(`Order No.: ${data.inquiryNo}`, 15, currentY);
 
   // 右侧信息对齐方式
@@ -560,23 +562,67 @@ export const generateInvoicePDF = async (data: QuotationData) => {
   // 修改付款条款显示逻辑
   const paymentY = bankInfoEndY + 5;
   
-  // Terms of Payment 行根据设置显示
+  // 添加 Payment Terms: 标题
+  doc.setFont('NotoSansSC', 'bold');  // 使用粗体
+  doc.text('Payment Terms:', 15, paymentY);
+  doc.setFont('NotoSansSC', 'normal');  // 恢复正常字体
+  
+  currentY = paymentY + 5;  // 直接更新现有的 currentY 变量
+  
+  let termNumber = 1; // 初始化序号计数器
+  const terms: { content: string; isDate?: boolean; isInvoiceNo?: boolean }[] = [];
+
+  // 收集需要显示的条款
   if (data.showPaymentTerms) {
-    doc.setTextColor(0, 0, 0); // 重置为黑色
-    doc.text('Terms of Payment: Full paid not later than ', 15, paymentY);
-    doc.setTextColor(255, 0, 0); // 设置为红色
-    doc.text(data.paymentDate, 15 + doc.getTextWidth('Terms of Payment: Full paid not later than '), paymentY);
-    doc.setTextColor(0, 0, 0); // 重置为黑色
-    doc.text(' by telegraphic transfer.', 15 + doc.getTextWidth('Terms of Payment: Full paid not later than ' + data.paymentDate), paymentY);
+    terms.push({
+      content: `Full paid not later than ${data.paymentDate} by telegraphic transfer.`,
+      isDate: true
+    });
   }
 
-  // Invoice No. 行始终显示
-  const invoiceNoY = data.showPaymentTerms ? paymentY + 5 : paymentY;
-  doc.text('Please state our invoice no. "', 15, invoiceNoY);
-  doc.setTextColor(255, 0, 0); // 设置为红色
-  doc.text(data.quotationNo, 15 + doc.getTextWidth('Please state our invoice no. "'), invoiceNoY);
-  doc.setTextColor(0, 0, 0); // 重置为黑色
-  doc.text('" on your payment documents.', 15 + doc.getTextWidth('Please state our invoice no. "' + data.quotationNo), invoiceNoY);
+  if (data.showRemarks && data.remarks) {
+    data.remarks.split('\n')
+      .filter(line => line.trim())
+      .forEach(line => {
+        terms.push({ content: line.trim() });
+      });
+  }
+
+  // 始终添加发票号提示
+  terms.push({
+    content: `Please state our invoice no. "${data.quotationNo}" on your payment documents.`,
+    isInvoiceNo: true
+  });
+
+  // 显示所有条款
+  terms.forEach((term, index) => {
+    // 显示序号
+    doc.text(`${index + 1}.`, 20, currentY);
+    
+    if (term.isDate || term.isInvoiceNo) {
+      // 处理带有日期或发票号的特殊条款
+      const parts = term.content.split(term.isDate ? data.paymentDate : data.quotationNo);
+      
+      doc.text(parts[0], 25, currentY);
+      doc.setTextColor(255, 0, 0);
+      doc.text(term.isDate ? data.paymentDate : data.quotationNo, 
+        25 + doc.getTextWidth(parts[0]), 
+        currentY
+      );
+      doc.setTextColor(0, 0, 0);
+      if (parts[1]) {
+        doc.text(parts[1], 
+          25 + doc.getTextWidth(parts[0] + (term.isDate ? data.paymentDate : data.quotationNo)), 
+          currentY
+        );
+      }
+    } else {
+      // 处理普通文本
+      doc.text(term.content, 25, currentY);
+    }
+    
+    currentY += 5; // 移动到下一行
+  });
 
   // 保存文件
   doc.save(`Invoice_${data.quotationNo}_${data.date}.pdf`);
