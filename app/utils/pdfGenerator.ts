@@ -210,8 +210,8 @@ export const generateQuotationPDF = async (data: QuotationData) => {
       2: { halign: 'center' },  // Description列居中对齐
       3: { halign: 'center' },  // Q'TY列居中对齐
       4: { halign: 'center' },  // Unit列居中对齐
-      5: { halign: 'right' },   // U/Price列右对齐
-      6: { halign: 'right' },   // Amount列右对齐
+      5: { halign: 'center' },   // U/Price列右对齐
+      6: { halign: 'center' },   // Amount列右对齐
       7: { halign: 'center' },  // Remarks列居中对齐
     },
   });
@@ -371,8 +371,8 @@ export const generateOrderConfirmationPDF = async (data: QuotationData) => {
       2: { halign: 'center' },  // Description列居中对齐
       3: { halign: 'center' },  // Q'TY列居中对齐
       4: { halign: 'center' },  // Unit列居中对齐
-      5: { halign: 'right' },   // U/Price列右对齐
-      6: { halign: 'right' },   // Amount列右对齐
+      5: { halign: 'center' },   // U/Price列右对齐
+      6: { halign: 'center' },   // Amount列右对齐
       7: { halign: 'center' },  // Remarks列居中对齐
     },
   });
@@ -700,6 +700,6 @@ export const generateInvoicePDF = async (data: QuotationData) => {
     });
   }
 
-  // 保���文件
+  // 保存文件
   doc.save(`Invoice_${data.quotationNo}_${data.date}.pdf`);
 };
