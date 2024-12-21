@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Footer from '../components/Footer';
 import { ArrowLeft, Download, Settings } from 'lucide-react';
 import Link from 'next/link';
@@ -15,6 +15,12 @@ interface LineItem {
   amount: number;
 }
 
+interface AmountInWords {
+  dollars: string;
+  cents: string;
+  hasDecimals: boolean;
+}
+
 interface InvoiceData {
   invoiceNo: string;
   date: string;
@@ -27,6 +33,9 @@ interface InvoiceData {
   shippingTerms: string;
   portOfLoading: string;
   portOfDischarge: string;
+  bankInfo: string;
+  paymentDate: string;
+  amountInWords: AmountInWords;
 }
 
 interface SettingsData {
@@ -62,6 +71,12 @@ const numberInputClassName = `${tableInputClassName}
   text-center`;
 
 export default function Invoice() {
+  const getDefaultPaymentDate = (invoiceDate: string) => {
+    const date = new Date(invoiceDate);
+    date.setMonth(date.getMonth() + 1);
+    return date.toISOString().split('T')[0];
+  };
+
   const [invoiceData, setInvoiceData] = useState<InvoiceData>({
     invoiceNo: '',
     date: new Date().toISOString().split('T')[0],
@@ -81,7 +96,14 @@ export default function Invoice() {
     paymentTerms: 'T/T IN ADVANCE',
     shippingTerms: 'FOB SHANGHAI',
     portOfLoading: 'SHANGHAI, CHINA',
-    portOfDischarge: ''
+    portOfDischarge: '',
+    bankInfo: '',
+    paymentDate: getDefaultPaymentDate(new Date().toISOString().split('T')[0]),
+    amountInWords: {
+      dollars: '',
+      cents: '',
+      hasDecimals: false
+    }
   });
 
   const [editingUnitPriceIndex, setEditingUnitPriceIndex] = useState<number | null>(null);
@@ -143,6 +165,92 @@ export default function Invoice() {
   const getTotalAmount = () => {
     return invoiceData.items.reduce((sum, item) => sum + item.amount, 0);
   };
+
+  const numberToWords = (num: number) => {
+    const getCurrencyPrefix = () => {
+      switch(invoiceData.currency) {
+        case 'USD': return 'SAY TOTAL US DOLLARS ';
+        case 'EUR': return 'SAY TOTAL EUROS ';
+        case 'CNY': return 'SAY TOTAL CHINESE YUAN ';
+        default: return 'SAY TOTAL ';
+      }
+    };
+
+    const ones = ['', 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE'];
+    const tens = ['', '', 'TWENTY', 'THIRTY', 'FORTY', 'FIFTY', 'SIXTY', 'SEVENTY', 'EIGHTY', 'NINETY'];
+    const teens = ['TEN', 'ELEVEN', 'TWELVE', 'THIRTEEN', 'FOURTEEN', 'FIFTEEN', 'SIXTEEN', 'SEVENTEEN', 'EIGHTEEN', 'NINETEEN'];
+    
+    const convertLessThanThousand = (n: number): string => {
+      if (n === 0) return '';
+      
+      if (n < 10) return ones[n];
+      
+      if (n < 20) return teens[n - 10];
+      
+      if (n < 100) {
+        return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? '-' + ones[n % 10] : '');
+      }
+      
+      const hundred = ones[Math.floor(n / 100)] + ' HUNDRED';
+      const remainder = n % 100;
+      if (remainder === 0) return hundred;
+      return hundred + ' AND ' + convertLessThanThousand(remainder);
+    };
+
+    const convert = (n: number): string => {
+      if (n === 0) return 'ZERO';
+      
+      const billion = Math.floor(n / 1000000000);
+      const million = Math.floor((n % 1000000000) / 1000000);
+      const thousand = Math.floor((n % 1000000) / 1000);
+      const remainder = n % 1000;
+      
+      let result = '';
+      
+      if (billion) result += convertLessThanThousand(billion) + ' BILLION ';
+      if (million) result += convertLessThanThousand(million) + ' MILLION ';
+      if (thousand) result += convertLessThanThousand(thousand) + ' THOUSAND, ';
+      if (remainder) result += convertLessThanThousand(remainder);
+      
+      return result.trim();
+    };
+
+    const dollars = Math.floor(num);
+    const cents = Math.round((num - dollars) * 100);
+    
+    let result = getCurrencyPrefix();
+    result += convert(dollars);
+    
+    if (cents > 0) {
+      return {
+        dollars: result,
+        cents: `${convert(cents)} CENT${cents === 1 ? '' : 'S'}`,
+        hasDecimals: true
+      };
+    } else {
+      return {
+        dollars: result + ' ONLY',
+        cents: '',
+        hasDecimals: false
+      };
+    }
+  };
+
+  const total = useMemo(() => getTotalAmount(), [invoiceData.items]);
+
+  useEffect(() => {
+    setInvoiceData(prev => ({
+      ...prev,
+      amountInWords: numberToWords(total)
+    }));
+  }, [total, invoiceData.currency]);
+
+  useEffect(() => {
+    setInvoiceData(prev => ({
+      ...prev,
+      paymentDate: getDefaultPaymentDate(prev.date)
+    }));
+  }, [invoiceData.date]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -442,6 +550,63 @@ export default function Invoice() {
                   </span>
                 </div>
               </div>
+            </div>
+
+            <div className="mt-4">
+              <div className="text-sm font-extrabold text-gray-600 dark:text-gray-400 flex gap-1">
+                <span>SAY TOTAL</span>
+                <span className="text-blue-600 dark:text-blue-400">
+                  {(() => {
+                    switch(invoiceData.currency) {
+                      case 'USD': return 'US DOLLARS';
+                      case 'EUR': return 'EUROS';
+                      case 'CNY': return 'CHINESE YUAN';
+                      default: return '';
+                    }
+                  })()}
+                </span>
+                <span>
+                  {invoiceData.amountInWords.dollars.split(' ').slice(4).join(' ')}
+                </span>
+                {invoiceData.amountInWords.hasDecimals && (
+                  <span className="text-red-500">AND</span>
+                )}
+                <span>{invoiceData.amountInWords.cents}</span>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-sm font-medium">Bank Information</label>
+              <textarea
+                value={invoiceData.bankInfo}
+                onChange={e => setInvoiceData(prev => ({ ...prev, bankInfo: e.target.value }))}
+                className={`${inputClassName} min-h-[100px]`}
+                placeholder="Enter bank information"
+                rows={4}
+              />
+            </div>
+
+            <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+              <p className="flex items-center gap-2">
+                Terms of Payment: Full paid not later than 
+                <input
+                  type="date"
+                  value={invoiceData.paymentDate}
+                  onChange={e => setInvoiceData(prev => ({ ...prev, paymentDate: e.target.value }))}
+                  className={`
+                    !py-1.5 !px-3 w-auto inline-block
+                    rounded-xl bg-white/90 dark:bg-gray-800/90
+                    border border-gray-200/50 dark:border-gray-700/50
+                    focus:outline-none focus:ring-2 focus:ring-blue-500/40
+                    hover:border-gray-300/50 dark:hover:border-gray-600/50
+                    text-gray-800 dark:text-gray-200
+                    transition-all duration-300
+                    cursor-pointer
+                  `}
+                />
+                by telegraphic transfer.
+              </p>
+              <p>Please state our invoice no. "{invoiceData.invoiceNo}" on your payment documents.</p>
             </div>
 
             <button
