@@ -657,8 +657,10 @@ export default function Invoice() {
                                 focus:ring-blue-500/40
                                 cursor-pointer"
                     />
-                    <div className="flex flex-wrap items-center gap-2 text-sm">
-                      <span>Full paid not later than</span>
+                    <div className="flex items-center flex-wrap gap-2">
+                      <span className="text-sm text-gray-600 dark:text-gray-400">
+                        Full paid not later than
+                      </span>
                       <input
                         type="date"
                         value={invoiceData.paymentDate}
@@ -666,9 +668,15 @@ export default function Invoice() {
                           ...prev, 
                           paymentDate: e.target.value 
                         }))}
-                        className={`${inputClassName} !py-1.5 !px-2 w-32`}
+                        className={`${inputClassName} !py-1.5 !px-2 w-[130px] shrink-0`}
+                        style={{ 
+                          colorScheme: 'light dark',
+                          paddingRight: '8px' // 覆盖日期选择器默认内边距
+                        }}
                       />
-                      <span>by telegraphic transfer.</span>
+                      <span className="text-sm text-gray-600 dark:text-gray-400">
+                        by telegraphic transfer.
+                      </span>
                     </div>
                   </div>
 
