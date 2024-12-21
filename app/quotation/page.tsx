@@ -374,6 +374,12 @@ export default function Quotation() {
     }));
   };
 
+  // 在设置面板中修改币种时，需要同步更新到 quotationData
+  const handleCurrencyChange = (newCurrency: string) => {
+    setSettings(prev => ({ ...prev, currency: newCurrency }));
+    setQuotationData(prev => ({ ...prev, currency: newCurrency }));
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-[#f5f5f7] dark:bg-[#1d1d1f]">
       <main className="flex-1">
@@ -437,87 +443,67 @@ export default function Quotation() {
                 
                 <button
                   type="button"
-                  onClick={() => setShowSettings(true)}
-                  title="Date, Sales Person, Currency"
-                  className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                  onClick={() => setShowSettings(prev => !prev)}
+                  className="inline-flex items-center justify-center p-2 
+                            rounded-xl border border-gray-200/50 dark:border-gray-700/50
+                            bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg
+                            text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100
+                            transition-all hover:shadow-lg hover:scale-[1.02]
+                            group"
+                  title="Settings"
                 >
-                  <Settings className="h-5 w-5" />
+                  <Settings className="h-5 w-5 transition-transform group-hover:rotate-45" />
                 </button>
               </div>
               
               <form onSubmit={handleSubmit} className="space-y-6">
                 <DocumentHeaderForm type={activeTab as 'quotation' | 'confirmation'} />
 
-                {/* 设置弹窗 */}
-                {showSettings && (
-                  <div className="fixed inset-0 bg-black/20 dark:bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
-                    <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-2xl
-                                    rounded-2xl p-6 w-full max-w-md m-4
-                                    border border-gray-200/20 dark:border-gray-700/20
-                                    shadow-xl">
-                      <h3 className="text-lg font-semibold mb-4">Settings</h3>
-                      <div className="space-y-4">
-                        <div className="space-y-2">
-                          <label className="block text-sm font-medium">Date</label>
-                          <input
-                            type="date"
-                            value={settings.date}
-                            onChange={e => setSettings(prev => ({ ...prev, date: e.target.value }))}
-                            className={inputClassName}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="block text-sm font-medium">Sales Person</label>
-                          <select
-                            value={settings.from}
-                            onChange={e => handleSalesPersonChange(e.target.value)}
-                            className={selectClassName}
-                          >
-                            <option value="Roger">Roger</option>
-                            <option value="Sharon">Sharon</option>
-                            <option value="Emily">Emily</option>
-                            <option value="Summer">Summer</option>
-                            <option value="Nina">Nina</option>
-                          </select>
-                        </div>
-                        <div className="space-y-2">
-                          <label className="block text-sm font-medium">Currency</label>
-                          <select
-                            value={settings.currency}
-                            onChange={e => setSettings(prev => ({ ...prev, currency: e.target.value }))}
-                            className={selectClassName}
-                          >
-                            <option value="USD">USD</option>
-                            <option value="EUR">EUR</option>
-                            <option value="CNY">CNY</option>
-                          </select>
-                        </div>
+                {/* 设置面板 */}
+                <div className={`mb-4 overflow-hidden transition-all duration-300 ease-in-out
+                                ${showSettings ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                  <div className="bg-gray-50/50 dark:bg-gray-900/50 
+                                rounded-2xl p-6 
+                                border border-gray-200/30 dark:border-gray-700/30">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                      <div className="space-y-2">
+                        <label className="block text-sm font-medium">Date</label>
+                        <input
+                          type="date"
+                          value={settings.date}
+                          onChange={e => setSettings(prev => ({ ...prev, date: e.target.value }))}
+                          className={inputClassName}
+                        />
                       </div>
-                      <div className="flex justify-end gap-2 mt-6">
-                        <button
-                          onClick={() => setShowSettings(false)}
-                          className="px-4 py-2 rounded-lg text-sm font-medium hover:bg-black/5 dark:hover:bg-white/5"
+                      <div className="space-y-2">
+                        <label className="block text-sm font-medium">Sales Person</label>
+                        <select
+                          value={settings.from}
+                          onChange={e => handleSalesPersonChange(e.target.value)}
+                          className={selectClassName}
                         >
-                          Cancel
-                        </button>
-                        <button
-                          onClick={() => {
-                            setQuotationData(prev => ({
-                              ...prev,
-                              date: settings.date,
-                              from: settings.from,
-                              currency: settings.currency
-                            }));
-                            setShowSettings(false);
-                          }}
-                          className="px-4 py-2 rounded-lg bg-[var(--blue-accent)] text-white text-sm font-medium"
+                          <option value="Roger">Roger</option>
+                          <option value="Sharon">Sharon</option>
+                          <option value="Emily">Emily</option>
+                          <option value="Summer">Summer</option>
+                          <option value="Nina">Nina</option>
+                        </select>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="block text-sm font-medium">Currency</label>
+                        <select
+                          value={settings.currency}
+                          onChange={e => handleCurrencyChange(e.target.value)}
+                          className={selectClassName}
                         >
-                          Save
-                        </button>
+                          <option value="USD">USD</option>
+                          <option value="EUR">EUR</option>
+                          <option value="CNY">CNY</option>
+                        </select>
                       </div>
                     </div>
                   </div>
-                )}
+                </div>
 
                 {/* 商品列表表格样式优化 */}
                 <div className="overflow-x-auto rounded-2xl border border-gray-200/30 dark:border-gray-700/30
@@ -686,7 +672,7 @@ export default function Quotation() {
 
                 {/* 表格下方区域重新设计 */}
                 <div className="space-y-6 mt-4">
-                  {/* 操作栏 - 合并添加行按钮和总金额 */}
+                  {/* 操作 - 合并添加行按钮和总金额 */}
                   <div className="flex items-center justify-between gap-4">
                     <button
                       type="button"
