@@ -30,6 +30,7 @@ interface QuotationData {
     hasDecimals: boolean;
   };
   showHsCode?: boolean;
+  showPaymentTerms?: boolean;
   bankInfo: string;
 }
 
@@ -556,21 +557,26 @@ export const generateInvoicePDF = async (data: QuotationData) => {
   // 计算银行信息结束位置
   const bankInfoEndY = finalY + 25 + (bankInfoLines.length * 5);
 
-  // 在显示付款条款时设置红色文本
+  // 修改付款条款显示逻辑
   const paymentY = bankInfoEndY + 5;
-  doc.setTextColor(0, 0, 0); // 重置为黑色
-  doc.text('Terms of Payment: Full paid not later than ', 15, paymentY);
-  doc.setTextColor(255, 0, 0); // 设置为红色
-  doc.text(data.paymentDate, 15 + doc.getTextWidth('Terms of Payment: Full paid not later than '), paymentY);
-  doc.setTextColor(0, 0, 0); // 重置为黑色
-  doc.text(' by telegraphic transfer.', 15 + doc.getTextWidth('Terms of Payment: Full paid not later than ' + data.paymentDate), paymentY);
+  
+  // Terms of Payment 行根据设置显示
+  if (data.showPaymentTerms) {
+    doc.setTextColor(0, 0, 0); // 重置为黑色
+    doc.text('Terms of Payment: Full paid not later than ', 15, paymentY);
+    doc.setTextColor(255, 0, 0); // 设置为红色
+    doc.text(data.paymentDate, 15 + doc.getTextWidth('Terms of Payment: Full paid not later than '), paymentY);
+    doc.setTextColor(0, 0, 0); // 重置为黑色
+    doc.text(' by telegraphic transfer.', 15 + doc.getTextWidth('Terms of Payment: Full paid not later than ' + data.paymentDate), paymentY);
+  }
 
-  // 显示发票号提示
-  doc.text('Please state our invoice no. "', 15, paymentY + 5);
+  // Invoice No. 行始终显示
+  const invoiceNoY = data.showPaymentTerms ? paymentY + 5 : paymentY;
+  doc.text('Please state our invoice no. "', 15, invoiceNoY);
   doc.setTextColor(255, 0, 0); // 设置为红色
-  doc.text(data.quotationNo, 15 + doc.getTextWidth('Please state our invoice no. "'), paymentY + 5);
+  doc.text(data.quotationNo, 15 + doc.getTextWidth('Please state our invoice no. "'), invoiceNoY);
   doc.setTextColor(0, 0, 0); // 重置为黑色
-  doc.text('" on your payment documents.', 15 + doc.getTextWidth('Please state our invoice no. "' + data.quotationNo), paymentY + 5);
+  doc.text('" on your payment documents.', 15 + doc.getTextWidth('Please state our invoice no. "' + data.quotationNo), invoiceNoY);
 
   // 保存文件
   doc.save(`Invoice_${data.quotationNo}_${data.date}.pdf`);

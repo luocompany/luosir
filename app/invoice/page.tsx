@@ -39,6 +39,7 @@ interface SettingsData {
   date: string;
   currency: string;
   showHsCode: boolean;
+  showPaymentTerms: boolean;
 }
 
 const inputClassName = `w-full px-4 py-2.5 rounded-2xl
@@ -108,7 +109,8 @@ export default function Invoice() {
   const [settings, setSettings] = useState<SettingsData>({
     date: new Date().toISOString().split('T')[0],
     currency: 'USD',
-    showHsCode: true
+    showHsCode: true,
+    showPaymentTerms: true
   });
 
   const addLineItem = () => {
@@ -273,6 +275,7 @@ export default function Invoice() {
         paymentDate: invoiceData.paymentDate,
         amountInWords: invoiceData.amountInWords,
         showHsCode: settings.showHsCode,
+        showPaymentTerms: settings.showPaymentTerms,
         bankInfo: invoiceData.bankInfo,
       };
 
@@ -373,17 +376,31 @@ export default function Invoice() {
 
                 <div className="space-y-2">
                   <label className="block text-sm font-medium">Display Options</label>
-                  <div className="flex items-center h-[42px] px-4">
-                    <input
-                      type="checkbox"
-                      checked={settings.showHsCode}
-                      onChange={e => setSettings(prev => ({ ...prev, showHsCode: e.target.checked }))}
-                      className="w-4 h-4 rounded border-gray-300 text-blue-500 
-                                focus:ring-blue-500 focus:ring-offset-0"
-                    />
-                    <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
-                      HS Code
-                    </span>
+                  <div className="flex flex-col gap-2 h-[42px] px-4">
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={settings.showHsCode}
+                        onChange={e => setSettings(prev => ({ ...prev, showHsCode: e.target.checked }))}
+                        className="w-4 h-4 rounded border-gray-300 text-blue-500 
+                                  focus:ring-blue-500 focus:ring-offset-0"
+                      />
+                      <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                        HS Code
+                      </span>
+                    </div>
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={settings.showPaymentTerms}
+                        onChange={e => setSettings(prev => ({ ...prev, showPaymentTerms: e.target.checked }))}
+                        className="w-4 h-4 rounded border-gray-300 text-blue-500 
+                                  focus:ring-blue-500 focus:ring-offset-0"
+                      />
+                      <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                        Payment Terms
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
