@@ -13,7 +13,6 @@ interface LineItem {
   unit: string;
   unitPrice: number;
   amount: number;
-  countryOfOrigin: string;
 }
 
 interface InvoiceData {
@@ -33,6 +32,7 @@ interface InvoiceData {
 interface SettingsData {
   date: string;
   currency: string;
+  showHsCode: boolean;
 }
 
 const inputClassName = `w-full px-4 py-2.5 rounded-2xl
@@ -77,7 +77,6 @@ export default function Invoice() {
       unit: 'pc',
       unitPrice: 0,
       amount: 0,
-      countryOfOrigin: 'CN'
     }],
     paymentTerms: 'T/T IN ADVANCE',
     shippingTerms: 'FOB SHANGHAI',
@@ -93,7 +92,8 @@ export default function Invoice() {
   const [showSettings, setShowSettings] = useState(false);
   const [settings, setSettings] = useState<SettingsData>({
     date: new Date().toISOString().split('T')[0],
-    currency: 'USD'
+    currency: 'USD',
+    showHsCode: true
   });
 
   const addLineItem = () => {
@@ -107,7 +107,6 @@ export default function Invoice() {
         unit: 'pc',
         unitPrice: 0,
         amount: 0,
-        countryOfOrigin: 'CN'
       }]
     }));
   };
@@ -206,7 +205,7 @@ export default function Invoice() {
             <div className="bg-gray-50/50 dark:bg-gray-900/50 
                           rounded-2xl p-6 
                           border border-gray-200/30 dark:border-gray-700/30">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 <div className="space-y-2">
                   <label className="block text-sm font-medium">Date</label>
                   <input
@@ -238,6 +237,22 @@ export default function Invoice() {
                     <option value="EUR">EUR</option>
                     <option value="CNY">CNY</option>
                   </select>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium">Display Options</label>
+                  <div className="flex items-center h-[42px] px-4">
+                    <input
+                      type="checkbox"
+                      checked={settings.showHsCode}
+                      onChange={e => setSettings(prev => ({ ...prev, showHsCode: e.target.checked }))}
+                      className="w-4 h-4 rounded border-gray-300 text-blue-500 
+                                focus:ring-blue-500 focus:ring-offset-0"
+                    />
+                    <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                      HS Code
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -276,13 +291,16 @@ export default function Invoice() {
                   <tr className="border-b border-gray-200/30 dark:border-gray-700/30
                        bg-gray-50/50 dark:bg-gray-800/50">
                     <th className="py-2 px-1 text-center text-xs font-bold opacity-90" style={{ width: '40px' }}>No.</th>
-                    <th className="py-2 px-1 text-center text-xs font-bold opacity-90" style={{ width: '120px' }}>HS Code</th>
+                    <th className={`py-2 px-1 text-center text-xs font-bold opacity-90 ${
+                      !settings.showHsCode && 'hidden'
+                    }`} style={{ width: '120px' }}>
+                      HS Code
+                    </th>
                     <th className="py-2 px-1 text-center text-xs font-bold opacity-90">Description</th>
                     <th className="py-2 px-1 text-center text-xs font-bold opacity-90" style={{ width: '100px' }}>Q'TY</th>
                     <th className="py-2 px-1 text-center text-xs font-bold opacity-90" style={{ width: '100px' }}>Unit</th>
                     <th className="py-2 px-1 text-center text-xs font-bold opacity-90" style={{ width: '100px' }}>U/Price</th>
                     <th className="py-2 px-1 text-center text-xs font-bold opacity-90" style={{ width: '100px' }}>Amount</th>
-                    <th className="py-2 px-1 text-center text-xs font-bold opacity-90" style={{ width: '120px' }}>Origin</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -301,7 +319,7 @@ export default function Invoice() {
                                 {index + 1}
                               </span>
                       </td>
-                      <td className="py-1.5 px-1">
+                      <td className={`py-1.5 px-1 ${!settings.showHsCode && 'hidden'}`}>
                         <input
                           type="text"
                           value={item.hsCode}
@@ -394,15 +412,6 @@ export default function Invoice() {
                           value={item.amount.toFixed(2)}
                           readOnly
                           className={numberInputClassName}
-                        />
-                      </td>
-                      <td className="py-1.5 px-1">
-                        <input
-                          type="text"
-                          value={item.countryOfOrigin}
-                          onChange={e => updateLineItem(index, 'countryOfOrigin', e.target.value)}
-                          className={tableInputClassName}
-                          placeholder="Country"
                         />
                       </td>
                     </tr>
