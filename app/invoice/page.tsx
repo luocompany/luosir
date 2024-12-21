@@ -614,9 +614,9 @@ export default function Invoice() {
               <textarea
                 value={invoiceData.bankInfo}
                 onChange={e => setInvoiceData(prev => ({ ...prev, bankInfo: e.target.value }))}
-                className={`${inputClassName} min-h-[100px]`}
+                className={`${inputClassName} min-h-[60px]`}
                 placeholder="Enter bank information"
-                rows={3}
+                rows={2}
               />
             </div>
 
@@ -678,9 +678,9 @@ export default function Invoice() {
                           ...prev, 
                           remarks: e.target.value 
                         }))}
-                        className={`${inputClassName} min-h-[60px] w-full`}
+                        className={`${inputClassName} min-h-[32px]`}
                         placeholder="Enter additional remarks"
-                        rows={2}
+                        rows={1}
                       />
                     </div>
                   </div>
