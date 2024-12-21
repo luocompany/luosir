@@ -28,6 +28,8 @@ interface QuotationData {
     cents: string;
     hasDecimals: boolean;
   };
+  showHsCode?: boolean;
+  bankInfo: string;
 }
 
 const currencySymbols: { [key: string]: string } = {
@@ -403,28 +405,41 @@ export const generateInvoicePDF = async (data: QuotationData) => {
   // 调整表格起始位置
   const tableStartY = currentY + 10;
 
-  // 添加商品表格
+  // 修改表格部分
   autoTable(doc, {
     startY: tableStartY,
-    head: [['No.', 'HS Code', 'Description', 'Q\'TY', 'Unit', 'Unit Price', 'Amount']],
-    body: data.items.map(item => [
-      item.lineNo,
-      item.partName,
-      item.description,
-      item.quantity,
-      item.unit,
-      item.unitPrice.toFixed(2),
-      item.amount.toFixed(2)
-    ]),
+    head: [data.showHsCode ? 
+      ['No.', 'HS Code', 'Description', 'Q\'TY', 'Unit', 'Unit Price', 'Amount'] :
+      ['No.', 'Description', 'Q\'TY', 'Unit', 'Unit Price', 'Amount']
+    ],
+    body: data.items.map(item => data.showHsCode ? 
+      [
+        item.lineNo,
+        item.partName,  // HS Code
+        item.description,
+        item.quantity,
+        item.unit,
+        item.unitPrice.toFixed(2),
+        item.amount.toFixed(2)
+      ] : 
+      [
+        item.lineNo,
+        item.description,
+        item.quantity,
+        item.unit,
+        item.unitPrice.toFixed(2),
+        item.amount.toFixed(2)
+      ]
+    ),
     foot: [[
       { 
         content: 'Total Amount:', 
-        colSpan: 6, 
+        colSpan: data.showHsCode ? 6 : 5,  // 根据是否显示 HS Code 调整跨列数
         styles: { 
           halign: 'right',
           fontStyle: 'bold',
           cellPadding: { right: 4 },
-          valign: 'middle'  // 添加垂直居中对齐
+          valign: 'middle'
         } 
       },
       { 
@@ -444,17 +459,27 @@ export const generateInvoicePDF = async (data: QuotationData) => {
       textColor: [0, 0, 0]    // 黑色文字
     },
     headStyles: {
-      fontStyle: 'bold'
+      fontStyle: 'bold',
+      halign: 'center'
     },
-    columnStyles: {
-      0: { halign: 'center', cellWidth: 15 },      // No.列
-      1: { halign: 'center', cellWidth: 30 },      // HS Code列
-      2: { halign: 'left', cellWidth: 'auto' },    // Description列
-      3: { halign: 'center', cellWidth: 20 },      // Q'TY列
-      4: { halign: 'center', cellWidth: 20 },      // Unit列
-      5: { halign: 'right', cellWidth: 30 },       // Unit Price列
-      6: { halign: 'right', cellWidth: 30 }        // Amount列
-    },
+    columnStyles: data.showHsCode ? 
+      {
+        0: { halign: 'center', cellWidth: 15 },      // No.列
+        1: { halign: 'center', cellWidth: 30 },      // HS Code列
+        2: { halign: 'left', cellWidth: 'auto' },    // Description列
+        3: { halign: 'center', cellWidth: 20 },      // Q'TY列
+        4: { halign: 'center', cellWidth: 20 },      // Unit列
+        5: { halign: 'right', cellWidth: 30 },       // Unit Price列
+        6: { halign: 'right', cellWidth: 30 }        // Amount列
+      } : 
+      {
+        0: { halign: 'center', cellWidth: 15 },      // No.列
+        1: { halign: 'left', cellWidth: 'auto' },    // Description列
+        2: { halign: 'center', cellWidth: 20 },      // Q'TY列
+        3: { halign: 'center', cellWidth: 20 },      // Unit列
+        4: { halign: 'right', cellWidth: 30 },       // Unit Price列
+        5: { halign: 'right', cellWidth: 30 }        // Amount列
+      },
     margin: { left: 15, right: 15 },
     tableWidth: 'auto',
     didDrawCell: (data) => {
@@ -468,41 +493,29 @@ export const generateInvoicePDF = async (data: QuotationData) => {
   // 获取表格结束位置
   const finalY = (doc as any).lastAutoTable.finalY;
   
-  // 直接添加金额大写（与表格保持适当间距）
+  // 调整金额大写位置（与表格更近）
   doc.setFont('helvetica', 'normal');
   doc.text(
     `${data.amountInWords.dollars}${data.amountInWords.hasDecimals ? ' ' + data.amountInWords.cents : ''}`,
     15,
-    finalY + 15  // 调整位置
+    finalY + 8  // 从 +10 改为 +8，使其更靠近表格
   );
 
-  // 添加银行信息（相应调整后续内容的位置）
-  doc.text('Bank Information:', 15, finalY + 25);
-  const bankInfoLines = [
-    'Bank Name',
-    'Swift code',
-    'Bank address',
-    'A/C No.',
-    'Beneficiary'
-  ];
-  
-  // 使用更大的行间距（6）
+  // 修改银行信息显示部分
+  doc.text('Bank Information:', 15, finalY + 20);
+  const bankInfoLines = data.bankInfo.split('\n').filter(line => line.trim());
+
+  // 显示银行信息，每行间距5mm
   bankInfoLines.forEach((line, index) => {
-    doc.text(line, 15, finalY + 30 + (index * 6));  // 行间距从 4 改为 6
+    doc.text(line.trim(), 15, finalY + 25 + (index * 5));
   });
 
-  // 计算银行信息后的位置
-  const bankInfoEndY = finalY + 30 + (bankInfoLines.length * 6);
+  // 计算银行信息结束位置
+  const bankInfoEndY = finalY + 25 + (bankInfoLines.length * 5);
 
-  // 添加付款条款（减与银行信息的间距）
+  // 付款条款显示在银行信息下方
   doc.text(`Terms of Payment: Full paid not later than ${data.paymentDate} by telegraphic transfer.`, 15, bankInfoEndY + 5);
-  
-  // 添加发票编号提示
   doc.text(`Please state our invoice no. "${data.quotationNo}" on your payment documents.`, 15, bankInfoEndY + 10);
-
-  // 添加签名区域（保持适当间距）
-  doc.line(15, bankInfoEndY + 35, 80, bankInfoEndY + 35);
-  doc.text('Authorized Signature & Company Stamp', 15, bankInfoEndY + 40);
 
   // 保存文件
   doc.save(`Invoice_${data.quotationNo}_${data.date}.pdf`);

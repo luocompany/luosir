@@ -271,7 +271,9 @@ export default function Invoice() {
           `Payment Date: ${invoiceData.paymentDate}`,
         ],
         paymentDate: invoiceData.paymentDate,
-        amountInWords: invoiceData.amountInWords
+        amountInWords: invoiceData.amountInWords,
+        showHsCode: settings.showHsCode,
+        bankInfo: invoiceData.bankInfo,
       };
 
       generateInvoicePDF(pdfData);

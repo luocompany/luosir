@@ -33,6 +33,7 @@ interface QuotationData {
     cents: string;
     hasDecimals: boolean;
   };
+  bankInfo: string;
 }
 
 interface SettingsData {
@@ -156,6 +157,7 @@ export default function Quotation() {
       cents: '',
       hasDecimals: false
     },
+    bankInfo: '',
   });
 
   // 修改定义，使用索引来跟踪正在编辑的行
@@ -320,7 +322,7 @@ export default function Quotation() {
     </button>
   );
 
-  // 检查是否有其他地方在入过程中触发了状态更新
+  // 检查是否有其他地方在编辑过程中触发了状态更新
   // 比如移除或简化这些作用
   useEffect(() => {
     // 移除或简化不必要的副作用
