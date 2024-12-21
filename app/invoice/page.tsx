@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import Footer from '../components/Footer';
 import { ArrowLeft, Download, Settings } from 'lucide-react';
 import Link from 'next/link';
+import { generateInvoicePDF } from '../utils/pdfGenerator';
 
 interface LineItem {
   lineNo: number;
@@ -29,10 +30,6 @@ interface InvoiceData {
   inquiryNo: string;
   currency: string;
   items: LineItem[];
-  paymentTerms: string;
-  shippingTerms: string;
-  portOfLoading: string;
-  portOfDischarge: string;
   bankInfo: string;
   paymentDate: string;
   amountInWords: AmountInWords;
@@ -93,10 +90,6 @@ export default function Invoice() {
       unitPrice: 0,
       amount: 0,
     }],
-    paymentTerms: 'T/T IN ADVANCE',
-    shippingTerms: 'FOB SHANGHAI',
-    portOfLoading: 'SHANGHAI, CHINA',
-    portOfDischarge: '',
     bankInfo: '',
     paymentDate: getDefaultPaymentDate(new Date().toISOString().split('T')[0]),
     amountInWords: {
@@ -254,8 +247,37 @@ export default function Invoice() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: 实现生成PDF的功能
-    console.log('Generating invoice PDF...', invoiceData);
+    try {
+      const pdfData = {
+        quotationNo: invoiceData.invoiceNo,
+        date: invoiceData.date,
+        to: invoiceData.to,
+        from: invoiceData.from,
+        inquiryNo: invoiceData.inquiryNo,
+        currency: invoiceData.currency,
+        items: invoiceData.items.map(item => ({
+          lineNo: item.lineNo,
+          partName: item.hsCode,
+          description: item.description,
+          quantity: item.quantity,
+          unit: item.unit,
+          unitPrice: item.unitPrice,
+          amount: item.amount,
+          remarks: ''
+        })),
+        notes: [
+          `Bank Information:`,
+          invoiceData.bankInfo,
+          `Payment Date: ${invoiceData.paymentDate}`,
+        ],
+        paymentDate: invoiceData.paymentDate,
+        amountInWords: invoiceData.amountInWords
+      };
+
+      generateInvoicePDF(pdfData);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    }
   };
 
   return (

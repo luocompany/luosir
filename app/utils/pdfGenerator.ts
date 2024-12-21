@@ -22,6 +22,12 @@ interface QuotationData {
   items: LineItem[];
   notes: string[];
   contractNo?: string;
+  paymentDate: string;
+  amountInWords: {
+    dollars: string;
+    cents: string;
+    hasDecimals: boolean;
+  };
 }
 
 const currencySymbols: { [key: string]: string } = {
@@ -244,7 +250,7 @@ export const generateOrderConfirmationPDF = (data: QuotationData) => {
   doc.text(':', colonX, 65);
   doc.text(data.from, valueX, 65);
 
-  // Currency信息移到右上角并保持对齐
+  // Currency右上角并保持对齐
   doc.text('Currency', labelX, confirmationContentStartY, { align: 'right' });
   doc.text(':', colonX, confirmationContentStartY);
   doc.text(data.currency, valueX, confirmationContentStartY);
@@ -282,7 +288,7 @@ export const generateOrderConfirmationPDF = (data: QuotationData) => {
         content: `${currencySymbols[data.currency]}${data.items.reduce((sum: number, item: LineItem) => sum + item.amount, 0).toFixed(2)}`, 
         styles: { 
           fontStyle: 'bold',
-          cellPadding: { top: 8 }  // 为总金额单元格添加上边距
+          cellPadding: { top: 8 }  // 为总金额单元格添加边距
         } 
       },
       { 
@@ -341,118 +347,163 @@ export const generateOrderConfirmationPDF = (data: QuotationData) => {
 export const generateInvoicePDF = async (data: QuotationData) => {
   const doc = new jsPDF();
   
+  // 添加公司Logo
+  const logoWidth = 180;
+  const logoHeight = 24;
+  const pageWidth = doc.internal.pageSize.width;
+  const x = (pageWidth - logoWidth) / 2;
+  
+  doc.addImage('/dochead.jpg', 'JPEG', x, 10, logoWidth, logoHeight);
+  
+  // 修改标题大小为24pt（与报价单一致）
+  doc.setFontSize(14);  
+  doc.setFont('helvetica', 'bold');
+  doc.text('INVOICE', pageWidth / 2, 45, { align: 'center' });
+  
   // 设置字体
-  doc.setFont('helvetica');
-  
-  // 添加页眉
-  doc.setFontSize(24);
-  doc.text('INVOICE', 105, 20, { align: 'center' });
-  
-  // 添加发票号和日期
   doc.setFontSize(10);
-  doc.text(`Invoice No.: ${data.quotationNo}`, 20, 40);
-  doc.text(`Date: ${data.date}`, 20, 45);
+  doc.setFont('helvetica', 'normal');
   
-  // 添加公司信息
-  doc.setFontSize(12);
-  doc.text('From:', 20, 60);
-  doc.setFontSize(10);
-  doc.text(data.from, 20, 65);
+  // 调整客户信息起始位置到更上方
+  const contentStartY = 55;
   
-  // 添加客户信息
-  doc.setFontSize(12);
-  doc.text('Bill To:', 20, 80);
-  doc.setFontSize(10);
+  // 绘制客户名称（支持多行）
+  doc.text('To:', 15, contentStartY);
   const toLines = data.to.split('\n');
   toLines.forEach((line, index) => {
-    doc.text(line, 20, 85 + (index * 5));
+    doc.text(line.trim(), 25, contentStartY + (index * 5));
   });
-  
-  // 添加合同号（如果有）
-  if (data.contractNo) {
-    doc.text(`Contract No.: ${data.contractNo}`, 20, 105);
-  }
-  
-  // 创建表格
-  const headers = [
-    'No.',
-    'Part Name',
-    'Description',
-    'Q\'TY',
-    'Unit',
-    'Unit Price',
-    'Amount'
-  ];
-  
-  const tableData = data.items.map((item, index) => [
-    (index + 1).toString(),
-    item.partName,
-    item.description,
-    item.quantity.toString(),
-    item.unit,
-    `${data.currency} ${item.unitPrice.toFixed(2)}`,
-    `${data.currency} ${item.amount.toFixed(2)}`
-  ]);
-  
-  // 计算总金额
-  const totalAmount = data.items.reduce((sum, item) => sum + item.amount, 0);
-  
-  // 添加表格
-  (doc as any).autoTable({
-    startY: 115,
-    head: [headers],
-    body: tableData,
-    theme: 'grid',
+
+  // 计算客户信息后的位置
+  const currentY = contentStartY + (toLines.length * 5) + 2;
+
+  // 添加 P/O 客户信息下方
+  doc.text(`Order No.: ${data.inquiryNo}`, 15, currentY);
+
+  // 右侧信息对齐方式
+  const rightInfoX = doc.internal.pageSize.width - 15;
+  const colonX = rightInfoX - 20;
+  const valueX = colonX + 2;
+  const labelX = colonX - 1;
+
+  // 添加右侧信息
+  doc.text('Invoice No.', labelX, 55, { align: 'right' });
+  doc.text(':', colonX, 55);
+  doc.text(data.quotationNo, valueX, 55);
+
+  doc.text('Date', labelX, 60, { align: 'right' });
+  doc.text(':', colonX, 60);
+  doc.text(data.date, valueX, 60);
+
+  // 在日期下方添加货币信息
+  doc.text('Currency', labelX, 65, { align: 'right' });
+  doc.text(':', colonX, 65);
+  doc.text(data.currency, valueX, 65);
+
+  // 调整表格起始位置
+  const tableStartY = currentY + 10;
+
+  // 添加商品表格
+  autoTable(doc, {
+    startY: tableStartY,
+    head: [['No.', 'HS Code', 'Description', 'Q\'TY', 'Unit', 'Unit Price', 'Amount']],
+    body: data.items.map(item => [
+      item.lineNo,
+      item.partName,
+      item.description,
+      item.quantity,
+      item.unit,
+      item.unitPrice.toFixed(2),
+      item.amount.toFixed(2)
+    ]),
+    foot: [[
+      { 
+        content: 'Total Amount:', 
+        colSpan: 6, 
+        styles: { 
+          halign: 'right',
+          fontStyle: 'bold',
+          cellPadding: { right: 4 },
+          valign: 'middle'  // 添加垂直居中对齐
+        } 
+      },
+      { 
+        content: data.items.reduce((sum: number, item: LineItem) => sum + item.amount, 0).toFixed(2),
+        styles: { 
+          fontStyle: 'bold',
+          halign: 'right'
+        } 
+      }
+    ]],
+    theme: 'plain',           // 使用plain主题，移除默认样式
     styles: {
-      fontSize: 8,
+      fontSize: 9,
       cellPadding: 2,
-    },
-    columnStyles: {
-      0: { cellWidth: 15 },
-      1: { cellWidth: 30 },
-      2: { cellWidth: 45 },
-      3: { cellWidth: 20 },
-      4: { cellWidth: 20 },
-      5: { cellWidth: 25 },
-      6: { cellWidth: 25 }
+      lineColor: [0, 0, 0],   // 黑色边框
+      lineWidth: 0.1,         // 细边框
+      textColor: [0, 0, 0]    // 黑色文字
     },
     headStyles: {
-      fillColor: [220, 220, 220],
-      textColor: [0, 0, 0],
       fontStyle: 'bold'
+    },
+    columnStyles: {
+      0: { halign: 'center', cellWidth: 15 },      // No.列
+      1: { halign: 'center', cellWidth: 30 },      // HS Code列
+      2: { halign: 'left', cellWidth: 'auto' },    // Description列
+      3: { halign: 'center', cellWidth: 20 },      // Q'TY列
+      4: { halign: 'center', cellWidth: 20 },      // Unit列
+      5: { halign: 'right', cellWidth: 30 },       // Unit Price列
+      6: { halign: 'right', cellWidth: 30 }        // Amount列
+    },
+    margin: { left: 15, right: 15 },
+    tableWidth: 'auto',
+    didDrawCell: (data) => {
+      // 确保所有单元格都有边框
+      if (data.cell.raw === '') {
+        data.cell.styles.lineWidth = 0.1;
+      }
     }
   });
   
-  // 获取表格结束的Y坐标
-  const finalY = (doc as any).lastAutoTable.finalY || 150;
+  // 获取表格结束位置
+  const finalY = (doc as any).lastAutoTable.finalY;
   
-  // 添加总金额
-  doc.setFontSize(10);
-  doc.setFont('helvetica', 'bold');
-  doc.text(
-    `Total Amount: ${data.currency} ${totalAmount.toFixed(2)}`,
-    190,
-    finalY + 10,
-    { align: 'right' }
-  );
-  
-  // 添加注释
+  // 直接添加金额大写（与表格保持适当间距）
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(9);
-  data.notes.forEach((note, index) => {
-    doc.text(note, 20, finalY + 30 + (index * 5));
+  doc.text(
+    `${data.amountInWords.dollars}${data.amountInWords.hasDecimals ? ' ' + data.amountInWords.cents : ''}`,
+    15,
+    finalY + 15  // 调整位置
+  );
+
+  // 添加银行信息（相应调整后续内容的位置）
+  doc.text('Bank Information:', 15, finalY + 25);
+  const bankInfoLines = [
+    'Bank Name',
+    'Swift code',
+    'Bank address',
+    'A/C No.',
+    'Beneficiary'
+  ];
+  
+  // 使用更大的行间距（6）
+  bankInfoLines.forEach((line, index) => {
+    doc.text(line, 15, finalY + 30 + (index * 6));  // 行间距从 4 改为 6
   });
+
+  // 计算银行信息后的位置
+  const bankInfoEndY = finalY + 30 + (bankInfoLines.length * 6);
+
+  // 添加付款条款（减与银行信息的间距）
+  doc.text(`Terms of Payment: Full paid not later than ${data.paymentDate} by telegraphic transfer.`, 15, bankInfoEndY + 5);
   
-  // 添加签名区域
-  doc.line(20, finalY + 60, 80, finalY + 60); // 供应商签名线
-  doc.text('Supplier Signature', 20, finalY + 65);
-  
-  doc.line(120, finalY + 60, 180, finalY + 60); // 客户签名线
-  doc.text('Customer Signature', 120, finalY + 65);
-  
-  // 生成文件名
-  const fileName = `Invoice_${data.quotationNo || 'draft'}_${data.date}.pdf`;
-  
-  // 下载 PDF
-  doc.save(fileName);
+  // 添加发票编号提示
+  doc.text(`Please state our invoice no. "${data.quotationNo}" on your payment documents.`, 15, bankInfoEndY + 10);
+
+  // 添加签名区域（保持适当间距）
+  doc.line(15, bankInfoEndY + 35, 80, bankInfoEndY + 35);
+  doc.text('Authorized Signature & Company Stamp', 15, bankInfoEndY + 40);
+
+  // 保存文件
+  doc.save(`Invoice_${data.quotationNo}_${data.date}.pdf`);
 };

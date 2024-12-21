@@ -25,8 +25,14 @@ interface QuotationData {
   quotationNo: string;
   contractNo: string;
   currency: string;
+  paymentDate: string;
   items: LineItem[];
   notes: string[];
+  amountInWords: {
+    dollars: string;
+    cents: string;
+    hasDecimals: boolean;
+  };
 }
 
 interface SettingsData {
@@ -118,6 +124,7 @@ export default function Quotation() {
     quotationNo: '',
     contractNo: 'FL25',
     currency: 'USD',
+    paymentDate: new Date().toISOString().split('T')[0],
     items: [
       {
         lineNo: 1,
@@ -143,7 +150,12 @@ export default function Quotation() {
           'Delivery time: 30 days after payment received',
           'Payment term: 50% deposit, the balance paid before delivery',
           'Shipping term: EXW-Shanghai'
-        ]
+        ],
+    amountInWords: {
+      dollars: 'ZERO',
+      cents: '',
+      hasDecimals: false
+    },
   });
 
   // 修改定义，使用索引来跟踪正在编辑的行
@@ -384,7 +396,7 @@ export default function Quotation() {
     <div className="min-h-screen flex flex-col bg-[#f5f5f7] dark:bg-[#1d1d1f]">
       <main className="flex-1">
         <div className="w-full max-w-6xl mx-auto px-6 py-8">
-          {/* ���回按钮样式优化 */}
+          {/* 回按钮样式优化 */}
           <Link 
             href="/" 
             className="group inline-flex items-center px-5 py-2.5 rounded-2xl
