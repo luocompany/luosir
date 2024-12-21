@@ -40,6 +40,8 @@ interface SettingsData {
   date: string;
   from: string;
   currency: string;
+  showDescription: boolean;
+  showRemarks: boolean;
 }
 
 // 添加新的接口定义
@@ -115,6 +117,53 @@ const selectClassName = `${inputClassName}
   bg-no-repeat
   pr-10`;
 
+// 修改单选按钮组样式，使其更紧凑
+const radioGroupClassName = `flex gap-1.5`;
+
+// 修改单选按钮样式，使其更小巧
+const radioButtonClassName = `flex items-center justify-center px-3 py-1.5 
+  rounded-lg border border-gray-200/50 dark:border-gray-700/50
+  text-xs font-medium transition-all duration-300
+  hover:border-gray-300 dark:hover:border-gray-600
+  cursor-pointer`;
+
+const radioButtonActiveClassName = `bg-blue-500 text-white border-transparent 
+  shadow-sm shadow-blue-500/25`;
+
+// 修改日期输入框样式，使其更紧凑
+const dateInputClassName = `px-3 py-1.5 rounded-xl
+  bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg
+  border border-gray-200/30 dark:border-gray-700/30
+  focus:outline-none focus:ring-2 focus:ring-blue-500/40
+  placeholder:text-gray-400/60 dark:placeholder:text-gray-500/60
+  text-sm leading-relaxed text-gray-800 dark:text-gray-100
+  transition-all duration-300 ease-out
+  hover:border-gray-300/50 dark:hover:border-gray-600/50
+  shadow-sm hover:shadow-md
+  w-[140px]`; // 固定宽度
+
+// 修改销售人员选择框样式，使其更紧凑
+const salesSelectClassName = `px-3 py-1.5 rounded-xl
+  bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg
+  border border-gray-200/30 dark:border-gray-700/30
+  focus:outline-none focus:ring-2 focus:ring-blue-500/40
+  placeholder:text-gray-400/60 dark:placeholder:text-gray-500/60
+  text-sm leading-relaxed text-gray-800 dark:text-gray-100
+  transition-all duration-300 ease-out
+  hover:border-gray-300/50 dark:hover:border-gray-600/50
+  shadow-sm hover:shadow-md
+  appearance-none 
+  bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3e%3cpolyline points="6 9 12 15 18 9"%3e%3c/polyline%3e%3c/svg%3e')] 
+  bg-[length:1em_1em] 
+  bg-[right_0.5rem_center] 
+  bg-no-repeat
+  pr-8
+  w-[140px]`; // 固定宽度
+
+// 修改单位输入框样式，添加文本居中对齐
+const unitInputClassName = `${tableInputClassName}
+  text-center`;  // 添加文本居中
+
 export default function Quotation() {
   const [activeTab, setActiveTab] = useState('quotation');
   const [quotationData, setQuotationData] = useState<QuotationData>({
@@ -160,7 +209,7 @@ export default function Quotation() {
     bankInfo: '',
   });
 
-  // 修改定义，使用索引来跟踪正在编辑的行
+  // 修改定义，使用索引来跟踪正在���辑的
   const [editingUnitPriceIndex, setEditingUnitPriceIndex] = useState<number | null>(null);
   const [editingUnitPrice, setEditingUnitPrice] = useState<string>('');
 
@@ -172,7 +221,9 @@ export default function Quotation() {
   const [settings, setSettings] = useState<SettingsData>({
     date: new Date().toISOString().split('T')[0],
     from: 'Roger',
-    currency: 'USD'
+    currency: 'USD',
+    showDescription: true,
+    showRemarks: true
   });
 
   const addLineItem = () => {
@@ -199,7 +250,7 @@ export default function Quotation() {
       // 更新当前字段
       (currentItem[field] as LineItem[keyof LineItem]) = value;
       
-      // 如果更新的是数量，自动更新单位的单复数形式
+      // 如果新的是数量，自动更新单位的单复数形式
       if (field === 'quantity') {
         const quantity = Number(value);
         if (!currentItem.unit) {
@@ -322,13 +373,13 @@ export default function Quotation() {
     </button>
   );
 
-  // ��查是否有其他地方在编辑过程中触发了状态更新
+  // 查是否有其他地��在编辑过程中触发了状态更新
   // 比如移除或简化这些作用
   useEffect(() => {
     // 移除或简化不必要的副作用
   }, [quotationData]);
 
-  // 在件加载时同步状态
+  // 在件加载时同时状态
   useEffect(() => {
     setQuotationData(prev => ({
       ...prev,
@@ -476,22 +527,22 @@ export default function Quotation() {
                   <div className="bg-gray-50/50 dark:bg-gray-900/50 
                                 rounded-2xl p-6 
                                 border border-gray-200/30 dark:border-gray-700/30">
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                      <div className="space-y-2">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-6">
+                      <div className="space-y-1.5"> {/* 减小垂直间距 */}
                         <label className="block text-sm font-medium">Date</label>
                         <input
                           type="date"
                           value={settings.date}
                           onChange={e => setSettings(prev => ({ ...prev, date: e.target.value }))}
-                          className={inputClassName}
+                          className={dateInputClassName}
                         />
                       </div>
-                      <div className="space-y-2">
+                      <div className="space-y-1.5"> {/* 减小垂直间距 */}
                         <label className="block text-sm font-medium">Sales Person</label>
                         <select
                           value={settings.from}
                           onChange={e => handleSalesPersonChange(e.target.value)}
-                          className={selectClassName}
+                          className={salesSelectClassName}
                         >
                           <option value="Roger">Roger</option>
                           <option value="Sharon">Sharon</option>
@@ -500,17 +551,68 @@ export default function Quotation() {
                           <option value="Nina">Nina</option>
                         </select>
                       </div>
-                      <div className="space-y-2">
-                        <label className="block text-sm font-medium">Currency</label>
-                        <select
-                          value={settings.currency}
-                          onChange={e => handleCurrencyChange(e.target.value)}
-                          className={selectClassName}
-                        >
-                          <option value="USD">USD</option>
-                          <option value="EUR">EUR</option>
-                          <option value="CNY">CNY</option>
-                        </select>
+                      <div className="col-span-2 sm:col-span-1 flex flex-col justify-end gap-3">
+                        <div className={radioGroupClassName}>
+                          {Object.entries(currencySymbols).map(([currency, symbol]) => (
+                            <label
+                              key={currency}
+                              className={`${radioButtonClassName} ${
+                                settings.currency === currency ? radioButtonActiveClassName : 
+                                'bg-white/90 dark:bg-gray-800/90'
+                              }`}
+                            >
+                              <input
+                                type="radio"
+                                name="currency"
+                                value={currency}
+                                checked={settings.currency === currency}
+                                onChange={e => handleCurrencyChange(e.target.value)}
+                                className="sr-only"
+                              />
+                              <span>{symbol}</span>
+                            </label>
+                          ))}
+                        </div>
+                        
+                        <div className="flex gap-3">
+                          <label className="flex items-center gap-1.5 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={settings.showDescription}
+                              onChange={e => setSettings(prev => ({ 
+                                ...prev, 
+                                showDescription: e.target.checked 
+                              }))}
+                              className="w-3.5 h-3.5 rounded border-gray-300 text-blue-500
+                                        focus:ring-blue-500/40 cursor-pointer
+                                        transition-all duration-200"
+                            />
+                            <span className="text-xs text-gray-600 dark:text-gray-400
+                                           group-hover:text-gray-900 dark:group-hover:text-gray-200
+                                           transition-colors">
+                              Description
+                            </span>
+                          </label>
+                          
+                          <label className="flex items-center gap-1.5 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={settings.showRemarks}
+                              onChange={e => setSettings(prev => ({ 
+                                ...prev, 
+                                showRemarks: e.target.checked 
+                              }))}
+                              className="w-3.5 h-3.5 rounded border-gray-300 text-blue-500
+                                        focus:ring-blue-500/40 cursor-pointer
+                                        transition-all duration-200"
+                            />
+                            <span className="text-xs text-gray-600 dark:text-gray-400
+                                           group-hover:text-gray-900 dark:group-hover:text-gray-200
+                                           transition-colors">
+                              Remarks
+                            </span>
+                          </label>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -527,12 +629,16 @@ export default function Quotation() {
                            bg-gray-50/50 dark:bg-gray-800/50">
                         <th className="py-2 px-1 text-center text-xs font-bold opacity-90" style={{ width: '40px' }}>No.</th>
                         <th className="py-2 px-1 text-center text-xs font-bold opacity-90" style={{ minWidth: '80px' }}>Part Name</th>
-                        <th className="py-2 px-1 text-center text-xs font-bold opacity-90" style={{ minWidth: '120px' }}>Description</th>
+                        {settings.showDescription && (
+                          <th className="py-2 px-1 text-center text-xs font-bold opacity-90" style={{ minWidth: '120px' }}>Description</th>
+                        )}
                         <th className="py-2 px-1 text-center text-xs font-bold opacity-90" style={{ width: '100px' }}>Q'TY</th>
-                        <th className="py-2 px-1 text-center text-xs font-bold opacity-90" style={{ width: '100px' }}>Unit</th>
+                        <th className="py-2 px-1 text-center text-xs font-bold opacity-90" style={{ width: '80px' }}>Unit</th>
                         <th className="py-2 px-1 text-center text-xs font-bold opacity-90" style={{ width: '100px' }}>U/Price</th>
                         <th className="py-2 px-1 text-center text-xs font-bold opacity-90" style={{ width: '100px' }}>Amount</th>
-                        <th className="py-2 px-1 text-center text-xs font-bold opacity-90">Remarks</th>
+                        {settings.showRemarks && (
+                          <th className="py-2 px-1 text-center text-xs font-bold opacity-90">Remarks</th>
+                        )}
                       </tr>
                     </thead>
                     <tbody>
@@ -560,17 +666,19 @@ export default function Quotation() {
                               placeholder="Part name"
                             />
                           </td>
-                          <td className="py-1 px-1">
-                            <textarea
-                              value={item.description}
-                              onChange={e => updateLineItem(index, 'description', e.target.value)}
-                              rows={1}
-                              className={`${tableInputClassName} resize min-h-[28px]
-                                hover:border-gray-300 dark:hover:border-gray-600
-                                focus:border-blue-500 dark:focus:border-blue-500`}
-                              placeholder="Enter description"
-                            />
-                          </td>
+                          {settings.showDescription && (
+                            <td className="py-1 px-1">
+                              <textarea
+                                value={item.description}
+                                onChange={e => updateLineItem(index, 'description', e.target.value)}
+                                rows={1}
+                                className={`${tableInputClassName} resize min-h-[28px]
+                                  hover:border-gray-300 dark:hover:border-gray-600
+                                  focus:border-blue-500 dark:focus:border-blue-500`}
+                                placeholder="Enter description"
+                              />
+                            </td>
+                          )}
                           <td className="py-1.5 px-1" style={{ width: '100px' }}>
                             <input
                               type="text"
@@ -599,24 +707,20 @@ export default function Quotation() {
                               className={numberInputClassName}
                             />
                           </td>
-                          <td className="py-1.5 px-1" style={{ width: '100px' }}>
-                            <select
-                              value={item.unit ? item.unit.replace(/s$/, '') : 'pc'}
+                          <td className="py-1 px-1">
+                            <input
+                              type="text"
+                              value={item.unit}
                               onChange={e => {
-                                const baseUnit = e.target.value;
-                                const unit = item.quantity <= 1 ? baseUnit : `${baseUnit}s`;
-                                updateLineItem(index, 'unit', unit);
+                                const value = e.target.value;
+                                // 保持单位的单复数逻辑
+                                const unitBase = value.replace(/s$/, '');
+                                const finalUnit = item.quantity <= 1 ? unitBase : `${unitBase}s`;
+                                updateLineItem(index, 'unit', finalUnit);
                               }}
-                              className={`${tableInputClassName} pr-8 appearance-none 
-                                bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3e%3cpolyline points="6 9 12 15 18 9"%3e%3c/polyline%3e%3c/svg%3e')] 
-                                bg-[length:1em_1em] 
-                                bg-[right_0.5rem_center] 
-                                bg-no-repeat`}
-                            >
-                              <option value="pc">pc{item.quantity > 1 ? 's' : ''}</option>
-                              <option value="set">set{item.quantity > 1 ? 's' : ''}</option>
-                              <option value="length">length{item.quantity > 1 ? 's' : ''}</option>
-                            </select>
+                              className={unitInputClassName}  // 使用带有居中样式的类名
+                              placeholder="Unit"
+                            />
                           </td>
                           <td className="py-1 px-1">
                             <input
@@ -645,38 +749,30 @@ export default function Quotation() {
                                 setEditingUnitPriceIndex(null);
                                 setEditingUnitPrice('');
                               }}
-                              className="w-full px-1 py-1 rounded-lg border border-transparent 
-                                       bg-transparent text-sm transition-all
-                                       hover:border-[var(--card-border)]
-                                       focus:border-[var(--blue-accent)] focus:ring-1 
-                                       focus:ring-[var(--blue-accent)] outline-none
-                                       [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                              className={numberInputClassName}
                             />
                           </td>
                           <td className="py-1 px-1">
                             <input
-                              type="number"
+                              type="text"
                               value={item.amount ? item.amount.toFixed(2) : '0.00'}
                               readOnly
-                              className="w-full px-1 py-1 rounded-lg border border-transparent 
-                                       bg-transparent text-sm transition-all
-                                       hover:border-[var(--card-border)]
-                                       focus:border-[var(--blue-accent)] focus:ring-1 
-                                       focus:ring-[var(--blue-accent)] outline-none
-                                       whitespace-nowrap"
+                              className={numberInputClassName}
                             />
                           </td>
-                          <td className="py-1 px-1">
-                            <textarea
-                              value={item.remarks}
-                              onChange={e => updateLineItem(index, 'remarks', e.target.value)}
-                              rows={1}
-                              className={`${tableInputClassName} resize min-h-[28px]
-                                hover:border-gray-300 dark:hover:border-gray-600
-                                focus:border-blue-500 dark:focus:border-blue-500`}
-                              placeholder="Enter remarks"
-                            />
-                          </td>
+                          {settings.showRemarks && (
+                            <td className="py-1 px-1">
+                              <textarea
+                                value={item.remarks}
+                                onChange={e => updateLineItem(index, 'remarks', e.target.value)}
+                                rows={1}
+                                className={`${tableInputClassName} resize min-h-[28px]
+                                  hover:border-gray-300 dark:hover:border-gray-600
+                                  focus:border-blue-500 dark:focus:border-blue-500`}
+                                placeholder="Enter remarks"
+                              />
+                            </td>
+                          )}
                         </tr>
                       ))}
                     </tbody>
