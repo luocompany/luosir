@@ -70,8 +70,14 @@ function arrayBufferToBase64(buffer: ArrayBuffer): string {
   return btoa(binary);
 }
 
-export const generateQuotationPDF = (data: QuotationData) => {
+export const generateQuotationPDF = async (data: QuotationData) => {
   const doc = new jsPDF();
+  
+  // 加载中文字体
+  await loadFonts(doc);
+  
+  // 设置默认字体为中文字体
+  doc.setFont('NotoSansSC', 'normal');
   
   // 添加公司Logo
   const logoWidth = 180; // Logo宽度(mm)
@@ -84,13 +90,13 @@ export const generateQuotationPDF = (data: QuotationData) => {
   
   // 添加QUOTATION标题
   doc.setFontSize(14);
-  doc.setFont('helvetica', 'bold');
+  doc.setFont('NotoSansSC', 'bold');
   doc.text('QUOTATION', pageWidth / 2, 45, { align: 'center' });
   
-  // 设置字体
-  doc.setFont('helvetica', 'normal');
+  // 设置回常规字体
+  doc.setFont('NotoSansSC', 'normal');
   
-  // 由于添加了Logo和���容的起始位置
+  // 由于添加了Logo和容的起始位置
   const contentStartY = 55; 
   
   // 添加基本信息 - 支持多行客户名称
@@ -184,13 +190,15 @@ export const generateQuotationPDF = (data: QuotationData) => {
     styles: {
       fontSize: 9,
       cellPadding: 2,
-      valign: 'middle'
+      valign: 'middle',
+      font: 'NotoSansSC'  // 添加中文字体
     },
     headStyles: {
       fillColor: [220, 235, 246],
       textColor: [0, 0, 0],
       fontStyle: 'bold',
       halign: 'center', // 表头居中对齐
+      font: 'NotoSansSC'  // 添加中文字体
     },
     footStyles: {
       fillColor: [255, 255, 255],
@@ -222,8 +230,14 @@ export const generateQuotationPDF = (data: QuotationData) => {
 };
 
 // 添加生成销售确认单的函数
-export const generateOrderConfirmationPDF = (data: QuotationData) => {
+export const generateOrderConfirmationPDF = async (data: QuotationData) => {
   const doc = new jsPDF();
+  
+  // 加载中文字体
+  await loadFonts(doc);
+  
+  // 设置默认字体为中文字体
+  doc.setFont('NotoSansSC', 'normal');
   
   // 添加公司Logo
   const logoWidth = 180; // Logo宽度(mm)
@@ -236,11 +250,13 @@ export const generateOrderConfirmationPDF = (data: QuotationData) => {
   
   // 设置标题 - 调整Y轴位置到Logo下方
   doc.setFontSize(14);
-  doc.setFont('helvetica', 'bold');
+  doc.setFont('NotoSansSC', 'bold');
   doc.text('Sales Confirmation', pageWidth / 2, 45, { align: 'center' });
   
+  // 设置回常规字体
+  doc.setFont('NotoSansSC', 'normal');
+  
   // 基本信息 - 修改为与报价单相同的对齐方式
-  doc.setFont('helvetica', 'normal');
   doc.setFontSize(10);
   
   // 添加基本信息 - 支持多行客户名称
@@ -254,7 +270,7 @@ export const generateOrderConfirmationPDF = (data: QuotationData) => {
   });
 
   // 计算客户信息后的位置，并添加较小的间距
-  currentY += (toLines.length * 5) + 2; // 小���距到2mm
+  currentY += (toLines.length * 5) + 2; // 小距到2mm
 
   // Order No. 放在客户信息下面
   doc.text(`Order No.: ${data.inquiryNo}`, 15, currentY);
@@ -335,13 +351,15 @@ export const generateOrderConfirmationPDF = (data: QuotationData) => {
     styles: {
       fontSize: 9,
       cellPadding: 2,
-      valign: 'middle'
+      valign: 'middle',
+      font: 'NotoSansSC'  // 添加中文字体
     },
     headStyles: {
       fillColor: [220, 235, 246],
       textColor: [0, 0, 0],
       fontStyle: 'bold',
       halign: 'center', // 表头居中对齐
+      font: 'NotoSansSC'  // 添加中文字体
     },
     footStyles: {
       fillColor: [255, 255, 255],
@@ -682,6 +700,6 @@ export const generateInvoicePDF = async (data: QuotationData) => {
     });
   }
 
-  // 保存文件
+  // 保���文件
   doc.save(`Invoice_${data.quotationNo}_${data.date}.pdf`);
 };

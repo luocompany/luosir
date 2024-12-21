@@ -233,15 +233,15 @@ export default function Quotation() {
     return quotationData.items.reduce((sum, item) => sum + item.amount, 0);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       switch (activeTab) {
         case 'quotation':
-          generateQuotationPDF(quotationData);
+          await generateQuotationPDF(quotationData);
           break;
         case 'confirmation':
-          generateOrderConfirmationPDF(quotationData);
+          await generateOrderConfirmationPDF(quotationData);
           break;
       }
     } catch (error) {
@@ -322,7 +322,7 @@ export default function Quotation() {
     </button>
   );
 
-  // 检查是否有其他地方在编辑过程中触发了状态更新
+  // ��查是否有其他地方在编辑过程中触发了状态更新
   // 比如移除或简化这些作用
   useEffect(() => {
     // 移除或简化不必要的副作用
