@@ -384,7 +384,7 @@ export default function Quotation() {
     <div className="min-h-screen flex flex-col bg-[#f5f5f7] dark:bg-[#1d1d1f]">
       <main className="flex-1">
         <div className="w-full max-w-6xl mx-auto px-6 py-8">
-          {/* 返回按钮样式优化 */}
+          {/* ���回按钮样式优化 */}
           <Link 
             href="/" 
             className="group inline-flex items-center px-5 py-2.5 rounded-2xl
@@ -398,8 +398,8 @@ export default function Quotation() {
             <span className="text-sm font-medium">Back</span>
           </Link>
 
-          {/* 标签切换样式优化 */}
-          <div className="flex justify-center gap-3 mb-8 mt-6">
+          {/* 标题切换样式优化 */}
+          <div className="flex justify-center gap-3 mb-6 mt-6">
             {['quotation', 'confirmation'].map((tab) => (
               <button 
                 key={tab}
@@ -457,10 +457,7 @@ export default function Quotation() {
               </div>
               
               <form onSubmit={handleSubmit} className="space-y-6">
-                <DocumentHeaderForm type={activeTab as 'quotation' | 'confirmation'} />
-
-                {/* 设置面板 */}
-                <div className={`mb-4 overflow-hidden transition-all duration-300 ease-in-out
+                <div className={`overflow-hidden transition-all duration-300 ease-in-out
                                 ${showSettings ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
                   <div className="bg-gray-50/50 dark:bg-gray-900/50 
                                 rounded-2xl p-6 
@@ -504,6 +501,8 @@ export default function Quotation() {
                     </div>
                   </div>
                 </div>
+
+                <DocumentHeaderForm type={activeTab as 'quotation' | 'confirmation'} />
 
                 {/* 商品列表表格样式优化 */}
                 <div className="overflow-x-auto rounded-2xl border border-gray-200/30 dark:border-gray-700/30
@@ -672,7 +671,7 @@ export default function Quotation() {
 
                 {/* 表格下方区域重新设计 */}
                 <div className="space-y-6 mt-4">
-                  {/* 操作 - 合并添加行按钮和总金额 */}
+                  {/* 操作 - 合并添加行按钮和金额 */}
                   <div className="flex items-center justify-between gap-4">
                     <button
                       type="button"
