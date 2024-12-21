@@ -1,5 +1,6 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { Font } from 'jspdf';
 
 interface LineItem {
   lineNo: number;
@@ -37,6 +38,34 @@ const currencySymbols: { [key: string]: string } = {
   EUR: '€', 
   CNY: '¥'
 };
+
+// 在文件开头添加字体加载函数
+const loadFonts = async (doc: jsPDF) => {
+  // 加载中文字体
+  const regularFontBytes = await fetch('/fonts/NotoSansSC-Regular.ttf').then(res => res.arrayBuffer());
+  const boldFontBytes = await fetch('/fonts/NotoSansSC-Bold.ttf').then(res => res.arrayBuffer());
+  
+  // 转换为 base64 字符串
+  const regularBase64 = arrayBufferToBase64(regularFontBytes);
+  const boldBase64 = arrayBufferToBase64(boldFontBytes);
+  
+  // 添加字体到 PDF 文档
+  doc.addFileToVFS('NotoSansSC-Regular.ttf', regularBase64);
+  doc.addFileToVFS('NotoSansSC-Bold.ttf', boldBase64);
+  
+  doc.addFont('NotoSansSC-Regular.ttf', 'NotoSansSC', 'normal');
+  doc.addFont('NotoSansSC-Bold.ttf', 'NotoSansSC', 'bold');
+};
+
+// 添加辅助函数
+function arrayBufferToBase64(buffer: ArrayBuffer): string {
+  const bytes = new Uint8Array(buffer);
+  let binary = '';
+  for (let i = 0; i < bytes.byteLength; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
+}
 
 export const generateQuotationPDF = (data: QuotationData) => {
   const doc = new jsPDF();
@@ -78,7 +107,7 @@ export const generateQuotationPDF = (data: QuotationData) => {
   // Inquiry No. 放在客户信息下面
   doc.text(`Inquiry No.: ${data.inquiryNo}`, 15, currentY);
 
-  // 调整后续内容的起始位置，减小间距
+  // 调整后续内容的位置，减小间距
   const newContentStartY = currentY + 10; // 减小与后续内容的间距
 
   // 添加感谢信息
@@ -349,6 +378,12 @@ export const generateOrderConfirmationPDF = (data: QuotationData) => {
 export const generateInvoicePDF = async (data: QuotationData) => {
   const doc = new jsPDF();
   
+  // 加载字体
+  await loadFonts(doc);
+  
+  // 设置默认字体为中文字体
+  doc.setFont('NotoSansSC', 'normal');
+  
   // 添加公司Logo
   const logoWidth = 180;
   const logoHeight = 24;
@@ -358,13 +393,14 @@ export const generateInvoicePDF = async (data: QuotationData) => {
   doc.addImage('/dochead.jpg', 'JPEG', x, 10, logoWidth, logoHeight);
   
   // 修改标题大小为24pt（与报价单一致）
-  doc.setFontSize(14);  
-  doc.setFont('helvetica', 'bold');
+  doc.setFont('NotoSansSC', 'bold');
   doc.text('INVOICE', pageWidth / 2, 45, { align: 'center' });
+  
+  // 切换回常规字体
+  doc.setFont('NotoSansSC', 'normal');
   
   // 设置字体
   doc.setFontSize(10);
-  doc.setFont('helvetica', 'normal');
   
   // 调整客户信息起始位置到更上方
   const contentStartY = 55;
@@ -434,7 +470,7 @@ export const generateInvoicePDF = async (data: QuotationData) => {
     foot: [[
       { 
         content: 'Total Amount:', 
-        colSpan: data.showHsCode ? 6 : 5,  // 根据是否显示 HS Code 调整跨列数
+        colSpan: data.showHsCode ? 6 : 5,
         styles: { 
           halign: 'right',
           fontStyle: 'bold',
@@ -446,7 +482,8 @@ export const generateInvoicePDF = async (data: QuotationData) => {
         content: data.items.reduce((sum: number, item: LineItem) => sum + item.amount, 0).toFixed(2),
         styles: { 
           fontStyle: 'bold',
-          halign: 'right'
+          halign: 'center',  // 改为居中对齐
+          valign: 'middle'
         } 
       }
     ]],
@@ -456,29 +493,33 @@ export const generateInvoicePDF = async (data: QuotationData) => {
       cellPadding: 2,
       lineColor: [0, 0, 0],   // 黑色边框
       lineWidth: 0.1,         // 细边框
-      textColor: [0, 0, 0]    // 黑色文字
+      textColor: [0, 0, 0],    // 黑色文字
+      font: 'NotoSansSC',  // 设置表格使用中文字体
+      valign: 'middle'  // 添加垂直居中
     },
     headStyles: {
       fontStyle: 'bold',
-      halign: 'center'
+      halign: 'center',
+      font: 'NotoSansSC',
+      valign: 'middle'  // 表头也垂直居中
     },
     columnStyles: data.showHsCode ? 
       {
-        0: { halign: 'center', cellWidth: 15 },      // No.列
-        1: { halign: 'center', cellWidth: 30 },      // HS Code列
-        2: { halign: 'left', cellWidth: 'auto' },    // Description列
-        3: { halign: 'center', cellWidth: 20 },      // Q'TY列
-        4: { halign: 'center', cellWidth: 20 },      // Unit列
-        5: { halign: 'right', cellWidth: 30 },       // Unit Price列
-        6: { halign: 'right', cellWidth: 30 }        // Amount列
+        0: { halign: 'center', cellWidth: 15, valign: 'middle' },      // No.列
+        1: { halign: 'center', cellWidth: 30, valign: 'middle' },      // HS Code列
+        2: { halign: 'center', cellWidth: 'auto', valign: 'middle' },    // Description列
+        3: { halign: 'center', cellWidth: 20, valign: 'middle' },      // Q'TY列
+        4: { halign: 'center', cellWidth: 20, valign: 'middle' },      // Unit列
+        5: { halign: 'center', cellWidth: 30, valign: 'middle' },       // Unit Price列
+        6: { halign: 'center', cellWidth: 30, valign: 'middle' }        // Amount列
       } : 
       {
         0: { halign: 'center', cellWidth: 15 },      // No.列
-        1: { halign: 'left', cellWidth: 'auto' },    // Description列
+        1: { halign: 'center', cellWidth: 'auto' },    // Description列
         2: { halign: 'center', cellWidth: 20 },      // Q'TY列
         3: { halign: 'center', cellWidth: 20 },      // Unit列
-        4: { halign: 'right', cellWidth: 30 },       // Unit Price列
-        5: { halign: 'right', cellWidth: 30 }        // Amount列
+        4: { halign: 'center', cellWidth: 30 },       // Unit Price列
+        5: { halign: 'center', cellWidth: 30 }        // Amount列
       },
     margin: { left: 15, right: 15 },
     tableWidth: 'auto',
@@ -493,7 +534,7 @@ export const generateInvoicePDF = async (data: QuotationData) => {
   // 获取表格结束位置
   const finalY = (doc as any).lastAutoTable.finalY;
   
-  // 调整金额大写位置（与表格更近）
+  // 调整金额大位置（与表格更近）
   doc.setFont('helvetica', 'normal');
   doc.text(
     `${data.amountInWords.dollars}${data.amountInWords.hasDecimals ? ' ' + data.amountInWords.cents : ''}`,
@@ -502,20 +543,34 @@ export const generateInvoicePDF = async (data: QuotationData) => {
   );
 
   // 修改银行信息显示部分
+  doc.setFont('NotoSansSC', 'normal');  // 确保使用中文字体
   doc.text('Bank Information:', 15, finalY + 20);
   const bankInfoLines = data.bankInfo.split('\n').filter(line => line.trim());
 
   // 显示银行信息，每行间距5mm
   bankInfoLines.forEach((line, index) => {
+    doc.setFont('NotoSansSC', 'normal');  // 确保每行都使用中文字体
     doc.text(line.trim(), 15, finalY + 25 + (index * 5));
   });
 
   // 计算银行信息结束位置
   const bankInfoEndY = finalY + 25 + (bankInfoLines.length * 5);
 
-  // 付款条款显示在银行信息下方
-  doc.text(`Terms of Payment: Full paid not later than ${data.paymentDate} by telegraphic transfer.`, 15, bankInfoEndY + 5);
-  doc.text(`Please state our invoice no. "${data.quotationNo}" on your payment documents.`, 15, bankInfoEndY + 10);
+  // 在显示付款条款时设置红色文本
+  const paymentY = bankInfoEndY + 5;
+  doc.setTextColor(0, 0, 0); // 重置为黑色
+  doc.text('Terms of Payment: Full paid not later than ', 15, paymentY);
+  doc.setTextColor(255, 0, 0); // 设置为红色
+  doc.text(data.paymentDate, 15 + doc.getTextWidth('Terms of Payment: Full paid not later than '), paymentY);
+  doc.setTextColor(0, 0, 0); // 重置为黑色
+  doc.text(' by telegraphic transfer.', 15 + doc.getTextWidth('Terms of Payment: Full paid not later than ' + data.paymentDate), paymentY);
+
+  // 显示发票号提示
+  doc.text('Please state our invoice no. "', 15, paymentY + 5);
+  doc.setTextColor(255, 0, 0); // 设置为红色
+  doc.text(data.quotationNo, 15 + doc.getTextWidth('Please state our invoice no. "'), paymentY + 5);
+  doc.setTextColor(0, 0, 0); // 重置为黑色
+  doc.text('" on your payment documents.', 15 + doc.getTextWidth('Please state our invoice no. "' + data.quotationNo), paymentY + 5);
 
   // 保存文件
   doc.save(`Invoice_${data.quotationNo}_${data.date}.pdf`);
