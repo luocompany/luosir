@@ -389,18 +389,6 @@ export default function Invoice() {
                         HS Code
                       </span>
                     </div>
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={settings.showPaymentTerms}
-                        onChange={e => setSettings(prev => ({ ...prev, showPaymentTerms: e.target.checked }))}
-                        className="w-4 h-4 rounded border-gray-300 text-blue-500 
-                                  focus:ring-blue-500 focus:ring-offset-0"
-                      />
-                      <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
-                        Payment Terms
-                      </span>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -628,25 +616,34 @@ export default function Invoice() {
             </div>
 
             <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-              <p className="flex items-center gap-2">
-                Terms of Payment: Full paid not later than 
+              <div className="flex items-center gap-2 mb-2">
                 <input
-                  type="date"
-                  value={invoiceData.paymentDate}
-                  onChange={e => setInvoiceData(prev => ({ ...prev, paymentDate: e.target.value }))}
-                  className={`
-                    !py-1.5 !px-3 w-auto inline-block
-                    rounded-xl bg-white/90 dark:bg-gray-800/90
-                    border border-gray-200/50 dark:border-gray-700/50
-                    focus:outline-none focus:ring-2 focus:ring-blue-500/40
-                    hover:border-gray-300/50 dark:hover:border-gray-600/50
-                    text-gray-800 dark:text-gray-200
-                    transition-all duration-300
-                    cursor-pointer
-                  `}
+                  type="checkbox"
+                  checked={settings.showPaymentTerms}
+                  onChange={e => setSettings(prev => ({ ...prev, showPaymentTerms: e.target.checked }))}
+                  className="w-4 h-4 rounded border-gray-300 text-blue-500 
+                            focus:ring-blue-500 focus:ring-offset-0"
                 />
-                by telegraphic transfer.
-              </p>
+                <p className="flex items-center gap-2">
+                  Terms of Payment: Full paid not later than 
+                  <input
+                    type="date"
+                    value={invoiceData.paymentDate}
+                    onChange={e => setInvoiceData(prev => ({ ...prev, paymentDate: e.target.value }))}
+                    className={`
+                      !py-1.5 !px-3 w-auto inline-block
+                      rounded-xl bg-white/90 dark:bg-gray-800/90
+                      border border-gray-200/50 dark:border-gray-700/50
+                      focus:outline-none focus:ring-2 focus:ring-blue-500/40
+                      hover:border-gray-300/50 dark:hover:border-gray-600/50
+                      text-gray-800 dark:text-gray-200
+                      transition-all duration-300
+                      cursor-pointer
+                    `}
+                  />
+                  by telegraphic transfer.
+                </p>
+              </div>
               <p>Please state our invoice no. "{invoiceData.invoiceNo}" on your payment documents.</p>
             </div>
 
