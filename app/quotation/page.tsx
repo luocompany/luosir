@@ -72,26 +72,69 @@ const documentTypes: { [key: string]: DocumentHeader } = {
   }
 };
 
-// 修改主要输入框样式 - 更符合 Apple 风格
-const inputClassName = `w-full px-4 py-2.5 rounded-2xl
-  bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg
+// 更新 Apple 标准蓝色
+const appleColors = {
+  light: {
+    primary: '#007AFF',
+    primaryHover: '#0063CC',
+    background: 'rgba(0, 122, 255, 0.1)',
+    backgroundHover: 'rgba(0, 122, 255, 0.15)',
+    border: 'rgba(0, 122, 255, 0.2)',
+    borderHover: 'rgba(0, 122, 255, 0.3)',
+  },
+  dark: {
+    primary: '#0A84FF',
+    primaryHover: '#0070E0',
+    background: 'rgba(10, 132, 255, 0.1)',
+    backgroundHover: 'rgba(10, 132, 255, 0.15)', 
+    border: 'rgba(10, 132, 255, 0.2)',
+    borderHover: 'rgba(10, 132, 255, 0.3)',
+  }
+};
+
+// 更新主要按钮样式
+const primaryButtonClassName = `px-6 py-3.5 rounded-xl
+  bg-[#007AFF] hover:bg-[#0063CC] dark:bg-[#0A84FF] dark:hover:bg-[#0070E0]
+  text-white font-medium text-sm
+  transition-all duration-300
+  shadow-lg shadow-[#007AFF]/25 dark:shadow-[#0A84FF]/25
+  hover:shadow-xl hover:shadow-[#007AFF]/30 dark:hover:shadow-[#0A84FF]/30
+  active:scale-[0.98]
+  flex items-center justify-center gap-2`;
+
+// 更新输入框样式
+const appleInputClassName = `w-full px-4 py-2.5 rounded-xl
+  bg-white/90 dark:bg-[#1c1c1e]/90 backdrop-blur-lg
+  border border-gray-200/30 dark:border-[#2c2c2e]/50
+  focus:outline-none focus:ring-2 
+  focus:ring-[#007AFF]/40 dark:focus:ring-[#0A84FF]/40
+  hover:border-[#007AFF]/30 dark:hover:border-[#0A84FF]/30
+  text-[15px] leading-relaxed
+  text-gray-800 dark:text-gray-200
+  placeholder:text-gray-400/60 dark:placeholder:text-gray-500/40
+  transition-all duration-300`;
+
+// 更新表格样式
+const tableClassName = `overflow-x-auto rounded-2xl 
   border border-gray-200/30 dark:border-gray-700/30
-  focus:outline-none focus:ring-2 focus:ring-blue-500/40
-  placeholder:text-gray-400/60 dark:placeholder:text-gray-500/60
-  text-[15px] leading-relaxed text-gray-800 dark:text-gray-100
-  transition-all duration-300 ease-out
-  hover:border-gray-300/50 dark:hover:border-gray-600/50
-  shadow-sm hover:shadow-md`;
+  bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl
+  shadow-lg`;
+
+const tableHeaderClassName = `border-b 
+  border-[#007AFF]/10 dark:border-[#0A84FF]/10
+  bg-[#007AFF]/5 dark:bg-[#0A84FF]/5`;
 
 // 修改表格内输入框基础样式
 const tableInputClassName = `w-full px-3 py-2 rounded-xl
   bg-transparent backdrop-blur-sm
   border border-transparent
-  focus:outline-none focus:ring-2 focus:ring-blue-500/30
-  text-[14px] leading-relaxed text-gray-800 dark:text-gray-100
-  placeholder:text-gray-400/60 dark:placeholder:text-gray-500/60
+  focus:outline-none focus:ring-2 
+  focus:ring-blue-500/30 dark:focus:ring-blue-400/30
+  text-[14px] leading-relaxed 
+  text-gray-800 dark:text-gray-200
+  placeholder:text-gray-400/60 dark:placeholder:text-gray-500/40
   transition-all duration-300 ease-out
-  hover:bg-gray-50/50 dark:hover:bg-gray-800/50
+  hover:bg-gray-50/50 dark:hover:bg-[#1c1c1e]/50
   text-center`;
 
 // Notes 输入框样式 - 统一更小的高度
@@ -111,7 +154,7 @@ const numberInputClassName = `${tableInputClassName}
   text-center`;
 
 // 下拉选择框样式 - 统一更小的高度
-const selectClassName = `${inputClassName} 
+const selectClassName = `${appleInputClassName} 
   appearance-none 
   bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3e%3cpolyline points="6 9 12 15 18 9"%3e%3c/polyline%3e%3c/svg%3e')] 
   bg-[length:1.25em_1.25em] 
@@ -149,7 +192,7 @@ const salesSelectClassName = `px-3 py-1.5 rounded-xl
   pr-8
   w-[140px]`; // 固定宽度
 
-// 修改单位输入框样式，添加文本居中对齐
+// 修改单位输入框样式，添��文本居中对齐
 const unitInputClassName = `${tableInputClassName}
   text-center`;  // 添加文本居中
 
@@ -159,16 +202,6 @@ const settingsPanelClassName = `bg-blue-50/80 dark:bg-blue-900/10 backdrop-blur-
   rounded-2xl overflow-hidden
   shadow-lg shadow-blue-500/5
   p-4`;
-
-// 修改输入框基础样式，采用 Apple 风格
-const appleInputClassName = `w-full px-4 py-2.5
-  bg-gray-50/50 dark:bg-gray-900/50
-  border border-gray-200/50 dark:border-gray-700/50
-  rounded-xl
-  text-sm text-gray-900 dark:text-gray-100
-  placeholder:text-gray-400/70 dark:placeholder:text-gray-500/70
-  focus:outline-none focus:ring-2 focus:ring-blue-500/30
-  transition-all duration-300`;
 
 // 单选按钮相关样式只保留这三个
 const radioGroupClassName = `flex p-0.5 gap-1
@@ -352,7 +385,7 @@ export default function Quotation() {
         <textarea
           defaultValue={quotationData.to}
           onBlur={e => handleInputChange('to', e.target.value)}
-          className={`${inputClassName} min-h-[60px] resize
+          className={`${appleInputClassName} min-h-[60px] resize
             hover:border-gray-300 dark:hover:border-gray-600
             focus:border-blue-500 dark:focus:border-blue-500`}
           placeholder="Enter customer name and address"
@@ -365,7 +398,7 @@ export default function Quotation() {
           type="text"
           defaultValue={quotationData.inquiryNo}
           onBlur={e => handleInputChange('inquiryNo', e.target.value)}
-          className={inputClassName}
+          className={appleInputClassName}
           placeholder="Inquiry No."
         />
       </div>
@@ -376,7 +409,7 @@ export default function Quotation() {
             type="text"
             defaultValue={quotationData.contractNo}
             onBlur={e => handleInputChange('contractNo', e.target.value)}
-            className={inputClassName}
+            className={appleInputClassName}
             placeholder="Contract No."
           />
         </div>
@@ -384,7 +417,7 @@ export default function Quotation() {
     </div>
   );
 
-  // 提取生成按钮为独立组件
+  // 提取生成按钮为独组件
   const GenerateButton = ({ type }: { type: 'quotation' | 'confirmation' }) => (
     <button
       type="submit"
@@ -430,7 +463,7 @@ export default function Quotation() {
     }));
   }, [quotationData.to, quotationData.inquiryNo, quotationData.quotationNo, quotationData.contractNo]);
 
-  // 修改 quotationData 的初始值，添加 Sharon 的默认 notes
+  // 修改 quotationData 的初始值，加 Sharon 的默认 notes
   const getSalesPersonNotes = (salesPerson: string, type: string) => {
     if (salesPerson === 'Sharon') {
       return [
@@ -459,7 +492,7 @@ export default function Quotation() {
         ];
   };
 
-  // 在设置面板中，当销售人员��变时更新 notes
+  // 在设置面板中，当销售人员变时更新 notes
   const handleSalesPersonChange = (newSalesPerson: string) => {
     setSettings(prev => ({ ...prev, from: newSalesPerson }));
     setQuotationData(prev => ({
@@ -485,7 +518,7 @@ export default function Quotation() {
   }, [settings.showDescription, settings.showRemarks]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#f5f5f7] dark:bg-[#1d1d1f]">
+    <div className="min-h-screen flex flex-col bg-[#f5f5f7] dark:bg-[#000000]">
       <main className="flex-1">
         <div className="w-full max-w-6xl mx-auto px-6 py-8">
           {/* 回按钮样式优化 */}
@@ -520,8 +553,8 @@ export default function Quotation() {
           </div>
 
           {/* 主内区域样式优化 */}
-          <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-2xl
-                  shadow-2xl border border-gray-200/30 dark:border-gray-700/30
+          <div className="bg-white/90 dark:bg-[#1c1c1e]/90 backdrop-blur-2xl
+                  shadow-2xl border border-gray-200/30 dark:border-[#2c2c2e]/50
                   rounded-[2.5rem] p-8
                   hover:shadow-3xl transition-all duration-500">
             <div className="space-y-6">
@@ -563,7 +596,9 @@ export default function Quotation() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className={`overflow-hidden transition-all duration-300 ease-in-out
                                 ${showSettings ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
-                  <div className={settingsPanelClassName}>
+                  <div className={`${settingsPanelClassName}
+                    dark:bg-[#1c1c1e]/80 
+                    dark:border-[#2c2c2e]/50`}>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                       {/* 日期选择 - 移除标题 */}
                       <input
@@ -660,13 +695,14 @@ export default function Quotation() {
 
                 <DocumentHeaderForm type={activeTab as 'quotation' | 'confirmation'} />
 
-                {/* 商品列表表格样式优化 */}
-                <div className="overflow-x-auto rounded-2xl border border-gray-200/30 dark:border-gray-700/30
-                      bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg">
+                {/* 商品表表格样式优化 */}
+                <div className={`${tableClassName}
+                  dark:bg-[#1c1c1e]/90`}>
                   <table className="w-full min-w-[800px]">
-                    <thead>
-                      <tr className="border-b border-gray-200/30 dark:border-gray-700/30
-                           bg-gray-50/50 dark:bg-gray-800/50">
+                    <thead className={`${tableHeaderClassName}
+                      dark:bg-[#1c1c1e]/90`}>
+                      <tr className="border-b border-gray-200/30 dark:border-[#2c2c2e]/50
+                           bg-gray-50/50 dark:bg-[#1c1c1e]/50">
                         <th className="py-2 px-1 text-center text-xs font-bold opacity-90" style={{ width: '40px' }}>No.</th>
                         <th className="py-2 px-1 text-center text-xs font-bold opacity-90" style={{ minWidth: '80px' }}>Part Name</th>
                         {settings.showDescription && (
@@ -702,7 +738,11 @@ export default function Quotation() {
                               type="text"
                               value={item.partName}
                               onChange={e => updateLineItem(index, 'partName', e.target.value)}
-                              className={tableInputClassName}
+                              className={`${tableInputClassName} 
+                                dark:bg-[#1c1c1e]/50 
+                                dark:border-[#2c2c2e]/50
+                                dark:placeholder-gray-500/40
+                                dark:text-gray-300`}
                               placeholder="Part name"
                             />
                           </td>
@@ -832,7 +872,7 @@ export default function Quotation() {
 
                 {/* 表格下方区域重新设计 */}
                 <div className="space-y-6 mt-4">
-                  {/* ��作 - 合并添加行按钮和金额 */}
+                  {/* 作 - 合并添加行按钮和金额 */}
                   <div className="flex items-center justify-between gap-4">
                     <button
                       type="button"
@@ -857,8 +897,10 @@ export default function Quotation() {
                   </div>
 
                   {/* Notes 部分重新设计 */}
-                  <div className="space-y-2.5 bg-gray-50/50 dark:bg-gray-900/50 
-                                    rounded-xl p-4 border border-gray-200/30 dark:border-gray-700/30">
+                  <div className="space-y-2.5 
+                    bg-gray-50/50 dark:bg-[#1c1c1e]/50
+                    rounded-xl p-4 
+                    border border-gray-200/30 dark:border-[#2c2c2e]/50">
                     <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-3">Notes</h3>
                     <div className="space-y-2">
                       {quotationData.notes.map((note, index) => (
@@ -887,14 +929,7 @@ export default function Quotation() {
                   {/* 生成按钮样式优化 */}
                   <button
                     type="submit"
-                    className="w-full px-6 py-3.5 rounded-xl
-                              bg-blue-500 hover:bg-blue-600
-                              text-white font-medium text-sm
-                              transition-all duration-300
-                              shadow-lg shadow-blue-500/25
-                              hover:shadow-xl hover:shadow-blue-500/30
-                              active:scale-[0.98]
-                              flex items-center justify-center gap-2"
+                    className={primaryButtonClassName}
                   >
                     <Download className="h-4 w-4" />
                     Generate {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
