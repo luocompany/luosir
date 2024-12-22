@@ -682,10 +682,15 @@ export default function Invoice() {
                             ...prev, 
                             paymentDate: e.target.value 
                           }))}
-                          className={`${inputClassName} !py-1 !px-2 w-[120px] min-w-[130px]`}
+                          className={`${inputClassName} !py-1 !px-2`}
                           style={{ 
                             colorScheme: 'light dark',
-                            paddingRight: '8px'
+                            paddingRight: '8px',
+                            width: '130px',
+                            minWidth: '130px',
+                            maxWidth: '130px',
+                            flexShrink: 0,  // 防止在 flex 容器中被压缩
+                            flexGrow: 0     // 防止在 flex 容器中被拉伸
                           }}
                         />
                         <span className="text-sm text-gray-600 dark:text-gray-400">
