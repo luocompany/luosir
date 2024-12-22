@@ -641,11 +641,11 @@ export default function Invoice() {
             <div className="space-y-4">
               <div className="bg-blue-50/80 dark:bg-blue-900/10 
                               border border-blue-200/50 dark:border-blue-700/30
-                              rounded-2xl p-4 space-y-3">
-                <label className="block text-sm font-medium">Payment Terms:</label>
+                              rounded-2xl p-4">
+                <label className="block text-sm font-medium mb-3">Payment Terms:</label>
                 
                 <div className="space-y-4">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-start gap-2">
                     <input
                       type="checkbox"
                       checked={invoiceData.showPaymentDate}
@@ -653,30 +653,31 @@ export default function Invoice() {
                         ...prev, 
                         showPaymentDate: e.target.checked 
                       }))}
-                      className="w-4 h-4 rounded border-gray-300 text-blue-500 
-                                focus:ring-blue-500/40
-                                cursor-pointer"
+                      className="w-4 h-4 mt-1 rounded border-gray-300 text-blue-500 
+                                focus:ring-blue-500/40"
                     />
-                    <div className="flex items-center flex-wrap gap-2">
-                      <span className="text-sm text-gray-600 dark:text-gray-400">
-                        Full paid not later than
-                      </span>
-                      <input
-                        type="date"
-                        value={invoiceData.paymentDate}
-                        onChange={e => setInvoiceData(prev => ({ 
-                          ...prev, 
-                          paymentDate: e.target.value 
-                        }))}
-                        className={`${inputClassName} !py-1.5 !px-2 w-[130px] shrink-0`}
-                        style={{ 
-                          colorScheme: 'light dark',
-                          paddingRight: '8px' // 覆盖日期选择器默认内边距
-                        }}
-                      />
-                      <span className="text-sm text-gray-600 dark:text-gray-400">
-                        by telegraphic transfer.
-                      </span>
+                    <div className="flex-1">
+                      <div className="flex items-center flex-wrap gap-2">
+                        <span className="text-sm text-gray-600 dark:text-gray-400">
+                          Full paid not later than
+                        </span>
+                        <input
+                          type="date"
+                          value={invoiceData.paymentDate}
+                          onChange={e => setInvoiceData(prev => ({ 
+                            ...prev, 
+                            paymentDate: e.target.value 
+                          }))}
+                          className={`${inputClassName} !py-1 !px-2 w-[120px] min-w-[130px]`}
+                          style={{ 
+                            colorScheme: 'light dark',
+                            paddingRight: '8px'
+                          }}
+                        />
+                        <span className="text-sm text-gray-600 dark:text-gray-400">
+                          by telegraphic transfer.
+                        </span>
+                      </div>
                     </div>
                   </div>
 
@@ -689,7 +690,7 @@ export default function Invoice() {
                         showRemarks: e.target.checked 
                       }))}
                       className="w-4 h-4 mt-2 rounded border-gray-300 text-blue-500 
-                                focus:ring-blue-500 focus:ring-offset-0"
+                                focus:ring-blue-500/40"
                     />
                     <div className="flex-1">
                       <textarea
@@ -705,7 +706,7 @@ export default function Invoice() {
                     </div>
                   </div>
 
-                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                  <div className="text-sm text-gray-600 dark:text-gray-400 pl-6">
                     Please state our invoice no. "{invoiceData.invoiceNo}" on your payment documents.
                   </div>
                 </div>
