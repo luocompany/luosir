@@ -235,8 +235,8 @@ export default function Quotation() {
       hasDecimals: false
     },
     bankInfo: '',
-    showDescription: true,
-    showRemarks: true
+    showDescription: false,
+    showRemarks: false
   });
 
   // 修改定义，使用索引来跟踪正在编辑的
@@ -252,8 +252,8 @@ export default function Quotation() {
     date: new Date().toISOString().split('T')[0],
     from: 'Roger',
     currency: 'USD',
-    showDescription: true,
-    showRemarks: true
+    showDescription: false,
+    showRemarks: false
   });
 
   const addLineItem = () => {
@@ -406,7 +406,7 @@ export default function Quotation() {
   // 查是否有他地在编辑过程中触发了状态更新
   // 比如移除或简化些作用
   useEffect(() => {
-    // 移除或简化不必要���副作用
+    // 移除或简化不必要副作用
   }, [quotationData]);
 
   // 在件加载时同时状态
@@ -459,7 +459,7 @@ export default function Quotation() {
         ];
   };
 
-  // 在设置面板中，当销售人员改变时更新 notes
+  // 在设置面板中，当销售人员��变时更新 notes
   const handleSalesPersonChange = (newSalesPerson: string) => {
     setSettings(prev => ({ ...prev, from: newSalesPerson }));
     setQuotationData(prev => ({
@@ -565,114 +565,94 @@ export default function Quotation() {
                                 ${showSettings ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
                   <div className={settingsPanelClassName}>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                      {/* 日期选择 */}
-                      <div className="space-y-1.5">
-                        <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 px-1">
-                          Date
-                        </label>
-                        <input
-                          type="date"
-                          value={settings.date}
-                          onChange={e => setSettings(prev => ({ ...prev, date: e.target.value }))}
-                          className={appleInputClassName}
-                        />
-                      </div>
+                      {/* 日期选择 - 移除标题 */}
+                      <input
+                        type="date"
+                        value={settings.date}
+                        onChange={e => setSettings(prev => ({ ...prev, date: e.target.value }))}
+                        className={appleInputClassName}
+                      />
                       
-                      {/* 销售人员选择 */}
-                      <div className="space-y-1.5">
-                        <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 px-1">
-                          Sales Person
-                        </label>
-                        <select
-                          value={settings.from}
-                          onChange={e => handleSalesPersonChange(e.target.value)}
-                          className={`${appleInputClassName} appearance-none 
-                            bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3e%3cpolyline points="6 9 12 15 18 9"%3e%3c/polyline%3e%3c/svg%3e')] 
-                            bg-[length:1em_1em] 
-                            bg-[right_1rem_center] 
-                            bg-no-repeat
-                            pr-10`}
-                        >
-                          <option value="Roger">Roger</option>
-                          <option value="Sharon">Sharon</option>
-                          <option value="Emily">Emily</option>
-                          <option value="Summer">Summer</option>
-                          <option value="Nina">Nina</option>
-                        </select>
+                      {/* 销售人员选择 - 移除标题 */}
+                      <select
+                        value={settings.from}
+                        onChange={e => handleSalesPersonChange(e.target.value)}
+                        className={`${appleInputClassName} appearance-none 
+                          bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3e%3cpolyline points="6 9 12 15 18 9"%3e%3c/polyline%3e%3c/svg%3e')] 
+                          bg-[length:1em_1em] 
+                          bg-[right_1rem_center] 
+                          bg-no-repeat
+                          pr-10`}
+                      >
+                        <option value="Roger">Roger</option>
+                        <option value="Sharon">Sharon</option>
+                        <option value="Emily">Emily</option>
+                        <option value="Summer">Summer</option>
+                        <option value="Nina">Nina</option>
+                      </select>
+
+                      {/* 币种选择 - 移除标题 */}
+                      <div className={`${radioGroupClassName} h-[38px]`}>
+                        {Object.entries(currencySymbols).map(([currency, symbol]) => (
+                          <label
+                            key={currency}
+                            className={`${radioButtonClassName} flex-1 ${
+                              settings.currency === currency ? radioButtonActiveClassName : 
+                              'text-gray-600 dark:text-gray-400'
+                            }`}
+                          >
+                            <input
+                              type="radio"
+                              name="currency"
+                              value={currency}
+                              checked={settings.currency === currency}
+                              onChange={e => handleCurrencyChange(e.target.value)}
+                              className="sr-only"
+                            />
+                            <span>{symbol}</span>
+                          </label>
+                        ))}
                       </div>
 
-                      {/* 币种选择 */}
-                      <div className="space-y-1.5">
-                        <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 px-1">
-                          Currency
+                      {/* 显示选项 - 移除标题 */}
+                      <div className={`${checkboxGroupClassName} h-[38px]`}>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={settings.showDescription}
+                            onChange={e => setSettings(prev => ({ 
+                              ...prev, 
+                              showDescription: e.target.checked 
+                            }))}
+                            className="w-3.5 h-3.5 rounded 
+                              border-gray-300 dark:border-gray-600
+                              text-blue-500 
+                              focus:ring-blue-500/40
+                              cursor-pointer"
+                          />
+                          <span className="text-xs text-gray-600 dark:text-gray-400">
+                            Description
+                          </span>
                         </label>
-                        <div className={`${radioGroupClassName} h-[38px]`}>
-                          {Object.entries(currencySymbols).map(([currency, symbol]) => (
-                            <label
-                              key={currency}
-                              className={`${radioButtonClassName} flex-1 ${
-                                settings.currency === currency ? radioButtonActiveClassName : 
-                                'text-gray-600 dark:text-gray-400'
-                              }`}
-                            >
-                              <input
-                                type="radio"
-                                name="currency"
-                                value={currency}
-                                checked={settings.currency === currency}
-                                onChange={e => handleCurrencyChange(e.target.value)}
-                                className="sr-only"
-                              />
-                              <span>{symbol}</span>
-                            </label>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* 显示选项 */}
-                      <div className="space-y-1.5">
-                        <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 px-1">
-                          Display Options
+                        
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={settings.showRemarks}
+                            onChange={e => setSettings(prev => ({ 
+                              ...prev, 
+                              showRemarks: e.target.checked 
+                            }))}
+                            className="w-3.5 h-3.5 rounded 
+                              border-gray-300 dark:border-gray-600
+                              text-blue-500 
+                              focus:ring-blue-500/40
+                              cursor-pointer"
+                          />
+                          <span className="text-xs text-gray-600 dark:text-gray-400">
+                            Remarks
+                          </span>
                         </label>
-                        <div className={`${checkboxGroupClassName} h-[38px]`}>
-                          <label className="flex items-center gap-2 cursor-pointer">
-                            <input
-                              type="checkbox"
-                              checked={settings.showDescription}
-                              onChange={e => setSettings(prev => ({ 
-                                ...prev, 
-                                showDescription: e.target.checked 
-                              }))}
-                              className="w-3.5 h-3.5 rounded 
-                                border-gray-300 dark:border-gray-600
-                                text-blue-500 
-                                focus:ring-blue-500/40
-                                cursor-pointer"
-                            />
-                            <span className="text-xs text-gray-600 dark:text-gray-400">
-                              Description
-                            </span>
-                          </label>
-                          
-                          <label className="flex items-center gap-2 cursor-pointer">
-                            <input
-                              type="checkbox"
-                              checked={settings.showRemarks}
-                              onChange={e => setSettings(prev => ({ 
-                                ...prev, 
-                                showRemarks: e.target.checked 
-                              }))}
-                              className="w-3.5 h-3.5 rounded 
-                                border-gray-300 dark:border-gray-600
-                                text-blue-500 
-                                focus:ring-blue-500/40
-                                cursor-pointer"
-                            />
-                            <span className="text-xs text-gray-600 dark:text-gray-400">
-                              Remarks
-                            </span>
-                          </label>
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -852,7 +832,7 @@ export default function Quotation() {
 
                 {/* 表格下方区域重新设计 */}
                 <div className="space-y-6 mt-4">
-                  {/* 操作 - 合并添加行按钮和金额 */}
+                  {/* ��作 - 合并添加行按钮和金额 */}
                   <div className="flex items-center justify-between gap-4">
                     <button
                       type="button"
