@@ -250,7 +250,7 @@ export default function NumberToEnglish() {
     // 构建美元格式字符串
     const dollarText = `SAY TOTAL US DOLLARS ${integerWords}${!hasDecimals ? ' ONLY' : ''}`;
     const centText = hasDecimals ? 
-      ` AND ${centWords} ${centValue === 1 ? 'CENT' : 'CENTS'}` : 
+      ` ${centWords} ${centValue === 1 ? 'CENT' : 'CENTS'}` :  //取消这里的AND
       '';
     
     return {
