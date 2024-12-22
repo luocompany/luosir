@@ -46,23 +46,23 @@ interface SettingsData {
 }
 
 const inputClassName = `w-full px-4 py-2.5 rounded-2xl
-  bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg
-  border border-gray-200/30 dark:border-gray-700/30
-  focus:outline-none focus:ring-2 focus:ring-blue-500/40
+  bg-white/95 dark:bg-[#1c1c1e]/95
+  border border-[#007AFF]/10 dark:border-[#0A84FF]/10
+  focus:outline-none focus:ring-2 focus:ring-[#007AFF]/30 dark:focus:ring-[#0A84FF]/30
   placeholder:text-gray-400/60 dark:placeholder:text-gray-500/60
   text-[15px] leading-relaxed text-gray-800 dark:text-gray-100
   transition-all duration-300 ease-out
-  hover:border-gray-300/50 dark:hover:border-gray-600/50
+  hover:border-[#007AFF]/20 dark:hover:border-[#0A84FF]/20
   shadow-sm hover:shadow-md`;
 
 const tableInputClassName = `w-full px-3 py-2 rounded-xl
   bg-transparent backdrop-blur-sm
   border border-transparent
-  focus:outline-none focus:ring-2 focus:ring-blue-500/30
+  focus:outline-none focus:ring-2 focus:ring-[#007AFF]/20 dark:focus:ring-[#0A84FF]/20
   text-[14px] leading-relaxed text-gray-800 dark:text-gray-100
   placeholder:text-gray-400/60 dark:placeholder:text-gray-500/60
   transition-all duration-300 ease-out
-  hover:bg-gray-50/50 dark:hover:bg-gray-800/50
+  hover:bg-[#007AFF]/5 dark:hover:bg-[#0A84FF]/5
   text-center`;
 
 const numberInputClassName = `${tableInputClassName}
@@ -71,16 +71,16 @@ const numberInputClassName = `${tableInputClassName}
   [&::-webkit-inner-spin-button]:appearance-none
   text-center`;
 
-const settingsPanelClassName = `bg-blue-50/80 dark:bg-blue-900/10 backdrop-blur-xl
-  border border-blue-200/50 dark:border-blue-700/30
+const settingsPanelClassName = `bg-[#007AFF]/5 dark:bg-[#0A84FF]/5 backdrop-blur-xl
+  border border-[#007AFF]/10 dark:border-[#0A84FF]/10
   rounded-2xl overflow-hidden
-  shadow-lg shadow-blue-500/5
+  shadow-lg shadow-[#007AFF]/5
   p-4`;
 
 const radioGroupClassName = `flex p-0.5 gap-1
-  bg-gray-100/50 dark:bg-gray-900/50 
+  bg-[#007AFF]/5 dark:bg-[#0A84FF]/5
   rounded-lg
-  border border-gray-200/50 dark:border-gray-700/50`;
+  border border-[#007AFF]/10 dark:border-[#0A84FF]/10`;
 
 const radioButtonClassName = `flex items-center justify-center px-3 py-1.5
   rounded-md
@@ -88,8 +88,8 @@ const radioButtonClassName = `flex items-center justify-center px-3 py-1.5
   transition-all duration-200
   cursor-pointer`;
 
-const radioButtonActiveClassName = `bg-white dark:bg-gray-800 
-  text-blue-500 dark:text-blue-400
+const radioButtonActiveClassName = `bg-[#007AFF] dark:bg-[#0A84FF]
+  text-white
   shadow-sm`;
 
 export default function Invoice() {
@@ -408,11 +408,11 @@ export default function Invoice() {
                   className={`px-4 py-1.5 rounded-lg cursor-pointer
                     transition-all duration-200
                     ${settings.showHsCode 
-                      ? 'bg-white dark:bg-gray-800 text-blue-500 dark:text-blue-400 shadow-sm' 
-                      : 'bg-gray-100/50 dark:bg-gray-900/50 text-gray-600 dark:text-gray-400'
+                      ? 'bg-[#007AFF] dark:bg-[#0A84FF] text-white shadow-sm border-transparent' 
+                      : 'bg-transparent text-gray-600 dark:text-gray-400 border-[#007AFF]/30 dark:border-[#0A84FF]/30'
                     }
-                    border border-gray-200/50 dark:border-gray-700/50
-                    hover:bg-white dark:hover:bg-gray-800
+                    border
+                    hover:bg-[#007AFF] dark:hover:bg-[#0A84FF] hover:text-white hover:border-transparent
                     text-xs font-medium`}
                 >
                   <input
@@ -460,8 +460,8 @@ export default function Invoice() {
                   bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg">
               <table className="w-full min-w-[800px]">
                 <thead>
-                  <tr className="border-b border-gray-200/30 dark:border-gray-700/30
-                       bg-gray-50/50 dark:bg-gray-800/50">
+                  <tr className="border-b border-[#007AFF]/10 dark:border-[#0A84FF]/10
+                       bg-[#007AFF]/5 dark:bg-[#0A84FF]/5">
                     <th className="py-2 px-1 text-center text-xs font-bold opacity-90" style={{ width: '40px' }}>No.</th>
                     <th className={`py-2 px-1 text-center text-xs font-bold opacity-90 ${
                       !settings.showHsCode && 'hidden'
@@ -478,7 +478,8 @@ export default function Invoice() {
                 <tbody>
                   {invoiceData.items.map((item, index) => (
                     <tr key={item.lineNo} 
-                        className="border-b border-gray-200/30 dark:border-gray-700/30 hover:bg-gray-50/50 dark:hover:bg-gray-800/50">
+                        className="border-b border-[#007AFF]/10 dark:border-[#0A84FF]/10 
+                                  hover:bg-[#007AFF]/5 dark:hover:bg-[#0A84FF]/5">
                       <td className="py-1 px-1 text-sm">
                         <span className="flex items-center justify-center w-6 h-6 rounded-full 
                                        hover:bg-red-100 hover:text-red-600 cursor-pointer transition-colors"
@@ -729,11 +730,11 @@ export default function Invoice() {
             <button
               type="submit"
               className="w-full px-6 py-3.5 rounded-xl
-                        bg-blue-500 hover:bg-blue-600
+                        bg-[#007AFF] hover:bg-[#0A84FF]
                         text-white font-medium text-sm
                         transition-all duration-300
-                        shadow-lg shadow-blue-500/25
-                        hover:shadow-xl hover:shadow-blue-500/30
+                        shadow-lg shadow-[#007AFF]/25
+                        hover:shadow-xl hover:shadow-[#0A84FF]/30
                         active:scale-[0.98]
                         flex items-center justify-center gap-2"
             >

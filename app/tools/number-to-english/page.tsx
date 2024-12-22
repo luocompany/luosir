@@ -248,10 +248,10 @@ export default function NumberToEnglish() {
     const hasDecimals = centValue > 0;
     
     // 构建美元格式字符串
-    const dollarText = `SAY TOTAL US DOLLARS ${integerWords}`;
+    const dollarText = `SAY TOTAL US DOLLARS ${integerWords}${!hasDecimals ? ' ONLY' : ''}`;
     const centText = hasDecimals ? 
       ` AND ${centWords} ${centValue === 1 ? 'CENT' : 'CENTS'}` : 
-      ' ONLY';
+      '';
     
     return {
       dollars: dollarText,
