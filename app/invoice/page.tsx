@@ -77,6 +77,21 @@ const settingsPanelClassName = `bg-blue-50/80 dark:bg-blue-900/10 backdrop-blur-
   shadow-lg shadow-blue-500/5
   p-4`;
 
+const radioGroupClassName = `flex p-0.5 gap-1
+  bg-gray-100/50 dark:bg-gray-900/50 
+  rounded-lg
+  border border-gray-200/50 dark:border-gray-700/50`;
+
+const radioButtonClassName = `flex items-center justify-center px-3 py-1.5
+  rounded-md
+  text-xs font-medium
+  transition-all duration-200
+  cursor-pointer`;
+
+const radioButtonActiveClassName = `bg-white dark:bg-gray-800 
+  text-blue-500 dark:text-blue-400
+  shadow-sm`;
+
 export default function Invoice() {
   const getDefaultPaymentDate = (invoiceDate: string) => {
     const date = new Date(invoiceDate);
@@ -350,11 +365,9 @@ export default function Invoice() {
           <div className={`mb-4 overflow-hidden transition-all duration-300 ease-in-out
                           ${showSettings ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
             <div className={settingsPanelClassName}>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div className="space-y-1.5">
-                  <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 px-1">
-                    Date
-                  </label>
+              <div className="flex items-center gap-6">
+                <div className="flex items-center gap-2">
+                
                   <input
                     type="date"
                     value={settings.date}
@@ -366,53 +379,53 @@ export default function Invoice() {
                   />
                 </div>
 
-                <div className="space-y-1.5">
-                  <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 px-1">
-                    Currency
-                  </label>
-                  <select
-                    value={settings.currency}
-                    onChange={e => {
-                      setSettings(prev => ({ ...prev, currency: e.target.value }));
-                      setInvoiceData(prev => ({ ...prev, currency: e.target.value }));
-                    }}
-                    className={`${inputClassName} !py-1.5 appearance-none 
-                      bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3e%3cpolyline points="6 9 12 15 18 9"%3e%3c/polyline%3e%3c/svg%3e')] 
-                      bg-[length:1em_1em] 
-                      bg-[right_1rem_center] 
-                      bg-no-repeat
-                      pr-10`}
-                  >
-                    <option value="USD">USD</option>
-                    <option value="CNY">CNY</option>
-                  </select>
+                <div className={`${radioGroupClassName} h-[38px]`}>
+                  {['USD', 'CNY'].map((currency) => (
+                    <label
+                      key={currency}
+                      className={`${radioButtonClassName} flex-1 ${
+                        settings.currency === currency ? radioButtonActiveClassName : 
+                        'text-gray-600 dark:text-gray-400'
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="currency"
+                        value={currency}
+                        checked={settings.currency === currency}
+                        onChange={e => {
+                          setSettings(prev => ({ ...prev, currency: e.target.value }));
+                          setInvoiceData(prev => ({ ...prev, currency: e.target.value }));
+                        }}
+                        className="sr-only"
+                      />
+                      <span>{currency === 'USD' ? '$' : '¥'}</span>
+                    </label>
+                  ))}
                 </div>
 
-                <div className="space-y-1.5">
-                  <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 px-1">
-                    Display Options
-                  </label>
-                  <div className="flex flex-col gap-2 h-full justify-center px-4 py-1">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={settings.showHsCode}
-                        onChange={e => setSettings(prev => ({ 
-                          ...prev, 
-                          showHsCode: e.target.checked 
-                        }))}
-                        className="w-3.5 h-3.5 rounded 
-                          border-gray-300 dark:border-gray-600
-                          text-blue-500 
-                          focus:ring-blue-500/40
-                          cursor-pointer"
-                      />
-                      <span className="text-xs text-gray-600 dark:text-gray-400">
-                        HS Code
-                      </span>
-                    </label>
-                  </div>
-                </div>
+                <label
+                  className={`px-4 py-1.5 rounded-lg cursor-pointer
+                    transition-all duration-200
+                    ${settings.showHsCode 
+                      ? 'bg-white dark:bg-gray-800 text-blue-500 dark:text-blue-400 shadow-sm' 
+                      : 'bg-gray-100/50 dark:bg-gray-900/50 text-gray-600 dark:text-gray-400'
+                    }
+                    border border-gray-200/50 dark:border-gray-700/50
+                    hover:bg-white dark:hover:bg-gray-800
+                    text-xs font-medium`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={settings.showHsCode}
+                    onChange={e => setSettings(prev => ({ 
+                      ...prev, 
+                      showHsCode: e.target.checked 
+                    }))}
+                    className="sr-only"
+                  />
+                  HS Code
+                </label>
               </div>
             </div>
           </div>

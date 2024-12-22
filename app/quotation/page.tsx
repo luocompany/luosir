@@ -406,7 +406,7 @@ export default function Quotation() {
   // 查是否有他地在编辑过程中触发了状态更新
   // 比如移除或简化些作用
   useEffect(() => {
-    // 移除或简化不必要的副作用
+    // 移除或简化不必要���副作用
   }, [quotationData]);
 
   // 在件加载时同时状态
@@ -767,20 +767,31 @@ export default function Quotation() {
                               className={numberInputClassName}
                             />
                           </td>
-                          <td className="py-1 px-1">
-                            <input
-                              type="text"
-                              value={item.unit}
+                          <td className="py-1.5 px-1">
+                            <select
+                              value={item.unit ? item.unit.replace(/s$/, '') : 'pc'}
                               onChange={e => {
-                                const value = e.target.value;
-                                // 保持单位的单复数逻辑
-                                const unitBase = value.replace(/s$/, '');
-                                const finalUnit = item.quantity <= 1 ? unitBase : `${unitBase}s`;
-                                updateLineItem(index, 'unit', finalUnit);
+                                const baseUnit = e.target.value;
+                                const unit = item.quantity <= 1 ? baseUnit : `${baseUnit}s`;
+                                updateLineItem(index, 'unit', unit);
                               }}
-                              className={unitInputClassName}  // 使用带有居中样式的类名
-                              placeholder="Unit"
-                            />
+                              className={`${tableInputClassName} 
+                                appearance-none 
+                                bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3e%3cpolyline points="6 9 12 15 18 9"%3e%3c/polyline%3e%3c/svg%3e')] 
+                                bg-[length:1em_1em] 
+                                bg-[right_0.5rem_center] 
+                                bg-no-repeat
+                                pr-8
+                                w-full
+                                text-center
+                                hover:bg-gray-50/50 dark:hover:bg-gray-800/50
+                                focus:ring-2 focus:ring-blue-500/30
+                                transition-all duration-200`}
+                            >
+                              <option value="pc">pc{item.quantity > 1 ? 's' : ''}</option>
+                              <option value="set">set{item.quantity > 1 ? 's' : ''}</option>
+                              <option value="length">length{item.quantity > 1 ? 's' : ''}</option>
+                            </select>
                           </td>
                           <td className="py-1 px-1">
                             <input
