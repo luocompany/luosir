@@ -675,11 +675,14 @@ export const generateInvoicePDF = async (data: QuotationData) => {
   }
 
   if (data.showRemarks && data.remarks) {
-    data.remarks.split('\n')
-      .filter(line => line.trim())
-      .forEach(line => {
-        terms.push({ content: line.trim() });
-      });
+    // 按换行符分割文本，过滤空行
+    const remarkLines = data.remarks.split('\n')
+      .map(line => line.trim())
+      .filter(line => line !== '');
+    
+    remarkLines.forEach(line => {
+      terms.push({ content: line });
+    });
   }
 
   // 修改发票号提示的添加逻辑
@@ -695,58 +698,56 @@ export const generateInvoicePDF = async (data: QuotationData) => {
     });
   }
 
-  // 根据条款数量决定显示格式
-  if (terms.length === 1) {
-    // 单条内容时，不显示标题，直接显示内容
-    if (terms[0].isInvoiceNo) {
-      // 处理发票号
-      const parts = terms[0].content.split(data.quotationNo);
-      doc.text('Payment term: Please state our invoice no. "', 15, currentY);
-      doc.setTextColor(255, 0, 0);
-      doc.text(data.quotationNo, 
-        15 + doc.getTextWidth('Payment term: Please state our invoice no. "'), 
-        currentY
-      );
-      doc.setTextColor(0, 0, 0);
-      doc.text('" on your payment documents.', 
-        15 + doc.getTextWidth('Payment term: Please state our invoice no. "' + data.quotationNo), 
-        currentY
-      );
-    } else {
-      doc.text('Payment term: ' + terms[0].content, 15, currentY);
-    }
-  } else {
-    // 多条时才显示标题
+  // 修改显示 payment terms 的部分
+  if (terms.length > 0) {
     doc.text('Payment Terms:', 15, currentY);
     currentY += 5;
     
+    // 修改最大宽度计算，增加右边距
+    const pageWidth = doc.internal.pageSize.width;
+    const leftMargin = 25; // 左边距（序号 + 缩进）
+    const rightMargin = 15; // 右边距
+    const maxWidth = pageWidth - leftMargin - rightMargin; // 可用宽度
+    
     terms.forEach((term, index) => {
-      // 显示序号
       doc.text(`${index + 1}.`, 20, currentY);
       
       if (term.isDate || term.isInvoiceNo) {
-        // 处理带有日期或发票号的特殊条款
         const parts = term.content.split(term.isDate ? data.paymentDate : data.quotationNo);
+        const firstPartWidth = doc.getTextWidth(parts[0]);
+        doc.text(parts[0], leftMargin, currentY);
         
-        doc.text(parts[0], 25, currentY);
         doc.setTextColor(255, 0, 0);
-        doc.text(term.isDate ? data.paymentDate : data.quotationNo, 
-          25 + doc.getTextWidth(parts[0]), 
-          currentY
-        );
+        const specialValue = term.isDate ? data.paymentDate : data.quotationNo;
+        doc.text(specialValue, leftMargin + firstPartWidth, currentY);
+        
         doc.setTextColor(0, 0, 0);
+        
         if (parts[1]) {
-          doc.text(parts[1], 
-            25 + doc.getTextWidth(parts[0] + (term.isDate ? data.paymentDate : data.quotationNo)), 
-            currentY
-          );
+          const remainingText = parts[1];
+          const textLines = doc.splitTextToSize(remainingText, maxWidth);
+          textLines.forEach((line: string, lineIndex: number) => {
+            if (lineIndex === 0) {
+              doc.text(line, leftMargin + firstPartWidth + doc.getTextWidth(specialValue), currentY);
+            } else {
+              currentY += 5;
+              doc.text(line, leftMargin, currentY);
+            }
+          });
         }
       } else {
-        // 处理普通文本
-        doc.text(term.content, 25, currentY);
+        const textLines = doc.splitTextToSize(term.content, maxWidth);
+        textLines.forEach((line: string, lineIndex: number) => {
+          if (lineIndex === 0) {
+            doc.text(line, leftMargin, currentY);
+          } else {
+            currentY += 5;
+            doc.text(line, leftMargin, currentY);
+          }
+        });
       }
       
-      currentY += 5; // 移动到下一行
+      currentY += 5;
     });
   }
 
