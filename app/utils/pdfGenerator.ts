@@ -247,7 +247,10 @@ export const generateQuotationPDF = async (data: QuotationData) => {
   doc.setFontSize(10);
   doc.text('Notes:', 15, finalY + 10);
   
-  data.notes.forEach((note: string, index: number) => {
+  // 过滤掉空的 notes 并重新编号
+  const validNotes = data.notes.filter(note => note.trim() !== '');
+  
+  validNotes.forEach((note: string, index: number) => {
     doc.text(`${index + 1}. ${note}`, 15, finalY + 15 + (index * 5));
   });
   
@@ -419,7 +422,10 @@ export const generateOrderConfirmationPDF = async (data: QuotationData) => {
   doc.setFontSize(10);
   doc.text('Terms & Conditions:', 15, finalY + 10);
   
-  data.notes.forEach((note: string, index: number) => {
+  // 过滤掉空的 notes 并重新编号
+  const validNotes = data.notes.filter(note => note.trim() !== '');
+  
+  validNotes.forEach((note: string, index: number) => {
     doc.text(`${index + 1}. ${note}`, 15, finalY + 15 + (index * 5));
   });
 
@@ -632,7 +638,7 @@ export const generateInvoicePDF = async (data: QuotationData) => {
     doc.text(line, margin, finalY + 10 + (index * 5));
   });
 
-  // 继续生成其他内容，使用最后一行的位置
+  // 继续生成其他内容，使用最后行的位置
   const contentStartY = finalY + 10 + (lines.length * 5) + 5;
   doc.text('Bank Information:', margin, contentStartY);
   
