@@ -84,7 +84,7 @@ const wrapText = (doc: jsPDF, text: string, x: number, y: number, maxWidth: numb
 // 在文件顶部声明全局变量
 let currentY = 0;
 
-export const generateQuotationPDF = async (data: QuotationData) => {
+export const generateQuotationPDF = async (data: QuotationData, activeTab: string) => {
   const doc = new jsPDF();
   
   // 加载中文字体
@@ -257,30 +257,34 @@ export const generateQuotationPDF = async (data: QuotationData) => {
   
   // 添加注意事项
   const finalY = (doc as any).lastAutoTable.finalY || 150;
-  doc.setFontSize(10);
-  doc.text('Notes:', 15, finalY + 10);
-  
+
   // 过滤掉空的 notes 并重新编号
   const validNotes = data.notes.filter(note => note.trim() !== '');
-  
-  currentY = finalY + 15;
-  const maxWidth = doc.internal.pageSize.width - 30; // 左右各留15mm边距
-  const lineHeight = 5; // 行间距设为5mm
-  
-  validNotes.forEach((note: string, index: number) => {
-    // 添加序号
-    doc.text(`${index + 1}.`, 15, currentY);
+
+  // 只有在有有效条款时才显示标题和内容
+  if (validNotes.length > 0) {
+    doc.setFontSize(10);
+    doc.text('Notes:', 15, finalY + 10);
     
-    // 计算文本内容的起始位置（序号后空2mm）
-    const textX = 22;
-    const availableWidth = maxWidth - (textX - 15); // 减去序号占用的宽度
-    
-    // 使用自动换行函数处理文本
-    const lineCount = wrapText(doc, note, textX, currentY, availableWidth, lineHeight);
-    
-    // 更新下一条注意事项的Y坐标（仅使用行数和行高）
-    currentY += lineCount * lineHeight;
-  });
+    currentY = finalY + 15;
+    const maxWidth = doc.internal.pageSize.width - 30;
+    const lineHeight = 5;
+
+    validNotes.forEach((note: string, index: number) => {
+      // 添加序号
+      doc.text(`${index + 1}.`, 15, currentY);
+      
+      // 计算文本内容的起始位置（序号后空2mm）
+      const textX = 22;
+      const availableWidth = maxWidth - (textX - 15);
+      
+      // 使用自动换行函数处理文本
+      const lineCount = wrapText(doc, note, textX, currentY, availableWidth, lineHeight);
+      
+      // 更新下一条注意事项的Y坐标
+      currentY += lineCount * lineHeight;
+    });
+  }
   
   // 保存PDF
   doc.save(`Quotation ${data.quotationNo}-${data.date}.pdf`);
@@ -453,24 +457,27 @@ export const generateOrderConfirmationPDF = async (data: QuotationData) => {
   // 过滤掉空的 notes 并重新编号
   const validNotes = data.notes.filter(note => note.trim() !== '');
   
-  currentY = finalY + 15;
-  const maxWidth = doc.internal.pageSize.width - 30; // 左右各留15mm边距
-  const lineHeight = 5; // 行间距设为5mm
-  
-  validNotes.forEach((note: string, index: number) => {
-    // 添加序号
-    doc.text(`${index + 1}.`, 15, currentY);
-    
-    // 计算文本内容的起始位置（序号后空2mm）
-    const textX = 22;
-    const availableWidth = maxWidth - (textX - 15); // 减去序号占用的宽度
-    
-    // 使用自动换行函数处理文本
-    const lineCount = wrapText(doc, note, textX, currentY, availableWidth, lineHeight);
-    
-    // 更新下一条注意事项的Y坐标
-    currentY += lineCount * lineHeight;
-  });
+  // 只有在有有效条款时才显示标题和内容
+  if (validNotes.length > 0) {
+    currentY = finalY + 15;
+    const maxWidth = doc.internal.pageSize.width - 30;
+    const lineHeight = 5;
+
+    validNotes.forEach((note: string, index: number) => {
+      // 添加序号
+      doc.text(`${index + 1}.`, 15, currentY);
+      
+      // 计算文本内容的起始位置（序号后空2mm）
+      const textX = 22;
+      const availableWidth = maxWidth - (textX - 15); // 减去序号占用的宽度
+      
+      // 使用自动换行函数处理文本
+      const lineCount = wrapText(doc, note, textX, currentY, availableWidth, lineHeight);
+      
+      // 更新下一条注意事项的Y坐标
+      currentY += lineCount * lineHeight;
+    });
+  }
 
   // 添加签名区
   // const signatureY = finalY + 20 + (data.notes.length * 5);
@@ -526,7 +533,7 @@ export const generateInvoicePDF = async (data: QuotationData) => {
   // 添加 P/O 客户下方
   doc.text(`Order No.: ${data.inquiryNo}`, 15, currentY);
 
-  // 修改右侧信息对齐方式
+  // 修��右侧信息对齐方式
   const rightInfoX = doc.internal.pageSize.width - 15;
   const colonX = rightInfoX - 20;
   const valueX = colonX + 2;
@@ -692,7 +699,7 @@ export const generateInvoicePDF = async (data: QuotationData) => {
 
   // 显示银行信息，每行间距5mm
   bankInfoLines.forEach((line, index) => {
-    doc.setFont('NotoSansSC', 'normal');  // 确保每行都使用中文字体
+    doc.setFont('NotoSansSC', 'normal');  // ���保每行都使用中文字体
     doc.text(line.trim(), 15, contentStartY + 5 + (index * 5));
   });
 

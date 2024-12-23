@@ -192,7 +192,7 @@ const salesSelectClassName = `px-3 py-1.5 rounded-xl
   pr-8
   w-[140px]`; // 固定宽度
 
-// 修改单位输入框样式，添��文本居中对齐
+// 修改单位输入框样式，添加文本居中对齐
 const unitInputClassName = `${tableInputClassName}
   text-center`;  // 添加文本居中
 
@@ -352,7 +352,7 @@ export default function Quotation() {
     try {
       switch (activeTab) {
         case 'quotation':
-          await generateQuotationPDF(quotationData);
+          await generateQuotationPDF(quotationData, activeTab);
           break;
         case 'confirmation':
           await generateOrderConfirmationPDF(quotationData);
@@ -463,15 +463,15 @@ export default function Quotation() {
     }));
   }, [quotationData.to, quotationData.inquiryNo, quotationData.quotationNo, quotationData.contractNo]);
 
-  // 修改 quotationData 的初始值，加 Sharon 的默认 notes
+  // 添加获取销售人员特定notes的函数
   const getSalesPersonNotes = (salesPerson: string, type: string) => {
-    if (salesPerson === 'Sharon') {
+    if (salesPerson === 'Sharon' && type === 'quotation') {
       return [
         'Price based on EXW-JIANG SU, CHINA.',
         'Delivery terms: as mentioned above,subj to unsold',
         'Excluding handling & packing charge and freight cost',
         'Payment term: 30 days',
-        'Validity: 20 days'
+        'Validity: 20 days',
       ];
     }
     
@@ -482,17 +482,16 @@ export default function Quotation() {
           'Price based on EXW-Shanghai, Mill TC',
           'Delivery terms: as mentioned above, subj to unsold',
           'Payment term: 50% deposit, the balance paid before delivery',
-          'Validity: 5 days'
+          'Validity: 5 days',
         ]
       : [
-          'Order confirmed',
           'Delivery time: 30 days after payment received',
           'Payment term: 50% deposit, the balance paid before delivery',
-          'Shipping term: EXW-Shanghai'
+          'Shipping term: EXW-Shanghai',
         ];
   };
 
-  // 在设置面板中，当销售人员变时更新 notes
+  // 在设置面板中，当销售人员变化时更新 notes
   const handleSalesPersonChange = (newSalesPerson: string) => {
     setSettings(prev => ({ ...prev, from: newSalesPerson }));
     setQuotationData(prev => ({
@@ -516,6 +515,14 @@ export default function Quotation() {
       showRemarks: settings.showRemarks
     }));
   }, [settings.showDescription, settings.showRemarks]);
+
+  // 修改 useEffect，同时考虑 activeTab 变化时的更新
+  useEffect(() => {
+    setQuotationData(prev => ({
+      ...prev,
+      notes: getSalesPersonNotes(prev.from, activeTab)
+    }));
+  }, [activeTab]); // 依赖于 activeTab
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f5f5f7] dark:bg-[#000000]">
@@ -901,11 +908,47 @@ export default function Quotation() {
                     bg-gray-50/50 dark:bg-[#1c1c1e]/50
                     rounded-xl p-4 
                     border border-gray-200/30 dark:border-[#2c2c2e]/50">
-                    <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-3">Notes</h3>
+                    <div className="flex justify-between items-center mb-3">
+                      <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                        {activeTab === 'quotation' ? 'Notes:' : 'Terms & Conditions:'}
+                      </h3>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setQuotationData(prev => ({
+                            ...prev,
+                            notes: [...prev.notes, '']
+                          }));
+                        }}
+                        className="px-2 py-1 rounded-lg
+                                  text-blue-600 dark:text-blue-400
+                                  hover:bg-blue-500/10 
+                                  transition-all duration-300
+                                  text-sm font-medium 
+                                  flex items-center gap-1"
+                      >
+                        <span className="text-lg leading-none">+</span>
+                        <span className="text-xs">Add Note</span>
+                      </button>
+                    </div>
                     <div className="space-y-2">
                       {quotationData.notes.map((note, index) => (
                         <div key={index} className="flex items-center gap-2">
-                          <span className="text-xs text-gray-400 w-4">{index + 1}.</span>
+                          <span 
+                            className="flex items-center justify-center w-6 h-6 rounded-full 
+                                      text-xs text-gray-400
+                                      hover:bg-red-100 hover:text-red-600 
+                                      cursor-pointer transition-colors"
+                            onClick={() => {
+                              setQuotationData(prev => ({
+                                ...prev,
+                                notes: prev.notes.filter((_, i) => i !== index)
+                              }));
+                            }}
+                            title="Click to delete"
+                          >
+                            {index + 1}
+                          </span>
                           <input
                             type="text"
                             value={note}
