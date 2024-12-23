@@ -344,7 +344,7 @@ export const generateOrderConfirmationPDF = async (data: QuotationData) => {
  
   // 调整右侧信息的位置和对齐方式
   const rightInfoX = doc.internal.pageSize.width - 15; // 右边界
-  const colonX = rightInfoX - 20; // 将冒号位置调整到离右边界50mm处
+  const colonX = rightInfoX - 20; // 将冒号位置调整到��右边界50mm处
   const valueX = colonX + 2; // 值的位置在冒号右侧2mm处
   const labelX = colonX - 1; // 标签文本位置在冒号左侧1mm处
 
@@ -689,26 +689,31 @@ export const generateInvoicePDF = async (data: QuotationData) => {
     doc.text(line, margin, finalY + 10 + (index * 5));
   });
 
-  // 继续生成其他内容，使用最后行的位置
-  const contentStartY = finalY + 10 + (lines.length * 5) + 5;
-  doc.text('Bank Information:', margin, contentStartY);
-  
   // 修改银行信息显示部分
-  doc.setFont('NotoSansSC', 'normal');  // 确保使用中文字体
-  const bankInfoLines = data.bankInfo.split('\n').filter(line => line.trim());
+  const contentStartY = finalY + 10 + (lines.length * 5) + 5;
 
-  // 显示银行信息，每行间距5mm
-  bankInfoLines.forEach((line, index) => {
-    doc.setFont('NotoSansSC', 'normal');  // 保每行都使用中文字体
-    doc.text(line.trim(), 15, contentStartY + 5 + (index * 5));
-  });
+  // 只在银行信息不为空时显示标题和内容
+  if (data.bankInfo && data.bankInfo.trim()) {
+    doc.text('Bank Information:', margin, contentStartY);
+    
+    doc.setFont('NotoSansSC', 'normal');
+    const bankInfoLines = data.bankInfo.split('\n').filter(line => line.trim());
 
-  // 获取银行信息结束位置
-  const bankInfoEndY = contentStartY + 5 + (bankInfoLines.length * 5);
-  currentY = bankInfoEndY + 2; // 一使用较小的间距
+    // 显示银行信息，每行间距5mm
+    bankInfoLines.forEach((line, index) => {
+      doc.setFont('NotoSansSC', 'normal');
+      doc.text(line.trim(), 15, contentStartY + 5 + (index * 5));
+    });
+
+    // 获取银行信息结束位置
+    currentY = contentStartY + 5 + (bankInfoLines.length * 5) + 2;
+  } else {
+    // 如果没有银行信息，直接使用contentStartY作为下一个内容的起始位置
+    currentY = contentStartY;
+  }
 
   // 修改付款条款显示逻辑
-  const paymentY = bankInfoEndY + 5;
+  const paymentY = currentY + 5;
   
   doc.setFont('NotoSansSC', 'normal');  // 保持正常字体
   
@@ -751,7 +756,7 @@ export const generateInvoicePDF = async (data: QuotationData) => {
 
   // 修改显示 payment terms 的部分
   if (terms.length > 0) {
-    // 检查是否只有一条发票相关的提示
+    // 检查是否只有一条发票相关的提���
     const isSingleInvoiceTerm = terms.length === 1 && terms[0].isInvoiceNo;
     
     if (isSingleInvoiceTerm) {
