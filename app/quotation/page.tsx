@@ -436,7 +436,6 @@ export default function Quotation() {
     </button>
   );
 
-  // 查是否有他地在编辑过程中触发了状态更新
   // 比如移除或简化些作用
   useEffect(() => {
     // 移除或简化不必要副作用
@@ -516,7 +515,7 @@ export default function Quotation() {
     }));
   }, [settings.showDescription, settings.showRemarks]);
 
-  // 修改 useEffect，同时考虑 activeTab 变化时的更新
+  // 修改 useEffect，同时考��� activeTab 变化时的更新
   useEffect(() => {
     setQuotationData(prev => ({
       ...prev,
@@ -902,7 +901,19 @@ export default function Quotation() {
                       </div>
                     </div>
                   </div>
-
+                  {/* 银行信息区域 - 只在 confirmation 选项卡显示 */}
+                  {activeTab === 'confirmation' && (
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium">Bank Information:</label>
+                      <textarea
+                        value={quotationData.bankInfo}
+                        onChange={e => setQuotationData(prev => ({ ...prev, bankInfo: e.target.value }))}
+                        className={`${appleInputClassName} min-h-[60px]`}
+                        placeholder="Enter bank information"
+                        rows={2}
+                      />
+                    </div>
+                  )}
                   {/* Notes 部分重新设计 */}
                   <div className="space-y-2.5 
                     bg-gray-50/50 dark:bg-[#1c1c1e]/50

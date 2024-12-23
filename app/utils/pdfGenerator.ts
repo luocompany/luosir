@@ -135,7 +135,7 @@ export const generateQuotationPDF = async (data: QuotationData, activeTab: strin
   });
 
   // 计算客户信息后的位置
-  currentY += (toLines.length * 5) + 2; // ��小间距到2mm
+  currentY += (toLines.length * 5) + 2; // 小间距到2mm
 
   // Inquiry No. 放在客户信息下面
   doc.text(`Inquiry No.: ${data.inquiryNo}`, 15, currentY);
@@ -169,7 +169,7 @@ export const generateQuotationPDF = async (data: QuotationData, activeTab: strin
   doc.text(':', colonX, newContentStartY);
   doc.text(data.currency, valueX, newContentStartY);
   
-  // 调整后续内容的位置
+  // 调整后续容的位置
   const customerNameHeight = (toLines.length - 1) * 5;
   currentY += Math.max(customerNameHeight, 10); // 确保至少有10的间距
   
@@ -300,7 +300,7 @@ export const generateOrderConfirmationPDF = async (data: QuotationData) => {
   doc.setFont('NotoSansSC', 'bold');
   doc.text('Sales Confirmation', pageWidth / 2, 45, { align: 'center' });
   
-  // 设置回常规字体
+  // 置回常规字体
   doc.setFont('NotoSansSC', 'normal');
   
   // 基本信息 - 修改为与报价单相同的对齐方式
@@ -424,40 +424,51 @@ export const generateOrderConfirmationPDF = async (data: QuotationData) => {
     margin: { left: 15, right: 15 },
   });
 
-  // 添加注意事项
-  const finalY = (doc as any).lastAutoTable.finalY || 150;
-  doc.setFontSize(10);
-  doc.text('Terms & Conditions:', 15, finalY + 10);
-  
-  // 过滤掉空的 notes 并重新编号
-  const validNotes = data.notes.filter(note => note.trim() !== '');
-  
-  // 只有在有有效条款时才显示题和内容
-  if (validNotes.length > 0) {
-    currentY = finalY + 15;
-    const maxWidth = doc.internal.pageSize.width - 30;
-    const lineHeight = 5;
+  // 修改表格后续内容的位置处理
+  const finalY = (doc as any).lastAutoTable.finalY;
+  currentY = finalY + 10; // 从表格结束位置开始，添加一些间距
 
-    validNotes.forEach((note: string, index: number) => {
+  // 1. 首先添加条款信息
+  if (data.notes && data.notes.length > 0) {
+    doc.text('Terms & Conditions:', 15, currentY);
+    currentY += 5;
+
+    // 过滤掉空的条款
+    const validNotes = data.notes.filter(note => note.trim() !== '');
+    
+    validNotes.forEach((note, index) => {
       // 添加序号
       doc.text(`${index + 1}.`, 15, currentY);
       
       // 计算文本内容的起始位置（序号后空2mm）
       const textX = 22;
-      const availableWidth = maxWidth - (textX - 15); // 减去序号占用的宽度
+      const maxWidth = doc.internal.pageSize.width - 30;
+      const availableWidth = maxWidth - (textX - 15);
       
       // 使用自动换行函数处理文本
-      const lineCount = wrapText(doc, note, textX, currentY, availableWidth, lineHeight);
+      const lineCount = wrapText(doc, note, textX, currentY, availableWidth, 5);
       
       // 更新下一条注意事项的Y坐标
-      currentY += lineCount * lineHeight;
+      currentY += lineCount * 5;
     });
+
+    // 添加额外间距到银行信息
+    currentY += 5;
   }
 
-  // 添加签名区
-  // const signatureY = finalY + 20 + (data.notes.length * 5);
-  // doc.text('Authorized Signature:', 15, signatureY + 20);
-  // doc.line(15, signatureY + 35, 80, signatureY + 35); // 签名线
+  // 2. 然后添加银行信息
+  if (data.bankInfo && data.bankInfo.trim()) {
+    doc.text('Bank Information:', 15, currentY);
+    currentY += 5;
+    
+    const bankInfoLines = data.bankInfo.split('\n').filter(line => line.trim());
+    
+    // 显示银行信息，每行间距5mm
+    bankInfoLines.forEach((line, index) => {
+      doc.text(line.trim(), 15, currentY);
+      currentY += 5;
+    });
+  }
 
   // 保存文件
   doc.save(`Sales Confirmation ${data.contractNo}-${data.date}.pdf`);
@@ -502,10 +513,10 @@ export const generateInvoicePDF = async (data: QuotationData) => {
     doc.text(line.trim(), 25, currentY + (index * 5));
   });
 
-  // 计算客户信息后的位置
+  // 算客户信息后的位置
   currentY += (toLines.length * 5) + 2;
 
-  // 添加 P/O 客户下方
+  // 添加 P/O 客户下��
   doc.text(`Order No.: ${data.inquiryNo}`, 15, currentY);
 
   // 修右侧信息对齐方式
@@ -581,7 +592,7 @@ export const generateInvoicePDF = async (data: QuotationData) => {
     styles: {
       fontSize: 9,
       cellPadding: 2,
-      lineColor: [0, 0, 0],   // 黑边框
+      lineColor: [0, 0, 0],   // 边框
       lineWidth: 0.1,         // 细边框
       textColor: [0, 0, 0],    // 黑色文字
       font: 'NotoSansSC',  // 设置表格使用中文字体
@@ -628,7 +639,7 @@ export const generateInvoicePDF = async (data: QuotationData) => {
   doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
   
-  // 计算可用宽度（页面宽度去左右边距）
+  // 计算可用宽度（页面宽度去左���边距）
   const margin = 15;
   const maxWidth = doc.internal.pageSize.width - (margin * 2);
   
@@ -665,11 +676,11 @@ export const generateInvoicePDF = async (data: QuotationData) => {
   });
 
   // 修改银行信息显示部分
-  const contentStartY = finalY + 10 + (lines.length * 5) + 5;
+  const contentStartY = (doc as any).lastAutoTable.finalY + 15;
 
   // 只在银行信息不为空时显示标题和内容
   if (data.bankInfo && data.bankInfo.trim()) {
-    doc.text('Bank Information:', margin, contentStartY);
+    doc.text('Bank Information:', 15, contentStartY);
     
     doc.setFont('NotoSansSC', 'normal');
     const bankInfoLines = data.bankInfo.split('\n').filter(line => line.trim());
@@ -748,7 +759,7 @@ export const generateInvoicePDF = async (data: QuotationData) => {
       doc.setTextColor(255, 0, 0);
       doc.text(data.invoiceNo || '', 15 + firstPartWidth, currentY);
       
-      // 恢复黑色并绘制最后部分
+      // 恢复黑色绘制最后部分
       doc.setTextColor(0, 0, 0);
       const invoiceNoWidth = doc.getTextWidth(data.invoiceNo || '');
       doc.text('" on your payment documents.', 15 + firstPartWidth + invoiceNoWidth, currentY);
