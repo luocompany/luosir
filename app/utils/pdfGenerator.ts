@@ -18,7 +18,7 @@ interface QuotationData {
   date: string;
   from: string;
   inquiryNo: string;
-  quotationNo: string;
+  invoiceNo?: string;
   currency: string;
   items: LineItem[];
   notes: string[];
@@ -35,6 +35,7 @@ interface QuotationData {
   showRemarks?: boolean;
   remarks?: string;
   showDescription?: boolean;
+  quotationNo?: string;
 }
 
 const currencySymbols: { [key: string]: string } = {
@@ -77,7 +78,7 @@ export const generateQuotationPDF = async (data: QuotationData) => {
   // 加载中文字体
   await loadFonts(doc);
   
-  // 设置默认字体为中文字体
+  // 设置默��字体为中文字体
   doc.setFont('NotoSansSC', 'normal');
   
   // 添加公司Logo
@@ -120,7 +121,7 @@ export const generateQuotationPDF = async (data: QuotationData) => {
   // 调整后续内容的位置，减小间距
   const newContentStartY = currentY + 10; // 减小与后续内容的间距
 
-  // 添加感谢信息
+  // 添��感谢信息
   doc.text('Thanks for your inquiry, and our best offer is as follows:', 15, newContentStartY);
   
   // 调整右侧信息的位置对齐方式
@@ -140,7 +141,7 @@ export const generateQuotationPDF = async (data: QuotationData) => {
 
   doc.text('Quotation No.', labelX, 65, { align: 'right' });
   doc.text(':', colonX, 65);
-  doc.text(data.quotationNo, valueX, 65);
+  doc.text(data.quotationNo || '', valueX, 65);
 
   doc.text('Currency', labelX, newContentStartY, { align: 'right' });
   doc.text(':', colonX, newContentStartY);
@@ -329,7 +330,7 @@ export const generateOrderConfirmationPDF = async (data: QuotationData) => {
   doc.text(':', colonX, 65);
   doc.text(data.from, valueX, 65);
 
-  // Currency右上角并保持对齐
+  // Currency右上并保持对齐
   doc.text('Currency', labelX, confirmationContentStartY, { align: 'right' });
   doc.text(':', colonX, confirmationContentStartY);
   doc.text(data.currency, valueX, confirmationContentStartY);
@@ -340,7 +341,7 @@ export const generateOrderConfirmationPDF = async (data: QuotationData) => {
   
   
   // 添加商品表格 - 相应调整起始位置
-  // 动态构建表头
+  // 动构建表头
   const headers = ['No.', 'Part Name'];
   if (data.showDescription) headers.push('Description');
   headers.push('Q\'TY', 'Unit', 'U/Price', 'Amount');
@@ -384,7 +385,7 @@ export const generateOrderConfirmationPDF = async (data: QuotationData) => {
       { 
         content: '',
         styles: { 
-          cellPadding: { top: 8 }  // 为最后一个单元格添加上边距
+          cellPadding: { top: 8 }  // 为最后一个单元格加上边距
         } 
       }
     ]],
@@ -479,10 +480,10 @@ export const generateInvoicePDF = async (data: QuotationData) => {
   // 计算客户信息后的位置
   let currentY = customerInfoStartY + (toLines.length * 5) + 2;
 
-  // 添加 P/O 客户息下方
+  // 添加 P/O 客户下方
   doc.text(`Order No.: ${data.inquiryNo}`, 15, currentY);
 
-  // 右侧信息对齐方式
+  // 修改右侧信息对齐方式
   const rightInfoX = doc.internal.pageSize.width - 15;
   const colonX = rightInfoX - 20;
   const valueX = colonX + 2;
@@ -491,7 +492,7 @@ export const generateInvoicePDF = async (data: QuotationData) => {
   // 添加右侧信息
   doc.text('Invoice No.', labelX, 55, { align: 'right' });
   doc.text(':', colonX, 55);
-  doc.text(data.quotationNo, valueX, 55);
+  doc.text(data.invoiceNo || '', valueX, 55);
 
   doc.text('Date', labelX, 60, { align: 'right' });
   doc.text(':', colonX, 60);
@@ -602,7 +603,7 @@ export const generateInvoicePDF = async (data: QuotationData) => {
   doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
   
-  // 计算可用宽度（页面宽度减去左右边距）
+  // 计算可用宽度（页面宽度去左右边距）
   const margin = 15;
   const maxWidth = doc.internal.pageSize.width - (margin * 2);
   
@@ -612,7 +613,7 @@ export const generateInvoicePDF = async (data: QuotationData) => {
     amountText += ` AND ${data.amountInWords.cents}`;
   }
   
-  // 分割文本为单词数组
+  // 分割文本为单数组
   const words = amountText.split(' ');
   let currentLine = '';
   let lines = [];
@@ -654,7 +655,7 @@ export const generateInvoicePDF = async (data: QuotationData) => {
 
   // 获取银行信息结束位置
   const bankInfoEndY = contentStartY + 5 + (bankInfoLines.length * 5);
-  currentY = bankInfoEndY + 2; // 统一使用较小的间距
+  currentY = bankInfoEndY + 2; // 一使用较小的间距
 
   // 修改付款条款显示逻辑
   const paymentY = bankInfoEndY + 5;
@@ -686,9 +687,9 @@ export const generateInvoicePDF = async (data: QuotationData) => {
   }
 
   // 修改发票号提示的添加逻辑
-  if (data.quotationNo && data.quotationNo.trim() !== '') {
+  if (data.invoiceNo && data.invoiceNo.trim() !== '') {
     terms.push({
-      content: `Please state our invoice no. "${data.quotationNo}" on your payment documents.`,
+      content: `Please state our invoice no. "${data.invoiceNo}" on your payment documents.`,
       isInvoiceNo: true
     });
   } else {
@@ -707,18 +708,19 @@ export const generateInvoicePDF = async (data: QuotationData) => {
     const pageWidth = doc.internal.pageSize.width;
     const leftMargin = 25; // 左边距（序号 + 缩进）
     const rightMargin = 15; // 右边距
-    const maxWidth = pageWidth - leftMargin - rightMargin; // 可用宽度
+    const maxWidth = pageWidth - leftMargin - rightMargin; // 可用���度
     
     terms.forEach((term, index) => {
       doc.text(`${index + 1}.`, 20, currentY);
       
       if (term.isDate || term.isInvoiceNo) {
-        const parts = term.content.split(term.isDate ? data.paymentDate : data.quotationNo);
+        const splitValue = term.isDate ? data.paymentDate : (data.invoiceNo || '');
+        const parts = term.content.split(splitValue);
         const firstPartWidth = doc.getTextWidth(parts[0]);
         doc.text(parts[0], leftMargin, currentY);
         
         doc.setTextColor(255, 0, 0);
-        const specialValue = term.isDate ? data.paymentDate : data.quotationNo;
+        const specialValue = (term.isDate ? data.paymentDate : data.invoiceNo) || '';
         doc.text(specialValue, leftMargin + firstPartWidth, currentY);
         
         doc.setTextColor(0, 0, 0);
@@ -752,5 +754,5 @@ export const generateInvoicePDF = async (data: QuotationData) => {
   }
 
   // 保存文件
-  doc.save(`Invoice_${data.quotationNo}_${data.date}.pdf`);
+  doc.save(`Invoice_${data.invoiceNo}_${data.date}.pdf`);
 };

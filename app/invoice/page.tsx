@@ -276,7 +276,7 @@ export default function Invoice() {
     e.preventDefault();
     try {
       const pdfData = {
-        quotationNo: invoiceData.invoiceNo,
+        invoiceNo: invoiceData.invoiceNo,
         date: invoiceData.date,
         to: invoiceData.to,
         from: invoiceData.from,
