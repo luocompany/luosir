@@ -344,7 +344,7 @@ export const generateOrderConfirmationPDF = async (data: QuotationData) => {
  
   // 调整右侧信息的位置和对齐方式
   const rightInfoX = doc.internal.pageSize.width - 15; // 右边界
-  const colonX = rightInfoX - 20; // 将冒号位置调整到距离右边界50mm处
+  const colonX = rightInfoX - 20; // 将冒号位置调整到离右边界50mm处
   const valueX = colonX + 2; // 值的位置在冒号右侧2mm处
   const labelX = colonX - 1; // 标签文本位置在冒号左侧1mm处
 
@@ -533,7 +533,7 @@ export const generateInvoicePDF = async (data: QuotationData) => {
   // 添加 P/O 客户下方
   doc.text(`Order No.: ${data.inquiryNo}`, 15, currentY);
 
-  // 修��右侧信息对齐方式
+  // 修右侧信息对齐方式
   const rightInfoX = doc.internal.pageSize.width - 15;
   const colonX = rightInfoX - 20;
   const valueX = colonX + 2;
@@ -699,7 +699,7 @@ export const generateInvoicePDF = async (data: QuotationData) => {
 
   // 显示银行信息，每行间距5mm
   bankInfoLines.forEach((line, index) => {
-    doc.setFont('NotoSansSC', 'normal');  // ���保每行都使用中文字体
+    doc.setFont('NotoSansSC', 'normal');  // 保每行都使用中文字体
     doc.text(line.trim(), 15, contentStartY + 5 + (index * 5));
   });
 
@@ -751,56 +751,81 @@ export const generateInvoicePDF = async (data: QuotationData) => {
 
   // 修改显示 payment terms 的部分
   if (terms.length > 0) {
-    doc.text('Payment Terms:', 15, currentY);
-    currentY += 5;
+    // 检查是否只有一条发票相关的提示
+    const isSingleInvoiceTerm = terms.length === 1 && terms[0].isInvoiceNo;
     
-    // 修改最大宽度计算，增加右边距
-    const pageWidth = doc.internal.pageSize.width;
-    const leftMargin = 25; // 左边距（序号 + 缩进）
-    const rightMargin = 15; // 右边距
-    const maxWidth = pageWidth - leftMargin - rightMargin; // 可用度
-    
-    terms.forEach((term, index) => {
-      doc.text(`${index + 1}.`, 20, currentY);
+    if (isSingleInvoiceTerm) {
+      const leftMargin = 15;  // 添加这行
+      // 单行显示模式，不显示标题和序号
+      const parts = terms[0].content.split(`"${data.invoiceNo}"`);
+      const firstPart = 'Payment Term: Please state our invoice no. "';
       
-      if (term.isDate || term.isInvoiceNo) {
-        const splitValue = term.isDate ? data.paymentDate : (data.invoiceNo || '');
-        const parts = term.content.split(splitValue);
-        const firstPartWidth = doc.getTextWidth(parts[0]);
-        doc.text(parts[0], leftMargin, currentY);
+      // 绘制第一部分
+      doc.text(firstPart, 15, currentY);
+      const firstPartWidth = doc.getTextWidth(firstPart);
+      
+      // 绘制发票号（红色）
+      doc.setTextColor(255, 0, 0);
+      doc.text(data.invoiceNo || '', 15 + firstPartWidth, currentY);
+      
+      // 恢复黑色并绘制最后部分
+      doc.setTextColor(0, 0, 0);
+      const invoiceNoWidth = doc.getTextWidth(data.invoiceNo || '');
+      doc.text('" on your payment documents.', 15 + firstPartWidth + invoiceNoWidth, currentY);
+      
+      currentY += 5;
+    } else {
+      // 原有的多条款显示逻辑
+      doc.text('Payment Terms:', 15, currentY);
+      currentY += 5;
+      
+      const pageWidth = doc.internal.pageSize.width;
+      const leftMargin = 25;
+      const rightMargin = 15;
+      const maxWidth = pageWidth - leftMargin - rightMargin;
+      
+      terms.forEach((term, index) => {
+        doc.text(`${index + 1}.`, 20, currentY);
         
-        doc.setTextColor(255, 0, 0);
-        const specialValue = (term.isDate ? data.paymentDate : data.invoiceNo) || '';
-        doc.text(specialValue, leftMargin + firstPartWidth, currentY);
-        
-        doc.setTextColor(0, 0, 0);
-        
-        if (parts[1]) {
-          const remainingText = parts[1];
-          const textLines = doc.splitTextToSize(remainingText, maxWidth);
+        if (term.isDate || term.isInvoiceNo) {
+          const splitValue = term.isDate ? data.paymentDate : (data.invoiceNo || '');
+          const parts = term.content.split(splitValue);
+          const firstPartWidth = doc.getTextWidth(parts[0]);
+          doc.text(parts[0], leftMargin, currentY);
+          
+          doc.setTextColor(255, 0, 0);
+          const specialValue = (term.isDate ? data.paymentDate : data.invoiceNo) || '';
+          doc.text(specialValue, leftMargin + firstPartWidth, currentY);
+          
+          doc.setTextColor(0, 0, 0);
+          
+          if (parts[1]) {
+            const remainingText = parts[1];
+            const textLines = doc.splitTextToSize(remainingText, maxWidth);
+            textLines.forEach((line: string, lineIndex: number) => {
+              if (lineIndex === 0) {
+                doc.text(line, leftMargin + firstPartWidth + doc.getTextWidth(specialValue), currentY);
+              } else {
+                currentY += 5;
+                doc.text(line, leftMargin, currentY);
+              }
+            });
+          }
+        } else {
+          const textLines = doc.splitTextToSize(term.content, maxWidth);
           textLines.forEach((line: string, lineIndex: number) => {
             if (lineIndex === 0) {
-              doc.text(line, leftMargin + firstPartWidth + doc.getTextWidth(specialValue), currentY);
+              doc.text(line, leftMargin, currentY);
             } else {
               currentY += 5;
               doc.text(line, leftMargin, currentY);
             }
           });
         }
-      } else {
-        const textLines = doc.splitTextToSize(term.content, maxWidth);
-        textLines.forEach((line: string, lineIndex: number) => {
-          if (lineIndex === 0) {
-            doc.text(line, leftMargin, currentY);
-          } else {
-            currentY += 5;
-            doc.text(line, leftMargin, currentY);
-          }
-        });
-      }
-      
-      currentY += 5;
-    });
+        
+        currentY += 5;
+      });
+    }
   }
 
   // 保存文件
