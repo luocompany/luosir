@@ -72,13 +72,25 @@ function arrayBufferToBase64(buffer: ArrayBuffer): string {
   return btoa(binary);
 }
 
+// 添加文本自动换行的辅助函数
+const wrapText = (doc: jsPDF, text: string, x: number, y: number, maxWidth: number, lineHeight: number) => {
+  const lines = doc.splitTextToSize(text, maxWidth);
+  lines.forEach((line: string, index: number) => {
+    doc.text(line, x, y + (index * lineHeight));
+  });
+  return lines.length; // 返回实际行数
+};
+
+// 在文件顶部声明全局变量
+let currentY = 0;
+
 export const generateQuotationPDF = async (data: QuotationData) => {
   const doc = new jsPDF();
   
   // 加载中文字体
   await loadFonts(doc);
   
-  // 设置默��字体为中文字体
+  // 设置默认字体为中文字体
   doc.setFont('NotoSansSC', 'normal');
   
   // 添加公司Logo
@@ -104,7 +116,7 @@ export const generateQuotationPDF = async (data: QuotationData) => {
   // 添加基本信息 - 支持多行客户名称
   doc.setFontSize(10);
   const toLines = data.to.split('\n');
-  let currentY = contentStartY;
+  currentY = contentStartY;
   
   // 绘制客户名称（支持多行）
   doc.text('To:', 15, currentY);
@@ -121,7 +133,7 @@ export const generateQuotationPDF = async (data: QuotationData) => {
   // 调整后续内容的位置，减小间距
   const newContentStartY = currentY + 10; // 减小与后续内容的间距
 
-  // 添��感谢信息
+  // 添加感谢信
   doc.text('Thanks for your inquiry, and our best offer is as follows:', 15, newContentStartY);
   
   // 调整右侧信息的位置对齐方式
@@ -251,8 +263,23 @@ export const generateQuotationPDF = async (data: QuotationData) => {
   // 过滤掉空的 notes 并重新编号
   const validNotes = data.notes.filter(note => note.trim() !== '');
   
+  currentY = finalY + 15;
+  const maxWidth = doc.internal.pageSize.width - 30; // 左右各留15mm边距
+  const lineHeight = 5; // 行间距设为5mm
+  
   validNotes.forEach((note: string, index: number) => {
-    doc.text(`${index + 1}. ${note}`, 15, finalY + 15 + (index * 5));
+    // 添加序号
+    doc.text(`${index + 1}.`, 15, currentY);
+    
+    // 计算文本内容的起始位置（序号后空2mm）
+    const textX = 22;
+    const availableWidth = maxWidth - (textX - 15); // 减去序号占用的宽度
+    
+    // 使用自动换行函数处理文本
+    const lineCount = wrapText(doc, note, textX, currentY, availableWidth, lineHeight);
+    
+    // 更新下一条注意事项的Y坐标（仅使用行数和行高）
+    currentY += lineCount * lineHeight;
   });
   
   // 保存PDF
@@ -291,7 +318,7 @@ export const generateOrderConfirmationPDF = async (data: QuotationData) => {
   
   // 添加基本信息 - 支持多行客户名称
   const toLines = data.to.split('\n');
-  let currentY = 55;
+  currentY = 55;
   
   // 先示 To 和客户信息
   doc.text('To:', 15, currentY);
@@ -426,8 +453,23 @@ export const generateOrderConfirmationPDF = async (data: QuotationData) => {
   // 过滤掉空的 notes 并重新编号
   const validNotes = data.notes.filter(note => note.trim() !== '');
   
+  currentY = finalY + 15;
+  const maxWidth = doc.internal.pageSize.width - 30; // 左右各留15mm边距
+  const lineHeight = 5; // 行间距设为5mm
+  
   validNotes.forEach((note: string, index: number) => {
-    doc.text(`${index + 1}. ${note}`, 15, finalY + 15 + (index * 5));
+    // 添加序号
+    doc.text(`${index + 1}.`, 15, currentY);
+    
+    // 计算文本内容的起始位置（序号后空2mm）
+    const textX = 22;
+    const availableWidth = maxWidth - (textX - 15); // 减去序号占用的宽度
+    
+    // 使用自动换行函数处理文本
+    const lineCount = wrapText(doc, note, textX, currentY, availableWidth, lineHeight);
+    
+    // 更新下一条注意事项的Y坐标
+    currentY += lineCount * lineHeight;
   });
 
   // 添加签名区
@@ -473,12 +515,13 @@ export const generateInvoicePDF = async (data: QuotationData) => {
   // 绘制客户名称（支持多行）
   doc.text('To:', 15, customerInfoStartY);
   const toLines = data.to.split('\n');
+  currentY = customerInfoStartY;
   toLines.forEach((line, index) => {
-    doc.text(line.trim(), 25, customerInfoStartY + (index * 5));
+    doc.text(line.trim(), 25, currentY + (index * 5));
   });
 
   // 计算客户信息后的位置
-  let currentY = customerInfoStartY + (toLines.length * 5) + 2;
+  currentY += (toLines.length * 5) + 2;
 
   // 添加 P/O 客户下方
   doc.text(`Order No.: ${data.inquiryNo}`, 15, currentY);
@@ -708,7 +751,7 @@ export const generateInvoicePDF = async (data: QuotationData) => {
     const pageWidth = doc.internal.pageSize.width;
     const leftMargin = 25; // 左边距（序号 + 缩进）
     const rightMargin = 15; // 右边距
-    const maxWidth = pageWidth - leftMargin - rightMargin; // 可用���度
+    const maxWidth = pageWidth - leftMargin - rightMargin; // 可用度
     
     terms.forEach((term, index) => {
       doc.text(`${index + 1}.`, 20, currentY);
